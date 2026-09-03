@@ -144,32 +144,6 @@ export default function DashboardOverview() {
         </div>
       </div>
 
-      {/* 24-HOUR STATUTORY SLA COUNTDOWN WATCHDOG STRIP */}
-      <div className="bg-surface-container-high/40 p-spacing-md rounded-xl border border-surface-container-highest flex flex-col lg:flex-row items-center justify-between gap-spacing-md text-left">
-        <div className="flex items-center gap-spacing-md">
-          <div className="w-10 h-10 rounded-xl bg-error-container text-on-error-container flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-[24px] animate-pulse">security</span>
-          </div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-spacing-xs">
-              <span className="font-headline-sm text-on-surface font-bold">24-Hour Statutory Station SLA Watchdog</span>
-              <span className="px-spacing-xs py-spacing-3xs rounded bg-secondary text-on-secondary font-label-sm uppercase font-bold">Active Regulation</span>
-            </div>
-            <p className="font-body-sm text-on-surface-variant">Automatic district escalation triggers if SHO resolution or signed rationale is not logged within mandatory 24h window.</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-spacing-md bg-surface-container-lowest px-spacing-lg py-spacing-xs rounded-xl shadow-sm border border-surface-container-highest">
-          <div className="flex flex-col">
-            <span className="font-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Next Auto-Escalation</span>
-            <div className="flex items-baseline gap-spacing-2xs">
-              <span className="font-headline-xl text-error font-bold tracking-tight">{countdown}</span>
-            </div>
-          </div>
-          <span className="material-symbols-outlined text-error text-[28px] animate-bounce">alarm</span>
-        </div>
-      </div>
-
       {/* STATISTICAL METRIC CARDS (4 CARDS) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-spacing-sm text-left">
         <div className="bg-surface-container-lowest p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between">
