@@ -152,7 +152,6 @@ export default function WelfareChecks() {
                   <th className="p-spacing-md">Citizen Name</th>
                   <th className="p-spacing-md">Scheduled Date & Time</th>
                   <th className="p-spacing-md">Assigned Officer</th>
-                  <th className="p-spacing-md">Purpose</th>
                   <th className="p-spacing-md">Status</th>
                 </tr>
               </thead>
@@ -165,7 +164,6 @@ export default function WelfareChecks() {
                     </td>
                     <td className="p-spacing-md font-code-md text-on-surface font-semibold">{w.scheduled_date} at {w.scheduled_time}</td>
                     <td className="p-spacing-md font-body-sm text-primary font-semibold">{w.assigned_officer_name || 'Unassigned'}</td>
-                    <td className="p-spacing-md font-body-sm text-on-surface-variant">{w.purpose}</td>
                     <td className="p-spacing-md">
                       <span className={`px-spacing-xs py-spacing-3xs rounded font-label-sm font-bold uppercase ${
                         w.status === 'CONFIRMED' ? 'bg-emerald-100 text-emerald-800' : 'bg-surface-container-highest text-on-surface'
