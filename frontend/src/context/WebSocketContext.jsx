@@ -201,6 +201,23 @@ export const WebSocketProvider = ({ children }) => {
               time: 'Just Now',
               unread: true
             });
+          } else if (data.event === 'SOS_ASSIGNED' || data.event === 'OFFICER_REASSIGNED') {
+            setUserNotification(data);
+            addNotificationItem({
+              id: `NOT-${Date.now()}`,
+              type: 'ASSIGNMENT',
+              title: data.title || '👮 OFFICER ASSIGNED',
+              message: data.message || `Officer ${data.officer_name || 'Police Unit'} assigned to your SOS case`,
+              location: data.location || data.police_station || 'Model Town Ward',
+              officer_name: data.officer_name,
+              officer_rank: data.officer_rank,
+              police_id: data.police_id,
+              vehicle: data.vehicle,
+              eta: data.eta,
+              case_id: data.case_id,
+              time: data.assigned_at || 'Just Now',
+              unread: true
+            });
           }
         } catch (e) {
           console.error("WS Message Error:", e);

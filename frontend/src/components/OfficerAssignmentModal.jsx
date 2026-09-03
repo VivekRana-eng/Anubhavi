@@ -121,6 +121,7 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
         body: JSON.stringify(payload)
       });
       const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || 'Officer assignment failed');
       
       // Dispatch live custom event for notification panel & citizen popups
       localStorage.setItem('anubhavi_local_user_notification', JSON.stringify(notifData));

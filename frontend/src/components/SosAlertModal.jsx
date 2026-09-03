@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWebSocket } from '../context/WebSocketContext';
+import OfficerAssignmentModal from './OfficerAssignmentModal';
 
 export default function SosAlertModal() {
   const { activeAlert, userNotification, dismissAlert, dismissUserNotification } = useWebSocket();
   const navigate = useNavigate();
   const [accepting, setAccepting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showAssignment, setShowAssignment] = useState(false);
 
   if (!activeAlert && userNotification?.event === 'NEW_ASSISTANCE_REQUEST') {
     return (
@@ -34,7 +36,7 @@ export default function SosAlertModal() {
   const handleAccept = async () => {
     setAccepting(true);
     if (activeAlert.local_demo) {
-      dismissAlert();
+      setShowAssignment(true);
       setAccepting(false);
       setShowConfirm(false);
       return;
@@ -48,8 +50,8 @@ export default function SosAlertModal() {
         }
       });
       if (res.ok) {
-        dismissAlert();
-        navigate(`/sho/cases/${activeAlert.case_id}`);
+        setShowConfirm(false);
+        setShowAssignment(true);
       }
     } catch (e) {
       console.error(e);
@@ -58,6 +60,25 @@ export default function SosAlertModal() {
       setShowConfirm(false);
     }
   };
+
+  if (showAssignment) {
+    return (
+      <OfficerAssignmentModal
+        caseId={activeAlert.case_id}
+        emergencyType={activeAlert.emergency_type}
+        location={activeAlert.location || activeAlert.location_address}
+        onClose={() => {
+          setShowAssignment(false);
+          dismissAlert();
+        }}
+        onAssigned={() => {
+          setShowAssignment(false);
+          dismissAlert();
+          navigate(`/sho/cases/${activeAlert.case_id}`);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/70 backdrop-blur-md p-spacing-md animate-fade-in">
@@ -133,7 +154,7 @@ export default function SosAlertModal() {
           ) : (
             <div className="flex items-center gap-spacing-xs pt-spacing-xs">
               <button
-                onClick={() => setShowConfirm(true)}
+                onClick={() => setShowAssignment(true)}
                 className="flex-1 py-spacing-xs px-spacing-md bg-error text-on-error font-label-lg rounded font-bold shadow-lg hover:bg-error-container hover:text-on-error-container transition-all flex items-center justify-center gap-spacing-xs"
               >
                 <span className="material-symbols-outlined text-[18px]">verified</span>
