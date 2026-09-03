@@ -12,6 +12,12 @@ export default function SosAlertModal() {
 
   const handleAccept = async () => {
     setAccepting(true);
+    if (activeAlert.local_demo) {
+      dismissAlert();
+      setAccepting(false);
+      setShowConfirm(false);
+      return;
+    }
     try {
       const res = await fetch(`/api/sos/${activeAlert.case_id}/accept`, {
         method: 'POST',

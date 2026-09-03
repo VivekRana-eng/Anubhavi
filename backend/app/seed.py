@@ -96,6 +96,7 @@ def seed_demo_data():
 
     # 6. 20 Realistic SOS Cases Distributed Across Stations & Officers
     raw_cases = [
+        # id, citizen_id, citizen_name, age, mobile, address, lat, lng, emergency_type, created_delta, accepted_by, officer_id, officer_name, officer_rank, vehicle, station_name, station_code, status, priority, notes
         ("SOS-2026-0001", "CIT-8841", "Rajesh Sharma", 72, "+91 98721-00214", "H.No 412, Lane 4, Model Town Phase 2, Ludhiana", 30.9010, 75.8573, "Medical Emergency", timedelta(hours=2), "Insp. Raj Kumar", "POL-1025", "ASI Amit Singh", "Assistant Sub-Inspector", "PCR Bike #12", "Model Town Police Station", "MTP-PS-01", "ASSIGNED", "HIGH", "Citizen hit panic button after acute chest pain."),
         ("SOS-2026-0002", "CIT-8842", "Sunita Devi", 68, "+91 97812-33412", "Flat 302, Block B, Sector 17, Chandigarh", 30.8995, 75.8560, "Women Safety", timedelta(minutes=30), None, None, None, None, None, "Sector 17 Police Station", "SEC17-PS-02", "ACTIVE", "CRITICAL", "Intruder reported outside balcony door."),
         ("SOS-2026-0003", "CIT-8843", "Mohan Lal", 75, "+91 99145-88210", "House 125, Phase 8, Mohali", 30.9032, 75.8590, "Senior Citizen Assistance", timedelta(hours=1), "Insp. Raj Kumar", None, None, None, None, "Phase 8 Police Station", "PH8-PS-03", "ACKNOWLEDGED", "HIGH", "Elder unable to unlock door from inside."),
@@ -152,6 +153,7 @@ def seed_demo_data():
 
     conn.commit()
     conn.close()
+    print("ANUBHAVI Enriched 20-Record SOS Seed Data Generated Successfully!")
 
 def import_json_dumps(obj):
     import json
