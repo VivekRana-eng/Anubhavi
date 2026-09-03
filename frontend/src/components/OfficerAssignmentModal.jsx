@@ -7,8 +7,7 @@ const MOCK_POLICE_OFFICERS = [
     rank: 'Assistant Sub-Inspector',
     police_id: 'POL-1025',
     vehicle: 'PCR Bike #12',
-    status: 'AVAILABLE',
-    active_cases: 1
+    status: 'AVAILABLE'
   },
   {
     id: 'POL-1024',
@@ -16,8 +15,7 @@ const MOCK_POLICE_OFFICERS = [
     rank: 'Head Constable',
     police_id: 'POL-1024',
     vehicle: 'PCR Van #04',
-    status: 'AVAILABLE',
-    active_cases: 2
+    status: 'AVAILABLE'
   },
   {
     id: 'POL-1027',
@@ -25,8 +23,7 @@ const MOCK_POLICE_OFFICERS = [
     rank: 'Sub-Inspector',
     police_id: 'POL-1027',
     vehicle: 'PCR Car #01',
-    status: 'AVAILABLE',
-    active_cases: 1
+    status: 'AVAILABLE'
   },
   {
     id: 'POL-1026',
@@ -34,51 +31,60 @@ const MOCK_POLICE_OFFICERS = [
     rank: 'Constable',
     police_id: 'POL-1026',
     vehicle: 'PCR Van #02',
-    status: 'ON_DUTY',
-    active_cases: 2
+    status: 'ON_DUTY'
   }
 ];
 
 export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emergencyType = 'Medical Emergency', location = 'Model Town', onClose, onAssigned }) {
-  const [selectedOfficerId, setSelectedOfficerId] = useState('POL-1025');
-  const [responseType, setResponseType] = useState('Police Emergency Response');
-  const [estimatedResponseTime, setEstimatedResponseTime] = useState('10 minutes');
-  const [instructions, setInstructions] = useState('Officer dispatched for immediate emergency response and on-scene triage.');
+  const [presetId, setPresetId] = useState('POL-1025');
+  const [officerName, setOfficerName] = useState('ASI Amit Singh');
+  const [officerRank, setOfficerRank] = useState('Assistant Sub-Inspector');
+  const [policeId, setPoliceId] = useState('POL-1025');
+  const [vehicle, setVehicle] = useState('PCR Bike #12');
   const [remarks, setRemarks] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const selectedOfficer = MOCK_POLICE_OFFICERS.find(o => o.id === selectedOfficerId) || MOCK_POLICE_OFFICERS[0];
-  const isSelectedOfficerAvailable = selectedOfficer.status === 'AVAILABLE';
+  const handleSelectPreset = (id) => {
+    setPresetId(id);
+    const found = MOCK_POLICE_OFFICERS.find(o => o.id === id);
+    if (found) {
+      setOfficerName(found.name);
+      setOfficerRank(found.rank);
+      setPoliceId(found.police_id);
+      setVehicle(found.vehicle);
+    }
+  };
 
   const handleAssignSubmit = async (e) => {
     if (e) e.preventDefault();
-    if (!isSelectedOfficerAvailable) {
-      setError(`Officer ${selectedOfficer.name} is currently ${selectedOfficer.status} and cannot be assigned.`);
+
+    if (!officerName.trim()) {
+      setError('Please enter the response officer full name.');
       return;
     }
 
     setSubmitting(true);
     setError('');
 
-    const isReassign = Boolean(selectedOfficerId && selectedOfficerId !== 'POL-1025');
+    const isReassign = Boolean(presetId && presetId !== 'POL-1025');
     const assignedTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     const notifData = {
       event: isReassign ? 'OFFICER_REASSIGNED' : 'SOS_ASSIGNED',
       type: 'ASSIGNMENT',
       title: isReassign ? '👮 OFFICER REASSIGNED' : '👮 OFFICER ASSIGNED',
-      message: `Case ${caseId}: Assigned to ${selectedOfficer.rank} ${selectedOfficer.name} (${selectedOfficer.police_id}) • Patrol Vehicle: ${selectedOfficer.vehicle}`,
+      message: `Case ${caseId}: Assigned to ${officerRank || 'Officer'} ${officerName} (${policeId || 'POL-ID'}) • Patrol Vehicle: ${vehicle || 'PCR Unit'}`,
       case_id: caseId,
       citizen_id: 'CIT-8841',
       police_station: 'MODEL TOWN POLICE STATION',
       station_code: 'MTP-PS-01',
       jurisdiction: 'Model Town • District Central • Zone 1',
       sho_name: 'Insp. Raj Kumar',
-      officer_name: selectedOfficer.name,
-      officer_rank: selectedOfficer.rank,
-      police_id: selectedOfficer.police_id,
-      vehicle: selectedOfficer.vehicle,
+      officer_name: officerName,
+      officer_rank: officerRank || 'Officer',
+      police_id: policeId || 'POL-1025',
+      vehicle: vehicle || 'PCR Patrol Unit',
       remarks: remarks || 'Dispatched via Model Town PS Control Room',
       status: 'ASSIGNED',
       assigned_at: assignedTime,
@@ -95,11 +101,12 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
       jurisdiction: 'Model Town • District Central • Zone 1',
       shoId: 'SHO-101',
       shoName: 'Insp. Raj Kumar',
-      officer_id: selectedOfficer.id,
-      assignedOfficerId: selectedOfficer.id,
-      assignedOfficerName: selectedOfficer.name,
-      assignedOfficerRank: selectedOfficer.rank,
-      assignedVehicle: selectedOfficer.vehicle,
+      officer_id: policeId || 'POL-1025',
+      officer_name: officerName,
+      officer_rank: officerRank,
+      police_id: policeId,
+      vehicle: vehicle,
+      assignedVehicle: vehicle,
       remarks: remarks,
       status: 'ASSIGNED'
     };
@@ -113,18 +120,16 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
         },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       
-      if (!res.ok) throw new Error(data.detail || 'API offline fallback');
-
-      // Sync local storage & window custom event for real-time popups across multi-tabs
+      // Dispatch live custom event for notification panel & citizen popups
       localStorage.setItem('anubhavi_local_user_notification', JSON.stringify(notifData));
       window.dispatchEvent(new CustomEvent('anubhavi_new_notification', { detail: notifData }));
 
-      if (onAssigned) onAssigned(data);
+      if (onAssigned) onAssigned(data || { assignment: notifData });
       onClose();
-    } catch (e) {
-      console.warn("Using offline fallback assignment dispatch", e);
+    } catch (err) {
+      console.warn("Offline fallback for officer assignment dispatch", err);
       localStorage.setItem('anubhavi_local_user_notification', JSON.stringify(notifData));
       window.dispatchEvent(new CustomEvent('anubhavi_new_notification', { detail: notifData }));
       
@@ -144,7 +149,7 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
           <div className="flex items-center gap-3">
             <span className="material-symbols-outlined text-[26px]">local_police</span>
             <div>
-              <h3 className="text-base font-extrabold tracking-tight uppercase">ASSIGN RESPONSE</h3>
+              <h3 className="text-base font-extrabold tracking-tight uppercase">ASSIGN RESPONSE OFFICER</h3>
               <p className="text-xs text-emerald-100 font-medium">SOS CASE: {caseId}</p>
             </div>
           </div>
@@ -154,7 +159,7 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
         </div>
 
         {/* MODAL FORM BODY */}
-        <form onSubmit={handleAssignSubmit} className="p-6 max-h-[80vh] overflow-y-auto flex flex-col gap-4 text-left">
+        <form onSubmit={handleAssignSubmit} className="p-6 max-h-[82vh] overflow-y-auto flex flex-col gap-4 text-left">
           
           {error && (
             <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-2">
@@ -166,7 +171,7 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
           {/* SOS CASE SUMMARY */}
           <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 grid grid-cols-2 gap-2">
             <div>
-              <span className="text-[10px] font-extrabold uppercase text-slate-400 block">SOS CASE</span>
+              <span className="text-[10px] font-extrabold uppercase text-slate-400 block">SOS CASE ID</span>
               <span className="text-xs font-black text-slate-800">{caseId}</span>
             </div>
             <div>
@@ -195,59 +200,107 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
             </div>
           </div>
 
-          {/* OFFICER SELECTION DROPDOWN */}
+          {/* OPTIONAL PRESET SELECTOR */}
           <div>
-            <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5 block">
-              SELECT RESPONSE OFFICER
+            <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1 block">
+              QUICK AUTO-FILL FROM ROSTER PRESET (OPTIONAL)
             </label>
             <select
-              value={selectedOfficerId}
-              onChange={(e) => setSelectedOfficerId(e.target.value)}
-              className="w-full h-12 px-3 bg-white border border-slate-200 rounded-xl text-slate-800 font-bold text-sm focus:outline-none focus:border-[#2e5746]"
+              value={presetId}
+              onChange={(e) => handleSelectPreset(e.target.value)}
+              className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-bold text-xs focus:outline-none focus:border-[#2e5746]"
             >
-              {MOCK_POLICE_OFFICERS.map((off) => {
-                const isAvail = off.status === 'AVAILABLE';
-                return (
-                  <option key={off.id} value={off.id} disabled={!isAvail}>
-                    {off.name} ({off.rank}) — {off.vehicle} — [{isAvail ? 'AVAILABLE ✓' : 'ON DUTY ⚠️'}]
-                  </option>
-                );
-              })}
+              <option value="">-- SELECT PRESET TO AUTO-FILL (OR TYPE MANUALLY BELOW) --</option>
+              {MOCK_POLICE_OFFICERS.map((off) => (
+                <option key={off.id} value={off.id}>
+                  {off.name} ({off.rank}) — {off.vehicle} — [{off.police_id}]
+                </option>
+              ))}
             </select>
           </div>
 
-          {/* SELECTED OFFICER DETAILS CARD */}
-          <div className={`p-4 rounded-2xl border transition-all ${
-            isSelectedOfficerAvailable ? 'bg-slate-50 border-slate-200' : 'bg-amber-50 border-amber-200'
-          }`}>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {/* MANUALLY WRITTEN POLICE OFFICER INPUT FIELDS */}
+          <div className="p-4 rounded-2xl bg-white border border-slate-300 shadow-xs flex flex-col gap-3">
+            <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 text-[#2e5746]">
+              <span className="material-symbols-outlined text-[18px]">edit_note</span>
+              <span className="text-xs font-black uppercase tracking-wider">MANUALLY WRITE OFFICER DETAILS</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* OFFICER FULL NAME */}
               <div>
-                <span className="text-[10px] font-extrabold uppercase text-slate-400 block">Rank</span>
-                <span className="text-xs font-bold text-slate-800">{selectedOfficer.rank}</span>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1 block">
+                  Officer Full Name *
+                </label>
+                <input
+                  type="text"
+                  value={officerName}
+                  onChange={(e) => setOfficerName(e.target.value)}
+                  placeholder="e.g. ASI Amit Singh / Insp. Vikramjit"
+                  className="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold text-xs focus:bg-white focus:outline-none focus:border-[#2e5746]"
+                />
               </div>
+
+              {/* OFFICER RANK */}
               <div>
-                <span className="text-[10px] font-extrabold uppercase text-slate-400 block">Police ID</span>
-                <span className="text-xs font-bold text-[#2e5746]">{selectedOfficer.police_id}</span>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1 block">
+                  Officer Rank *
+                </label>
+                <input
+                  type="text"
+                  value={officerRank}
+                  onChange={(e) => setOfficerRank(e.target.value)}
+                  placeholder="e.g. Assistant Sub-Inspector / Head Constable"
+                  className="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold text-xs focus:bg-white focus:outline-none focus:border-[#2e5746]"
+                />
               </div>
+
+              {/* POLICE BADGE / ID */}
               <div>
-                <span className="text-[10px] font-extrabold uppercase text-slate-400 block">Vehicle</span>
-                <span className="text-xs font-bold text-slate-800">{selectedOfficer.vehicle}</span>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1 block">
+                  Police Badge / ID Number *
+                </label>
+                <input
+                  type="text"
+                  value={policeId}
+                  onChange={(e) => setPoliceId(e.target.value)}
+                  placeholder="e.g. POL-1025"
+                  className="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold text-xs focus:bg-white focus:outline-none focus:border-[#2e5746]"
+                />
               </div>
+
+              {/* PATROL VEHICLE UNIT */}
               <div>
-                <span className="text-[10px] font-extrabold uppercase text-slate-400 block">Current Status</span>
-                <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-black uppercase ${
-                  isSelectedOfficerAvailable ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900'
-                }`}>
-                  {isSelectedOfficerAvailable ? 'AVAILABLE ✓' : 'ON DUTY'}
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1 block">
+                  Patrol Vehicle / Unit *
+                </label>
+                <input
+                  type="text"
+                  value={vehicle}
+                  onChange={(e) => setVehicle(e.target.value)}
+                  placeholder="e.g. PCR Bike #12 / PCR Van #04"
+                  className="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold text-xs focus:bg-white focus:outline-none focus:border-[#2e5746]"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* LIVE OFFICER PREVIEW STRIP */}
+          <div className="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-200/60 flex items-center justify-between text-xs text-slate-700">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#2e5746] text-[18px]">verified_user</span>
+              <div className="flex flex-col">
+                <span className="font-extrabold text-slate-900">
+                  {officerRank || 'Officer'} {officerName || 'Name'}
+                </span>
+                <span className="text-[11px] text-slate-500 font-medium">
+                  ID: <strong className="text-[#2e5746]">{policeId || 'POL-ID'}</strong> • Vehicle: <strong>{vehicle || 'PCR Unit'}</strong>
                 </span>
               </div>
             </div>
-            <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-xs text-slate-600">
-              <span>Active Assigned Cases: <strong>{selectedOfficer.active_cases}</strong></span>
-              {!isSelectedOfficerAvailable && (
-                <span className="text-amber-700 font-bold">⚠️ Officer currently deployed on active call</span>
-              )}
-            </div>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase">
+              READY FOR DISPATCH
+            </span>
           </div>
 
           {/* ADDITIONAL REMARKS */}
@@ -260,30 +313,26 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
               value={remarks}
               onChange={(e) => setRemarks(e.target.value)}
               placeholder="e.g. Dispatched via Model Town PS Control Room"
-              className="w-full h-10 px-3 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2e5746]"
+              className="w-full h-11 px-3 bg-white border border-slate-200 rounded-xl text-slate-800 font-medium text-xs focus:outline-none focus:border-[#2e5746]"
             />
           </div>
 
-          {/* ACTION BUTTONS */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 mt-1">
+          {/* BUTTON ACTIONS */}
+          <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 h-11 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all"
+              className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black rounded-xl transition-all"
             >
               CANCEL
             </button>
-
             <button
               type="submit"
-              disabled={submitting || !isSelectedOfficerAvailable}
-              className={`px-6 h-11 rounded-xl font-extrabold text-xs shadow-lg transition-all active:scale-[0.99] flex items-center gap-1.5 ${
-                isSelectedOfficerAvailable
-                  ? 'bg-[#2e5746] hover:bg-[#244638] text-white shadow-[#2e5746]/20'
-                  : 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none'
-              }`}
+              disabled={submitting}
+              className="px-6 py-2.5 bg-[#2e5746] hover:bg-[#244638] text-white text-xs font-extrabold rounded-xl shadow-lg transition-all flex items-center gap-2 uppercase tracking-wider"
             >
-              {submitting ? 'ASSIGNING...' : 'ASSIGN OFFICER'}
+              <span className="material-symbols-outlined text-[16px]">send</span>
+              {submitting ? 'DISPATCHING...' : 'ASSIGN OFFICER'}
             </button>
           </div>
         </form>

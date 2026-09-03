@@ -24,12 +24,16 @@ class CreateSosRequest(BaseModel):
     notes: Optional[str] = None
 
 class AssignOfficerRequest(BaseModel):
-    officer_id: str
+    officer_id: Optional[str] = "POL-1025"
+    officer_name: Optional[str] = None
+    officer_rank: Optional[str] = None
+    police_id: Optional[str] = None
+    assigned_vehicle: Optional[str] = None
+    vehicle: Optional[str] = None
     police_station: Optional[str] = "MODEL TOWN POLICE STATION"
     station_code: Optional[str] = "MTP-PS-01"
     jurisdiction: Optional[str] = "Model Town • District Central • Zone 1"
     sho_name: Optional[str] = "Insp. Raj Kumar"
-    assigned_vehicle: Optional[str] = None
     response_type: Optional[str] = "Police Emergency Response"
     priority: Optional[str] = "HIGH"
     instructions: Optional[str] = "Dispatched for immediate emergency response."
@@ -278,17 +282,20 @@ async def assign_officer(case_id: str, req: AssignOfficerRequest, current_user: 
     police_station = req.police_station or "MODEL TOWN POLICE STATION"
     station_code = req.station_code or "MTP-PS-01"
     jurisdiction = req.jurisdiction or "Model Town • District Central • Zone 1"
-    vehicle = req.assigned_vehicle or officer.get("current_vehicle", "PCR Unit")
+    vehicle = req.vehicle or req.assigned_vehicle or officer.get("current_vehicle", "PCR Unit")
+    final_officer_name = req.officer_name or officer.get("name", "ASI Amit Singh")
+    final_officer_rank = req.officer_rank or officer.get("rank", "Assistant Sub-Inspector")
+    final_police_id = req.police_id or officer.get("police_id", req.officer_id or "POL-1025")
 
     assignment_data = {
         "police_station": police_station,
         "station_code": station_code,
         "jurisdiction": jurisdiction,
         "sho_name": actor_name,
-        "officer_id": officer["id"],
-        "officer_name": officer["name"],
-        "officer_rank": officer["rank"],
-        "police_id": officer.get("police_id", officer["id"]),
+        "officer_id": req.officer_id or "POL-1025",
+        "officer_name": final_officer_name,
+        "officer_rank": final_officer_rank,
+        "police_id": final_police_id,
         "vehicle": vehicle,
         "response_type": req.response_type,
         "priority": req.priority,
