@@ -697,6 +697,7 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
         <ProfileRow label="Registered Residence" value="House #402, Sector 3, Model Town, Ludhiana" />
         <ProfileRow label="Registered Mobile" value="+91 98102-33412" />
         <ProfileRow label="Medical Dossier (Critical)" value="Severe Cardiac History, Pacemaker Fitted (2023), Hypertension" />
+        <button onClick={onLogout} className="min-h-14 w-full rounded-xl border-2 border-red-200 bg-white text-base font-extrabold text-red-600 hover:bg-red-50">Logout</button>
       </div>
     )
   }
