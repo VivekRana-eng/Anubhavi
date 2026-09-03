@@ -15,8 +15,17 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl z-40 flex items-center justify-between px-spacing-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-b border-surface-container-highest">
-      {/* BRAND & TAGLINE */}
+      {/* BRAND, BACK BUTTON & TAGLINE */}
       <div className="flex items-center gap-spacing-md">
+        <button
+          onClick={() => navigate(-1)}
+          className="px-3 py-1.5 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-lg font-label-md font-bold flex items-center gap-1 border border-surface-container-highest shadow-sm transition-all text-primary"
+          title="Go back to previous page"
+        >
+          <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+          <span>Back</span>
+        </button>
+
         <div className="flex flex-col">
           <div className="flex items-center gap-spacing-xs">
             <span className="font-headline-sm text-on-surface font-extrabold tracking-tight text-primary">ANUBHAVI</span>

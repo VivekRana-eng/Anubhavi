@@ -81,6 +81,21 @@ export default function CaseDetails() {
 
   return (
     <div className="flex flex-col gap-spacing-lg w-full">
+      {/* TOP NAVIGATION BACK BAR */}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => navigate(-1)}
+          className="px-spacing-md py-spacing-xs bg-surface-container-lowest hover:bg-surface-container-high text-on-surface rounded-lg font-label-lg font-bold shadow-sm border border-surface-container-highest flex items-center gap-spacing-xs transition-all"
+        >
+          <span className="material-symbols-outlined text-[20px] text-primary">arrow_back</span>
+          ← BACK TO DASHBOARD
+        </button>
+
+        <span className="font-code-md text-on-surface-variant font-bold">
+          INCIDENT DOSSIER • {c.id}
+        </span>
+      </div>
+
       {/* CASE HEADER & STATUS MODIFIER */}
       <div className="relative bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg overflow-hidden border border-surface-container-highest">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-spacing-md relative z-10">
