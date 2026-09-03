@@ -1,0 +1,604 @@
+<!DOCTYPE html><html lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "background": "#faf8ff", "on-tertiary-fixed-variant": "#93000b", "secondary": "#4e5e82", "surface-variant": "#dae2fd", "on-primary-fixed-variant": "#394761", "tertiary-fixed": "#ffdad6", "surface-container-low": "#f2f3ff", "outline-variant": "#c5c6ce", "on-primary-container": "#7886a3", "on-tertiary": "#ffffff", "tertiary": "#140000", "secondary-fixed-dim": "#b6c6f0", "surface-dim": "#d2d9f4", "on-surface": "#131b2e", "on-error": "#ffffff", "inverse-on-surface": "#eef0ff", "primary-fixed-dim": "#b8c7e6", "tertiary-fixed-dim": "#ffb4ab", "on-secondary-container": "#4b5b7f", "on-tertiary-container": "#f93d37", "surface-container": "#eaedff", "on-background": "#131b2e", "secondary-container": "#c4d4fe", "on-secondary-fixed-variant": "#364669", "inverse-surface": "#283044", "inverse-primary": "#b8c7e6", "primary-container": "#0f1e36", "surface-tint": "#515f7a", "on-tertiary-fixed": "#410002", "error": "#ba1a1a", "error-container": "#ffdad6", "surface-bright": "#faf8ff", "surface-container-high": "#e2e7ff", "surface-container-highest": "#dae2fd", "primary": "#000412", "on-primary-fixed": "#0c1b33", "surface-container-lowest": "#ffffff", "on-secondary-fixed": "#071b3b", "secondary-fixed": "#d8e2ff", "on-primary": "#ffffff", "primary-fixed": "#d7e3ff", "on-secondary": "#ffffff", "outline": "#75777e", "surface": "#faf8ff", "on-surface-variant": "#44474d", "tertiary-container": "#460002", "on-error-container": "#93000a" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "spacing-sm": "0.75rem", "spacing-2xs": "0.25rem", "gutter-mobile": "0.75rem", "margin-desktop": "1.5rem", "spacing-md": "1rem", "spacing-2xl": "2rem", "margin-mobile": "1rem", "spacing-xl": "1.5rem", "spacing-xs": "0.5rem", "gutter-desktop": "1rem", "spacing-3xs": "0.125rem", "spacing-3xl": "3rem", "spacing-lg": "1.25rem" }, "fontFamily": { "headline-xl": ["publicSans"], "headline-sm": ["publicSans"], "label-md": ["publicSans"], "headline-xl-mobile": ["publicSans"], "body-lg": ["publicSans"], "headline-md": ["publicSans"], "code-md": ["publicSans"], "label-lg": ["publicSans"], "headline-lg": ["publicSans"], "label-sm": ["publicSans"], "body-md": ["publicSans"], "body-sm": ["publicSans"] }, "fontSize": { "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.025em", "fontWeight": "600" }], "headline-xl-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "code-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "700" }], "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "18px", "letterSpacing": "0.005em", "fontWeight": "400" }] } } } }</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low z-50 flex flex-col justify-between overflow-y-auto shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="p-spacing-md bg-surface-container flex items-center justify-between"><div class="flex flex-col"><span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Jurisdiction Ward</span><span class="font-headline-sm text-on-surface truncate">Model Town PS</span><span class="font-label-sm text-secondary">District Central • Zone 1</span></div><span class="material-symbols-outlined text-secondary hover:text-on-surface cursor-pointer">tune</span></div><nav class="flex flex-col p-spacing-xs gap-spacing-3xs" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded"><div class="px-spacing-xs pt-spacing-sm pb-spacing-3xs"><span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Command &amp; Emergency</span></div><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard-overview" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-label-lg">Dashboard Overview</span></div></a><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="sos-emergency-alerts" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px] text-error">fmd_bad</span><span class="font-label-lg text-error font-bold">SOS Alerts</span></div><span class="flex items-center justify-center px-spacing-xs py-spacing-3xs rounded-full bg-error text-on-error font-label-sm animate-pulse">03</span></a><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="assistance-requests" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">emergency</span><span class="font-label-lg">Assistance Requests</span></div><span class="flex items-center justify-center px-spacing-xs py-spacing-3xs rounded-full bg-secondary-container text-on-secondary-container font-label-sm">08</span></a><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="missed-check-ins" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">alarm_off</span><span class="font-label-lg">Missed Check-ins</span></div><span class="flex items-center justify-center px-spacing-xs py-spacing-3xs rounded-full bg-surface-variant text-on-surface-variant font-label-sm font-bold">05</span></a><div class="px-spacing-xs pt-spacing-md pb-spacing-3xs"><span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Operations &amp; Response</span></div><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="senior-citizens-registry" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">elderly</span><span class="font-label-lg">Senior Registry</span></div><span class="font-code-md text-on-surface-variant">1,248</span></a><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="welfare-checks" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">calendar_month</span><span class="font-label-lg">Welfare Checks</span></div></a><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="police-officers-on-duty" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">local_police</span><span class="font-label-lg">Officers on Duty</span></div><span class="w-2 h-2 rounded-full bg-secondary"></span></a><a aria-current="page" class="flex items-center justify-between px-spacing-sm py-spacing-xs transition-all bg-primary-container text-on-primary font-label-lg rounded" data-path="active-cases" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">assignment_late</span><span class="font-label-lg">Active Cases</span></div><span class="font-code-md text-on-surface-variant">17</span></a><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="resolved-and-closed-cases" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">task_alt</span><span class="font-label-lg">Resolved Cases</span></div><span class="font-code-md text-on-surface-variant">126</span></a><div class="px-spacing-xs pt-spacing-md pb-spacing-3xs"><span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Intelligence &amp; Oversight</span></div><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="tactical-live-map" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">share_location</span><span class="font-label-lg">Tactical Live Map</span></div></a><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="24-hour-escalations" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">warning</span><span class="font-label-lg">24h Escalations</span></div><span class="flex items-center justify-center px-spacing-xs py-spacing-3xs rounded-full bg-error-container text-on-error-container font-label-sm">01</span></a><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="analytics-response-times" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">bar_chart</span><span class="font-label-lg">Analytics &amp; Times</span></div></a><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="police-reports-fir-logs" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">description</span><span class="font-label-lg">FIR Logs &amp; Reports</span></div></a><a class="flex items-center justify-between px-spacing-sm py-spacing-xs rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="station-settings" href="#"><div class="flex items-center gap-spacing-xs"><span class="material-symbols-outlined text-[20px]">settings</span><span class="font-label-lg">Station Settings</span></div></a></nav></div><div class="p-spacing-md bg-surface-container-high flex flex-col gap-spacing-xs"><div class="flex items-center justify-between"><div class="flex flex-col"><span class="font-label-sm text-on-surface-variant uppercase">Active Shift</span><span class="font-label-md text-on-surface">Day Shift (08:00 - 20:00)</span></div><span class="material-symbols-outlined text-secondary">schedule</span></div><div class="flex items-center gap-spacing-xs px-spacing-xs py-spacing-2xs rounded bg-surface-container-highest"><span class="w-2 h-2 rounded-full bg-error animate-ping"></span><span class="font-label-sm text-on-surface font-bold truncate">ERSS 112 Direct Bridge Active</span></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl z-40 flex items-center justify-between px-spacing-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex items-center gap-spacing-md"><img alt="ANUBHAVI Police Command Portal Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XFTmlvlmTi4hDnKoIc4E2OsfeoJw6lbeXWBA1ocq7P-edrnpA8InIlif_xA-wP3mEDmeCB24Qt--EG7117Xns22AndNAG3a5zVW8CjPfNjW_k3hy4Ej6ne4k_izSqtEiscS_drWxVtazmBw_CvrJcU-9mmoN_ywVShxFtedOh9wSOFcA9C1D0YbbcSxhDjsbDZM-TD37kmGTd1n89gm5f5jsv38v-G1i6kqqrCo-0d6-SmpBQpFJHG5fs"><div class="flex flex-col"><div class="flex items-center gap-spacing-xs"><span class="font-headline-sm text-on-surface font-bold tracking-tight">ANUBHAVI</span><span class="px-spacing-xs py-spacing-3xs rounded bg-surface-container-highest text-on-surface font-label-sm">POLICE COMMAND</span></div><span class="font-label-sm text-on-surface-variant tracking-wider">MHA / State Police Directorate</span></div></div><div class="flex items-center gap-spacing-md flex-1 max-w-xl mx-spacing-lg"><div class="relative w-full"><span class="material-symbols-outlined absolute left-spacing-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span><input class="w-full h-9 pl-10 pr-spacing-sm bg-surface-container-lowest text-on-surface font-body-sm rounded placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-primary shadow-sm" placeholder="Search Case ID, Senior Name, Phone, Officer ID (Ctrl + K)..." type="text"></div></div><div class="flex items-center gap-spacing-md"><div class="hidden xl:flex items-center gap-spacing-xs px-spacing-sm py-spacing-2xs rounded bg-surface-container-low"><span class="w-2.5 h-2.5 rounded-full bg-secondary"></span><span class="font-label-sm text-on-surface truncate">🟢 Live Dispatch Server Online</span></div><div class="flex items-center gap-spacing-xs"><button class="w-9 h-9 flex items-center justify-center rounded bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors" title="Emergency Audio Alert Active"><span class="material-symbols-outlined text-[20px]">volume_up</span></button><button class="relative w-9 h-9 flex items-center justify-center rounded bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors" title="Active Alerts"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-on-error font-label-sm text-[9px]">3</span></button></div><div class="h-6 w-px bg-surface-container-highest"></div><div class="flex items-center gap-spacing-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="hidden md:flex flex-col text-left"><div class="flex items-center gap-spacing-2xs"><span class="font-label-md text-on-surface font-bold">Insp. Raj Kumar</span><span class="w-2 h-2 rounded-full bg-secondary" title="Duty Active"></span></div><span class="font-label-sm text-on-surface-variant">POL-SHO-041 • Model Town</span></div><button class="p-spacing-2xs rounded text-on-surface-variant hover:text-error transition-colors" title="Station Duty Switch / Exit"><span class="material-symbols-outlined text-[20px]">logout</span></button></div></div></header><main class="relative pt-16 bg-background min-h-screen w-full px-spacing-lg pb-spacing-2xl"><div class="flex flex-col w-full">
+<!-- TOP CASE HEADER & ESCALATION COMMAND STRIP -->
+<div class="relative bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg mb-spacing-lg overflow-hidden">
+<div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-secondary-container/20 via-transparent to-transparent pointer-events-none rounded-full blur-2xl"></div>
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-spacing-md relative z-10">
+<div class="flex flex-col gap-spacing-2xs">
+<div class="flex flex-wrap items-center gap-spacing-xs">
+<span class="px-spacing-xs py-spacing-3xs rounded bg-primary-container text-on-primary font-label-sm uppercase tracking-wider">CCTNS RECORD SYNCHRONIZED</span>
+<span class="font-code-md text-on-surface-variant font-bold">CASE ID: ANB-SOS-2026-00124</span>
+<span class="px-spacing-xs py-spacing-3xs rounded bg-tertiary-container text-on-tertiary font-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">e911_emergency</span>
+            LEVEL 1 SEVERE
+          </span>
+</div>
+<div class="flex items-center gap-spacing-sm">
+<h1 class="font-headline-lg text-on-surface font-bold tracking-tight">Critical Senior Emergency (Cardiac / Medical Fall)</h1>
+</div>
+<p class="font-body-sm text-on-surface-variant flex items-center gap-spacing-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">domain</span>
+          Model Town PS, Central District, Ludhiana • Recorded via Direct National ERSS-112 Ingestion Pipe
+        </p>
+</div>
+<!-- STATUS MODIFIER & DISPATCH TRIGGER -->
+<div class="flex flex-wrap items-center gap-spacing-sm bg-surface-container-low p-spacing-xs rounded-lg shadow-sm">
+<div class="flex flex-col px-spacing-xs">
+<span class="font-label-sm text-on-surface-variant uppercase">Current Status</span>
+<div class="flex items-center gap-spacing-2xs">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary animate-ping"></span>
+<select class="bg-transparent font-headline-sm text-on-surface font-bold focus:outline-none cursor-pointer" id="caseStatusSelector">
+<option value="NEW">⚪ NEW</option>
+<option value="ACCEPTED">🔵 ACCEPTED</option>
+<option value="OFFICER_ASSIGNED">🟣 OFFICER ASSIGNED</option>
+<option selected="" value="IN_PROGRESS">🟡 IN PROGRESS</option>
+<option value="OFFICER_AT_LOCATION">🟠 OFFICER AT LOCATION</option>
+<option value="RESOLVED">🟢 RESOLVED</option>
+<option value="CLOSED">🔒 CLOSED</option>
+<option value="ESCALATED">🔴 ESCALATED TO DSP</option>
+</select>
+</div>
+</div>
+<button class="px-spacing-md py-spacing-xs rounded bg-primary text-on-primary font-label-lg shadow-sm hover:bg-on-surface hover:text-surface-bright transition-all flex items-center gap-spacing-xs" onclick="updateCaseStatusToast()">
+<span class="material-symbols-outlined text-[18px]">published_with_changes</span>
+<span class="">UPDATE CASE STATUS</span>
+</button>
+</div>
+</div>
+<!-- 24-HOUR WATCHDOG TIMER & ESCALATION PROTOCOL SECTION -->
+<div class="mt-spacing-lg pt-spacing-md bg-surface-container-high/40 -mx-spacing-lg -mb-spacing-lg p-spacing-lg rounded-b-xl flex flex-col gap-spacing-md">
+<div class="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-spacing-md">
+<div class="flex items-center gap-spacing-md">
+<div class="w-12 h-12 rounded-xl bg-error-container text-on-error-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[28px] animate-pulse">save_as</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-spacing-xs">
+<span class="font-headline-sm text-on-surface font-bold">24-Hour Statutory Station SLA Countdown</span>
+<span class="px-spacing-xs py-spacing-3xs rounded-full bg-secondary text-on-secondary font-label-sm uppercase">Active Watchdog Running</span>
+</div>
+<p class="font-body-sm text-on-surface-variant">Automatic district escalation triggers if SHO resolution or signed rationale is not logged within mandatory regulatory cycle.</p>
+</div>
+</div>
+<!-- METER / REMAINING TIME -->
+<div class="flex items-center gap-spacing-lg bg-surface-container-lowest px-spacing-lg py-spacing-xs rounded-xl shadow-sm w-full xl:w-auto justify-between xl:justify-start">
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Time Before Auto-Escalation</span>
+<div class="flex items-baseline gap-spacing-2xs">
+<span class="font-headline-xl text-error font-bold tracking-tight" id="countdownClock">18h 38m 43s</span>
+<span class="font-label-sm text-on-surface-variant">remaining</span>
+</div>
+</div>
+<!-- Mini Dial SVG -->
+<div class="relative w-12 h-12 flex items-center justify-center">
+<svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+<path class="text-surface-container-highest" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-error" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="78, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<span class="material-symbols-outlined absolute text-[16px] text-error">security</span>
+</div>
+</div>
+</div>
+<!-- WORKFLOW COMPARISON VISUAL DIAGRAM -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-spacing-md pt-spacing-xs">
+<!-- Normal Path Flow -->
+<div class="bg-surface-container-lowest p-spacing-md rounded-lg shadow-sm flex flex-col gap-spacing-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-secondary font-bold uppercase tracking-wider flex items-center gap-spacing-2xs">
+<span class="material-symbols-outlined text-[16px]">verified</span> Normal Resolution Protocol
+            </span>
+<span class="font-label-sm text-on-surface-variant">Target SLA &lt; 45 Mins</span>
+</div>
+<div class="flex items-center justify-between text-center pt-spacing-xs gap-1">
+<div class="flex-1 bg-surface-container-low p-spacing-2xs rounded">
+<span class="font-label-sm text-on-surface block font-bold">1. Citizen</span>
+<span class="text-[10px] text-on-surface-variant uppercase">SOS Trigger</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[16px]">arrow_forward</span>
+<div class="flex-1 bg-surface-container-low p-spacing-2xs rounded">
+<span class="font-label-sm text-on-surface block font-bold">2. SHO Desk</span>
+<span class="text-[10px] text-on-surface-variant uppercase">Accept Alert</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[16px]">arrow_forward</span>
+<div class="flex-1 bg-surface-container-low p-spacing-2xs rounded">
+<span class="font-label-sm text-on-surface block font-bold">3. Patrol</span>
+<span class="text-[10px] text-on-surface-variant uppercase">Assign Beat</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[16px]">arrow_forward</span>
+<div class="flex-1 bg-secondary-container/40 p-spacing-2xs rounded">
+<span class="font-label-sm text-on-secondary-container block font-bold">4. Safe Closure</span>
+<span class="text-[10px] text-on-secondary-container uppercase">FIR/Log Saved</span>
+</div>
+</div>
+</div>
+<!-- Escalated Failure Path -->
+<div class="bg-error-container/20 p-spacing-md rounded-lg shadow-sm flex flex-col gap-spacing-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-error font-bold uppercase tracking-wider flex items-center gap-spacing-2xs">
+<span class="material-symbols-outlined text-[16px]">crisis_alert</span> Escalation Fail-Safe Chain
+            </span>
+<span class="px-spacing-xs py-spacing-3xs rounded bg-error text-on-error font-label-sm">Hard Auto-Trigger at 24h:00m</span>
+</div>
+<div class="flex items-center justify-between text-center pt-spacing-xs gap-1">
+<div class="flex-1 bg-surface-container-lowest p-spacing-2xs rounded">
+<span class="font-label-sm text-on-surface block font-bold">Citizen SOS</span>
+<span class="text-[10px] text-on-surface-variant uppercase">02:34 PM</span>
+</div>
+<span class="material-symbols-outlined text-error text-[16px]">arrow_forward</span>
+<div class="flex-1 bg-surface-container-lowest p-spacing-2xs rounded">
+<span class="font-label-sm text-error block font-bold">No SHO Action</span>
+<span class="text-[10px] text-error font-bold uppercase">24 Hours Over</span>
+</div>
+<span class="material-symbols-outlined text-error text-[16px]">priority_high</span>
+<div class="flex-1 bg-error text-on-error p-spacing-2xs rounded shadow-sm">
+<span class="font-label-sm block font-bold">DSP ESCALATED</span>
+<span class="text-[10px] text-on-error uppercase font-semibold">HQ Override</span>
+</div>
+<span class="material-symbols-outlined text-error text-[16px]">arrow_forward</span>
+<div class="flex-1 bg-surface-container-lowest p-spacing-2xs rounded">
+<span class="font-label-sm text-on-surface block font-bold">Inquiry Call</span>
+<span class="text-[10px] text-on-surface-variant uppercase">Station Sanction</span>
+</div>
+</div>
+</div>
+</div>
+<!-- AUDIT LOG STRIP -->
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-spacing-xs bg-surface-container-lowest p-spacing-sm rounded-lg shadow-sm text-left">
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase">Record Reference</span>
+<span class="font-code-md text-on-surface font-bold">ANB-SOS-00124</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase">Assigned SHO</span>
+<span class="font-label-md text-on-surface">Raj Kumar (SHO-041)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase">Police Station</span>
+<span class="font-label-md text-on-surface">Model Town PS</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase">Created Time</span>
+<span class="font-code-md text-on-surface">Today, 02:34 PM IST</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase">Auto-Escalate At</span>
+<span class="font-code-md text-error font-bold">Tomorrow, 02:34 PM</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase">Watchdog Node</span>
+<span class="font-label-md text-secondary font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Punjab State PSAP #3
+          </span>
+</div>
+</div>
+</div>
+</div>
+<!-- MAIN OPERATIONAL GRID (BENTO ASYMMETRIC) -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-spacing-lg items-start">
+<!-- LEFT & CENTER CANVAS: INCIDENT DETAILS, CITIZEN DOSSIER & POLICE TELEMETRY (8 COLS) -->
+<div class="xl:col-span-8 flex flex-col gap-spacing-lg">
+<!-- CITIZEN PROFILE & MEDICAL VULNERABILITY -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg relative overflow-hidden">
+<div class="flex items-center justify-between pb-spacing-sm mb-spacing-md bg-surface-container-low/50 -mx-spacing-lg -mt-spacing-lg px-spacing-lg pt-spacing-md">
+<div class="flex items-center gap-spacing-xs">
+<span class="material-symbols-outlined text-primary text-[22px]">elderly</span>
+<h2 class="font-headline-sm text-on-surface font-bold uppercase tracking-wider">Section A: Senior Citizen Registry Profile</h2>
+</div>
+<span class="px-spacing-xs py-spacing-3xs rounded bg-surface-container-highest text-on-surface font-label-sm font-bold">ANUBHAVI SR-REG #LDH-8841</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-spacing-md items-center">
+<div class="md:col-span-4 flex flex-col items-center sm:flex-row gap-spacing-md">
+<div class="relative">
+<img class="w-24 h-24 rounded-full object-cover shadow-sm bg-surface-container-high flex-shrink-0" data-alt="Clear portrait photograph of Rajesh Sharma, a 72-year-old Indian senior citizen with grey hair, gentle warm expression, wearing a cream traditional kurta, high definition government identity photo styling with clean neutral backdrop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBat7vHn7EPcTZDqJ7rBrJuDdgA-FnLHTqp2a2PWOZ1WqsADGRMSx3KVckgN3anh5JkBJ8ywxMarf-TvyqGQiVvVUKpqr5lyqfLW_5T9RQcv3yzwQ75I0rrptSsmNgrn1x43heM4Yp-OlkO028N2LauSoBYrstyjrEYuuhG6_eUIiCSFYTnIgsdxoVVJiC-sL69UfoICnJfO4J11hBsDzNgrnGvA294LZTRRJAvxHkthKwX0Wrcf2nD">
+<span class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-[12px] shadow" title="Senior Citizen Safe Passcode Active">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+</span>
+</div>
+<div class="flex flex-col text-center sm:text-left">
+<span class="font-headline-md text-on-surface font-bold">Rajesh Sharma</span>
+<span class="font-label-md text-on-surface-variant">72 Yrs • Male • Widowed</span>
+<span class="font-code-md text-primary font-bold mt-spacing-2xs">+91 98721-XXXX5</span>
+<span class="text-[11px] text-secondary mt-1">Aadhaar: XXXX-XXXX-4912</span>
+</div>
+</div>
+<div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-spacing-sm bg-surface-container-low p-spacing-md rounded-lg">
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Registered Residence</span>
+<span class="font-body-sm text-on-surface font-semibold mt-1">H.No 412, Lane 4, Model Town Phase 2</span>
+<span class="font-label-sm text-on-surface-variant mt-0.5">Near Guru Nanak Park, Ludhiana (PB)</span>
+<span class="text-[11px] text-secondary mt-1 font-mono">Geo: 30.9010° N, 75.8573° E</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-error font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">medical_services</span> Medical Dossier (Critical)
+              </span>
+<div class="flex flex-wrap gap-spacing-3xs mt-spacing-xs">
+<span class="px-spacing-xs py-spacing-3xs rounded bg-error-container text-on-error-container font-label-sm font-bold">Severe Cardiac History</span>
+<span class="px-spacing-xs py-spacing-3xs rounded bg-surface-container-highest text-on-surface font-label-sm">Pacemaker Fitted (2023)</span>
+<span class="px-spacing-xs py-spacing-3xs rounded bg-primary-container text-on-primary font-label-sm">Blood: O+ Positive</span>
+<span class="px-spacing-xs py-spacing-3xs rounded bg-surface-container-highest text-on-surface font-label-sm">Lives Alone (High Risk)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION B: SOS TELEMETRY & LIVE GIS LOCATION -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg flex flex-col gap-spacing-md">
+<div class="flex items-center justify-between pb-spacing-xs">
+<div class="flex items-center gap-spacing-xs">
+<span class="material-symbols-outlined text-secondary text-[22px]">satellite_alt</span>
+<h2 class="font-headline-sm text-on-surface font-bold uppercase tracking-wider">Section B: SOS Alert Telemetry &amp; Tactical Map</h2>
+</div>
+<span class="font-label-sm text-on-surface-variant">Cell Tower Triangulation + GPS Active</span>
+</div>
+<div class="flex flex-col justify-between gap-spacing-md bg-surface-container-low p-spacing-md rounded-xl w-full"><div class="flex flex-col sm:flex-row sm:items-center justify-between gap-spacing-xs pb-spacing-xs border-b border-surface-container-highest"><div class="flex flex-col gap-spacing-2xs"><span class="font-label-sm text-on-surface-variant uppercase">Hardware / Ingestion Vector</span><span class="font-headline-sm text-on-surface font-bold">Smartphone Panic Button (v4.8)</span></div><span class="font-label-sm text-secondary px-spacing-sm py-spacing-2xs rounded bg-surface-container font-semibold">Battery: 84% • Signal: 5G Airtel Punjab</span></div><div class="grid grid-cols-1 sm:grid-cols-3 gap-spacing-md pt-spacing-2xs"><div class="flex flex-col bg-surface-container-lowest p-spacing-sm rounded-lg shadow-sm"><span class="font-label-sm text-on-surface-variant uppercase">Triggered At</span><span class="font-code-md text-on-surface font-bold mt-0.5">02:34:12 PM IST</span></div><div class="flex flex-col bg-surface-container-lowest p-spacing-sm rounded-lg shadow-sm"><span class="font-label-sm text-on-surface-variant uppercase">Beat Sector</span><span class="font-label-md text-on-surface font-bold mt-0.5">Sector 3 (Unit #04)</span></div><div class="flex flex-col bg-surface-container-lowest p-spacing-sm rounded-lg shadow-sm"><span class="font-label-sm text-on-surface-variant uppercase">Nearest Visual Landmark</span><span class="font-body-sm text-on-surface font-semibold mt-0.5">Guru Nanak Public School &amp; Gurudwara Sahib</span><span class="font-label-sm text-on-surface-variant mt-0.5">Approx 80 meters from Gate #2</span></div></div><div class="pt-spacing-xs flex flex-wrap items-center gap-spacing-xs"><button class="py-spacing-xs px-spacing-md bg-surface-container-lowest text-on-surface rounded font-label-sm font-bold shadow-sm hover:bg-surface-container-high transition-colors flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[16px]">open_in_new</span> Google GIS Sync</button><button class="py-spacing-xs px-spacing-md bg-surface-container-lowest text-on-surface rounded font-label-sm font-bold shadow-sm hover:bg-surface-container-high transition-colors flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[16px]">share_location</span> Ping Cell Beacon</button></div></div>
+</div>
+<!-- SECTION C: ASSIGNED POLICE OFFICER DETAILS & FIELD ACTIONS -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg flex flex-col gap-spacing-md">
+<div class="flex items-center justify-between pb-spacing-xs">
+<div class="flex items-center gap-spacing-xs">
+<span class="material-symbols-outlined text-primary text-[22px]">local_police</span>
+<h2 class="font-headline-sm text-on-surface font-bold uppercase tracking-wider">Section C: Assigned Responding Police Officer</h2>
+</div>
+<span class="px-spacing-xs py-spacing-3xs rounded bg-surface-container text-on-surface font-label-sm font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> UNIT ON SCENE
+          </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-spacing-md items-center">
+<div class="md:col-span-3 flex flex-col items-center text-center">
+<img class="w-20 h-20 rounded-full object-cover shadow-sm bg-surface-container" data-alt="Portrait photograph of Indian police Head Constable Raj Kumar wearing khaki uniform and police beret, official duty profile photo with crisp lighting and serious professional expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWhzZPFuUAA-GjuqoDc0ROMs6dF5KTfabqTVwmZNnY0YDGQ9ceS9un43-t50gBNKIJ4FWwDanXcLlOf3uQ5hE6oF4TjJMUg01bZqIsuDr_TucayV1CUZ0p9svKyoLK9bOq5KNLlmLW_ibbjW1j5gl_SufTcWTSXmmRk8Bl6TuVDgTpWdBrch9ZX1PYhBhZDN0gycUWhzsrGo_k6Lrcij-yVjYLVqigwCWcvqJnVGg0nhy4lGx0JiBO">
+<span class="font-headline-sm text-on-surface font-bold mt-spacing-xs">HC Raj Kumar</span>
+<span class="font-label-sm text-on-surface-variant">Badge: POL-1024</span>
+</div>
+<div class="md:col-span-5 grid grid-cols-2 gap-spacing-xs bg-surface-container-low p-spacing-md rounded-lg">
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase">Vehicle Unit</span>
+<span class="font-label-md text-on-surface font-bold">PCR Van #04</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase">Officer Direct Mobile</span>
+<span class="font-code-md text-primary font-bold">+91 98112-XXXX2</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase">Arrival Timestamp</span>
+<span class="font-code-md text-secondary font-bold">02:48 PM (14m SLA)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase">Partner Officer</span>
+<span class="font-label-md text-on-surface">Const. M. Singh (#891)</span>
+</div>
+</div>
+<div class="md:col-span-4 flex flex-col gap-spacing-xs">
+<button class="w-full py-spacing-xs px-spacing-sm bg-primary text-on-primary rounded font-label-sm shadow-sm hover:bg-on-surface transition-all flex items-center justify-center gap-spacing-xs" onclick="simulateOfficerRadio()">
+<span class="material-symbols-outlined text-[18px]">radio</span>
+              CALL OFFICER VIA POLICE RADIO
+            </button>
+<button class="w-full py-spacing-xs px-spacing-sm bg-surface-container-high text-on-surface rounded font-label-sm shadow-sm hover:bg-surface-container-highest transition-all flex items-center justify-center gap-spacing-xs" onclick="toggleBodycamModal()">
+<span class="material-symbols-outlined text-[18px]">videocam</span>
+              VIEW BODYCAM FEED (LIVE)
+            </button>
+<button class="w-full py-spacing-xs px-spacing-sm bg-error-container text-on-error-container rounded font-label-sm shadow-sm hover:bg-error hover:text-on-error transition-all flex items-center justify-center gap-spacing-xs" onclick="requestBackupAction()">
+<span class="material-symbols-outlined text-[18px]">group_add</span>
+              SEND BACKUP / AMBULANCE
+            </button>
+</div>
+</div>
+</div>
+<!-- SECTION D: REGISTERED EMERGENCY CONTACTS -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg flex flex-col gap-spacing-md">
+<div class="flex items-center justify-between pb-spacing-xs">
+<div class="flex items-center gap-spacing-xs">
+<span class="material-symbols-outlined text-secondary text-[22px]">contact_phone</span>
+<h2 class="font-headline-sm text-on-surface font-bold uppercase tracking-wider">Section D: Registered Family &amp; Emergency Keyholders</h2>
+</div>
+<span class="font-label-sm text-on-surface-variant">Instant ERSS Dial &amp; SMS Relay</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-spacing-md">
+<!-- Contact 1 -->
+<div class="bg-surface-container-low p-spacing-md rounded-lg flex flex-col justify-between gap-spacing-sm">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-spacing-xs">
+<span class="font-headline-sm text-on-surface font-bold">Amit Sharma</span>
+<span class="px-spacing-xs py-spacing-3xs rounded bg-surface-container-highest text-on-surface-variant font-label-sm">Son</span>
+</div>
+<span class="font-body-sm text-on-surface-variant">Resides in Toronto, Ontario (Canada)</span>
+<span class="font-code-md text-primary font-bold mt-1">+1 416-555-0198</span>
+</div>
+<span class="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[18px]">public</span>
+</span>
+</div>
+<div class="bg-surface-container-lowest p-spacing-xs rounded flex items-center justify-between">
+<span class="font-label-sm text-secondary font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> WhatsApp &amp; SMS Notified (Read at 02:35 PM)
+              </span>
+<button class="p-spacing-3xs rounded bg-surface-container hover:bg-surface-container-high text-on-surface">
+<span class="material-symbols-outlined text-[16px]">call</span>
+</button>
+</div>
+</div>
+<!-- Contact 2 -->
+<div class="bg-surface-container-low p-spacing-md rounded-lg flex flex-col justify-between gap-spacing-sm">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-spacing-xs">
+<span class="font-headline-sm text-on-surface font-bold">Col. S. Dhillon</span>
+<span class="px-spacing-xs py-spacing-3xs rounded bg-surface-container-highest text-on-surface-variant font-label-sm">Neighbor / Keyholder</span>
+</div>
+<span class="font-body-sm text-on-surface-variant">H.No 410 (Immediate Next Door)</span>
+<span class="font-code-md text-primary font-bold mt-1">+91 94172-XXXXX</span>
+</div>
+<span class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">vpn_key</span>
+</span>
+</div>
+<div class="bg-surface-container-lowest p-spacing-xs rounded flex items-center justify-between">
+<span class="font-label-sm text-secondary font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> Call Connected; Arrived at Home with Spare Keys
+              </span>
+<button class="p-spacing-3xs rounded bg-surface-container hover:bg-surface-container-high text-on-surface">
+<span class="material-symbols-outlined text-[16px]">call</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT PANEL: HIGH-FIDELITY CASE TIMELINE (SECTION E) & AUDIT FOOTPRINT (4 COLS) -->
+<div class="xl:col-span-4 flex flex-col gap-spacing-lg">
+<!-- TIMELINE CARD -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg flex flex-col">
+<div class="flex items-center justify-between pb-spacing-sm mb-spacing-md bg-surface-container-low/60 -mx-spacing-lg -mt-spacing-lg px-spacing-lg pt-spacing-md">
+<div class="flex items-center gap-spacing-xs">
+<span class="material-symbols-outlined text-primary text-[22px]">history_toggle_off</span>
+<h2 class="font-headline-sm text-on-surface font-bold uppercase tracking-wider">Section E: Master Case Timeline</h2>
+</div>
+<span class="font-label-sm text-secondary font-bold">LIVE TELEMETRY</span>
+</div>
+<div class="relative pl-6 flex flex-col gap-spacing-md before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-surface-container-highest">
+<!-- Event 1: Trigger -->
+<div class="relative flex items-start gap-spacing-sm group">
+<span class="absolute -left-6 top-0.5 w-4 h-4 rounded-full bg-error ring-4 ring-error-container text-on-error flex items-center justify-center text-[9px] font-bold">!</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-spacing-xs">
+<span class="font-code-md text-error font-bold">02:34 PM</span>
+<span class="font-label-sm px-spacing-2xs rounded bg-error-container text-on-error-container uppercase">SOS Triggered</span>
+</div>
+<span class="font-body-sm text-on-surface font-semibold mt-1">Panic Button Pressed by Citizen</span>
+<span class="text-[12px] text-on-surface-variant">Registered smartphone panic app v4.8 triggered in Model Town Sector 3.</span>
+</div>
+</div>
+<!-- Event 2: Station Alarm -->
+<div class="relative flex items-start gap-spacing-sm group">
+<span class="absolute -left-6 top-0.5 w-4 h-4 rounded-full bg-primary text-on-primary flex items-center justify-center text-[9px] font-bold">•</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-spacing-xs">
+<span class="font-code-md text-on-surface-variant font-bold">02:34 PM</span>
+<span class="font-label-sm px-spacing-2xs rounded bg-surface-container-highest text-on-surface uppercase">Desk Alert</span>
+</div>
+<span class="font-body-sm text-on-surface font-semibold mt-1">SHO Notified on Console &amp; Station Bell</span>
+<span class="text-[12px] text-on-surface-variant">Station high-decibel audible chime and dashboard visual overlay activated.</span>
+</div>
+</div>
+<!-- Event 3: Case Accepted -->
+<div class="relative flex items-start gap-spacing-sm group">
+<span class="absolute -left-6 top-0.5 w-4 h-4 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-[9px] font-bold">•</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-spacing-xs">
+<span class="font-code-md text-on-surface font-bold">02:36 PM</span>
+<span class="font-label-sm px-spacing-2xs rounded bg-secondary-container text-on-secondary-container uppercase">CCTNS Sync</span>
+</div>
+<span class="font-body-sm text-on-surface font-semibold mt-1">SHO Raj Kumar Accepted Case</span>
+<span class="text-[12px] text-on-surface-variant">General Diary (GD) entry created automatically with ID GD-LDH-2026-901.</span>
+</div>
+</div>
+<!-- Event 4: Officer Assigned -->
+<div class="relative flex items-start gap-spacing-sm group">
+<span class="absolute -left-6 top-0.5 w-4 h-4 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-[9px] font-bold">•</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-spacing-xs">
+<span class="font-code-md text-on-surface font-bold">02:38 PM</span>
+<span class="font-label-sm px-spacing-2xs rounded bg-surface-container-highest text-on-surface uppercase">Dispatched</span>
+</div>
+<span class="font-body-sm text-on-surface font-semibold mt-1">Officer Assigned: HC Raj Kumar</span>
+<span class="text-[12px] text-on-surface-variant">PCR Van #04 redirected from patrolling Gill Road towards Model Town Phase 2.</span>
+</div>
+</div>
+<!-- Event 5: Kin Notified -->
+<div class="relative flex items-start gap-spacing-sm group">
+<span class="absolute -left-6 top-0.5 w-4 h-4 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-[9px] font-bold">•</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-spacing-xs">
+<span class="font-code-md text-on-surface font-bold">02:39 PM</span>
+<span class="font-label-sm px-spacing-2xs rounded bg-surface-container-highest text-on-surface uppercase">Comms Relay</span>
+</div>
+<span class="font-body-sm text-on-surface font-semibold mt-1">Citizen &amp; Kin Notified via ERSS Push</span>
+<span class="text-[12px] text-on-surface-variant">Automated WhatsApp tracking links transmitted to Amit Sharma and Col. Dhillon.</span>
+</div>
+</div>
+<!-- Event 6: Officer Reached -->
+<div class="relative flex items-start gap-spacing-sm group">
+<span class="absolute -left-6 top-0.5 w-4 h-4 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-[9px] font-bold">•</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-spacing-xs">
+<span class="font-code-md text-on-surface font-bold">02:48 PM</span>
+<span class="font-label-sm px-spacing-2xs rounded bg-surface-container-highest text-on-surface uppercase">Geofence Validated</span>
+</div>
+<span class="font-body-sm text-on-surface font-semibold mt-1">Officer Reached Location</span>
+<span class="text-[12px] text-on-surface-variant">GPS confirmed on-site within 35m of citizen residence. Found resident in acute pain.</span>
+</div>
+</div>
+<!-- Event 7: Issue Resolved -->
+<div class="relative flex items-start gap-spacing-sm group">
+<span class="absolute -left-6 top-0.5 w-4 h-4 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-[9px] font-bold">✓</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-spacing-xs">
+<span class="font-code-md text-secondary font-bold">03:05 PM</span>
+<span class="font-label-sm px-spacing-2xs rounded bg-secondary-container text-on-secondary-container uppercase">Stabilized</span>
+</div>
+<span class="font-body-sm text-on-surface font-semibold mt-1">Paramedic Medical First Aid Administered</span>
+<span class="text-[12px] text-on-surface-variant">108 Ambulance Unit checked vitals (BP: 135/88, Pulse: 74). Resident conscious &amp; stable.</span>
+</div>
+</div>
+<!-- Event 8: Ready For Closure -->
+<div class="relative flex items-start gap-spacing-sm group">
+<span class="absolute -left-6 top-0.5 w-4 h-4 rounded-full bg-primary text-on-primary flex items-center justify-center text-[9px] font-bold">🔒</span>
+<div class="flex flex-col">
+<div class="flex items-center gap-spacing-xs">
+<span class="font-code-md text-on-surface font-bold">03:10 PM</span>
+<span class="font-label-sm px-spacing-2xs rounded bg-surface-container-highest text-on-surface uppercase">Pending Seal</span>
+</div>
+<span class="font-body-sm text-on-surface font-semibold mt-1">Case Ready for SHO Closure</span>
+<span class="text-[12px] text-on-surface-variant">Awaiting official SHO sign-off &amp; digital crypto-token token entry.</span>
+</div>
+</div>
+</div>
+<div class="mt-spacing-lg pt-spacing-sm bg-surface-container-low p-spacing-sm rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-spacing-xs">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified_user</span>
+<span class="font-label-sm text-on-surface font-semibold">CCTNS Audit Hash #498A-E39</span>
+</div>
+<button class="font-label-sm text-secondary hover:underline" onclick="alert('Audit ledger signature valid. Verified by State Police Cyber Bureau.')">Verify</button>
+</div>
+</div>
+<!-- INCIDENT PHOTO DOSSIER PREVIEW -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg flex flex-col gap-spacing-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Field Bodycam Evidence Capture</span>
+<span class="font-code-md text-secondary">2 Frames Sync</span>
+</div>
+<div class="grid grid-cols-2 gap-spacing-xs">
+<div class="relative rounded-lg overflow-hidden bg-surface-container-high h-28">
+<img class="w-full h-full object-cover" data-alt="Police body camera still showing front porch of Indian suburban house in Ludhiana with officer boots and flashlight visible in daytime." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzcK-1tuNql6LpeFAuBuwFzzGWkGUgSuBjECExgPvMsYxJnht3VgppouEGfIiPzKdewvKl2i3mC3_f8Ih0KAFbhiEqwpSkvdJR03-D8G_XeUlSZU1Dfquwe2GuNcgRaC5nZ0ZWm0SMXXco71oSWeR1jWet-YJwOecahnWx_ZNaUzS3eQb4VPKCf8CSnXgpagjRDtlxKZ_DhKo7WzelQUG4GzU_utOYSFzWapjDuciul6yEiXYlb_eW">
+<span class="absolute bottom-1 left-1 px-1 rounded bg-primary/80 text-on-primary text-[9px] font-mono">CAM-01 02:49 PM</span>
+</div>
+<div class="relative rounded-lg overflow-hidden bg-surface-container-high h-28">
+<img class="w-full h-full object-cover" data-alt="Police emergency medical assistance still showing medical box, blood pressure monitor cuff and doctor assisting elderly patient in a living room." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFLa5rY1ChL4HVKZaJ827gcWpj3muecX8oyIbuXwtCJ7gE2vb6V4Yo8r4CcG8Qif69tJ0GhTgXEZHTGxiEvnyPQCjMGomWmftkze8WoexgMfI3_mu5r0HYil6liNvqxw0OmEOQ9t6q7shys1l2jYkBFRkRNnsHvN4Uwk6-ufr3BWrhNVHSzOpwEJFZb881YCCg9SpZuyrJZSiLMF0ktmfmZbsLQ62pTwCUV11kDXM7JVPQrhWhkPxn">
+<span class="absolute bottom-1 left-1 px-1 rounded bg-primary/80 text-on-primary text-[9px] font-mono">CAM-01 03:02 PM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- QUICK ACTION STATION FOOTER BAR (SECTION 7) -->
+<div class="mt-spacing-xl bg-surface-container-lowest rounded-xl shadow-md p-spacing-md flex flex-wrap items-center justify-between gap-spacing-md">
+<div class="flex items-center gap-spacing-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[24px]">terminal</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-on-surface font-bold">Duty SHO Case Disposition Actions</span>
+<span class="font-label-sm text-on-surface-variant">Model Town Police Station • Duty Officer: Insp. Raj Kumar (SHO-041)</span>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-spacing-xs">
+<button class="px-spacing-md py-spacing-xs rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-lg shadow-sm transition-all flex items-center gap-spacing-xs" onclick="openInvestigationNoteModal()">
+<span class="material-symbols-outlined text-[18px]">note_add</span>
+<span class="">ADD INVESTIGATION NOTE</span>
+</button>
+<button class="px-spacing-md py-spacing-xs rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-lg shadow-sm transition-all flex items-center gap-spacing-xs" onclick="printCaseDossier()">
+<span class="material-symbols-outlined text-[18px]">print</span>
+<span class="">PRINT CASE DOSSIER PDF</span>
+</button>
+<button class="px-spacing-md py-spacing-xs rounded bg-secondary-container hover:bg-secondary text-on-secondary-container hover:text-on-secondary font-label-lg shadow-sm transition-all flex items-center gap-spacing-xs" onclick="requestDspAdvisory()">
+<span class="material-symbols-outlined text-[18px]">send</span>
+<span class="">REQUEST DSP ADVISORY</span>
+</button>
+<button class="px-spacing-lg py-spacing-xs rounded bg-primary hover:bg-on-surface text-on-primary font-label-lg shadow-sm transition-all flex items-center gap-spacing-xs" onclick="closeCaseArchiveModal()">
+<span class="material-symbols-outlined text-[18px]">lock_clock</span>
+<span class="">CLOSE CASE &amp; ARCHIVE</span>
+</button>
+</div>
+</div>
+<!-- INTERACTIVE TOAST NOTIFICATION CONTAINER -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none bg-inverse-surface text-inverse-on-surface px-spacing-lg py-spacing-md rounded-xl shadow-xl flex items-center gap-spacing-sm max-w-md" id="commandToast">
+<span class="material-symbols-outlined text-secondary-container" id="toastIcon">check_circle</span>
+<div class="flex flex-col">
+<span class="font-label-md font-bold" id="toastTitle">System Notification</span>
+<span class="font-body-sm opacity-90" id="toastMessage">Case parameters updated successfully.</span>
+</div>
+</div>
+</div>
+<script>
+  // Countdown simulation for 24h Escalation Clock
+  let totalSeconds = (18 * 3600) + (42 * 60) + 19;
+  const countdownEl = document.getElementById('countdownClock');
+
+  setInterval(() => {
+    if (totalSeconds > 0) {
+      totalSeconds--;
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      if (countdownEl) {
+        countdownEl.innerText = `${hours}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+      }
+    }
+  }, 1000);
+
+  function triggerToast(title, message, icon = 'check_circle') {
+    const toast = document.getElementById('commandToast');
+    const titleEl = document.getElementById('toastTitle');
+    const msgEl = document.getElementById('toastMessage');
+    const iconEl = document.getElementById('toastIcon');
+
+    if (toast && titleEl && msgEl && iconEl) {
+      titleEl.innerText = title;
+      msgEl.innerText = message;
+      iconEl.innerText = icon;
+
+      toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+      }, 4000);
+    }
+  }
+
+  function updateCaseStatusToast() {
+    const selector = document.getElementById('caseStatusSelector');
+    const val = selector ? selector.value : 'UPDATED';
+    triggerToast('Case Status Updated', `Case ANB-SOS-2026-00124 transitioned to status: ${val}. CCTNS journal updated.`, 'published_with_changes');
+  }
+
+  function simulateOfficerRadio() {
+    triggerToast('Police Radio Dispatch Linked', 'Calling PCR #04 (HC Raj Kumar) via Station VHF Channel 14...', 'radio');
+  }
+
+  function toggleBodycamModal() {
+    triggerToast('Live Feed Connected', 'Streaming encrypted feed from Bodycam HC Raj Kumar (POL-1024). Quality 1080p 30fps.', 'videocam');
+  }
+
+  function requestBackupAction() {
+    triggerToast('Auxiliary Backup Dispatched', 'Dispatched secondary backup unit PCR #09 and Ludhiana Civil Paramedic Van #12.', 'emergency');
+  }
+
+  function openInvestigationNoteModal() {
+    const note = prompt('Enter confidential SHO Investigation Note for Case ANB-SOS-2026-00124:', 'Elderly citizen Rajesh Sharma recovered safely with rapid neighbor key access. Condition stable.');
+    if (note) {
+      triggerToast('Investigation Note Saved', 'Note cryptographically appended to Case Dossier and synced to Headquarters.', 'note_add');
+    }
+  }
+
+  function printCaseDossier() {
+    triggerToast('Generating PDF Dossier', 'Preparing Punjab Police CCTNS Standard Elder Assistance Report. Initiating printer...', 'print');
+    setTimeout(() => {
+      window.print();
+    }, 800);
+  }
+
+  function requestDspAdvisory() {
+    triggerToast('Advisory Request Sent', 'Escalation dispatch pinged to DSP Central Sub-Division. Acknowledgment pending.', 'send');
+  }
+
+  function closeCaseArchiveModal() {
+    const confirmed = confirm('Confirm SHO final closure & cryptographic digital sealing of Case ANB-SOS-2026-00124?');
+    if (confirmed) {
+      const selector = document.getElementById('caseStatusSelector');
+      if (selector) selector.value = 'CLOSED';
+      triggerToast('Case Closed & Archived', 'Case signed by Insp. Raj Kumar (SHO-041). Record locked permanently in National Senior Registry.', 'lock');
+    }
+  }
+</script></main></div>
+
+</body></html>
