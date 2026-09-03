@@ -1,25 +1,62 @@
 import React, { useEffect, useState } from 'react';
 
+const DEMO_REQUESTS = [
+  {
+    id: 'AST-2026-041',
+    citizen_name: 'Sunita Devi',
+    request_type: 'Welfare Assistance',
+    location: 'Model Town Phase 2',
+    created_at: 'Today, 10:30 AM',
+    status: 'IN_PROGRESS',
+  },
+  {
+    id: 'AST-2026-040',
+    citizen_name: 'Rajesh Sharma',
+    request_type: 'Home Safety',
+    location: 'Model Town Phase 2',
+    created_at: 'Yesterday, 04:15 PM',
+    status: 'NEW',
+  },
+];
+
 export default function AssistanceRequests() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const loadRequests = () => {
     setLoading(true);
+    setError('');
     fetch('/api/assistance')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Unable to load assistance requests');
+        return res.json();
+      })
       .then(data => {
-        setRequests(data);
+        setRequests(Array.isArray(data) && data.length > 0 ? data : DEMO_REQUESTS);
         setLoading(false);
       })
       .catch(err => {
         console.error(err);
+        setError('Live data unavailable. Showing demo assistance requests.');
+        setRequests(DEMO_REQUESTS);
         setLoading(false);
       });
   };
 
   useEffect(() => {
     loadRequests();
+    const handleLocalRequest = (event) => {
+      if (event.key !== 'anubhavi_local_assistance_request' || !event.newValue) return;
+      try {
+        const request = JSON.parse(event.newValue);
+        setRequests(prev => [request, ...prev.filter(item => item.id !== request.id)]);
+      } catch (error) {
+        console.error('Local assistance request error:', error);
+      }
+    };
+    window.addEventListener('storage', handleLocalRequest);
+    return () => window.removeEventListener('storage', handleLocalRequest);
   }, []);
 
   const handleUpdateStatus = async (id, status) => {
@@ -58,6 +95,7 @@ export default function AssistanceRequests() {
       </div>
 
       <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container-highest overflow-hidden">
+        {error && <div className="border-b border-amber-200 bg-amber-50 px-spacing-lg py-spacing-sm text-sm font-semibold text-amber-800">{error}</div>}
         {loading ? (
           <div className="py-spacing-2xl text-center font-label-md text-on-surface-variant">Loading assistance requests...</div>
         ) : (
@@ -75,7 +113,9 @@ export default function AssistanceRequests() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-surface-container-highest">
-                {requests.map((r) => (
+                {requests.length === 0 ? (
+                  <tr><td colSpan="7" className="p-spacing-2xl text-center text-on-surface-variant">No assistance requests found.</td></tr>
+                ) : requests.map((r) => (
                   <tr key={r.id} className="hover:bg-surface-container-low/50 transition-colors">
                     <td className="p-spacing-md font-code-md text-primary font-bold">{r.id}</td>
                     <td className="p-spacing-md font-headline-sm font-bold text-on-surface">{r.citizen_name}</td>

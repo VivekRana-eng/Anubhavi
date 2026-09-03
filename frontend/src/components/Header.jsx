@@ -10,7 +10,7 @@ export default function Header() {
 
   const handleLogout = () => {
     logout();
-    navigate('/sho/dashboard');
+    navigate('/login');
   };
 
   return (

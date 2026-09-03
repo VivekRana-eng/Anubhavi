@@ -9,6 +9,18 @@ export const WebSocketProvider = ({ children }) => {
   const [notificationsCount, setNotificationsCount] = useState(3);
 
   useEffect(() => {
+    const handleLocalAlert = (event) => {
+      if (event.key !== 'anubhavi_local_sos_alert' || !event.newValue) return;
+      try {
+        const alert = JSON.parse(event.newValue);
+        setActiveAlert(alert);
+        setNotificationsCount(prev => prev + 1);
+      } catch (error) {
+        console.error('Local SOS Alert Error:', error);
+      }
+    };
+
+    window.addEventListener('storage', handleLocalAlert);
     let ws;
     const connect = () => {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -47,6 +59,7 @@ export const WebSocketProvider = ({ children }) => {
     connect();
 
     return () => {
+      window.removeEventListener('storage', handleLocalAlert);
       if (ws) ws.close();
     };
   }, [audioEnabled]);
