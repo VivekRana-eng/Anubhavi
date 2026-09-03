@@ -30,3 +30,19 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #75777e;
 }
+
+/* Keep the senior dashboard navigation easy to see and tap. */
+nav button {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+nav button > span {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+/* Keep the scheduled safety check below the complete Quick Access area. */
+.home-content > section {
+  order: 1;
+}

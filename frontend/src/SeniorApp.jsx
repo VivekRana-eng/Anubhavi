@@ -1,10 +1,8 @@
 import { useState } from 'react'
 
 const navItems = [
-  ['home', '🏠', 'Home'],
-  ['help', '🆘', 'Help'],
-  ['requests', '📋', 'Requests'],
-  ['family', '👨‍👩‍👧', 'Family'],
+  ['home', '⌂', 'Home'],
+  ['requests', '▤', 'Requests'],
   ['profile', '👤', 'Profile'],
 ]
 
@@ -28,7 +26,13 @@ function SeniorApp({ username, onLogout }) {
   const [problem, setProblem] = useState('')
   const [helpSubmitting, setHelpSubmitting] = useState(false)
   const [helpRequestId, setHelpRequestId] = useState('ANB-DEMO-REQUEST')
+  const [meetingDate, setMeetingDate] = useState(() => {
+    const date = new Date()
+    date.setDate(date.getDate() + 1)
+    return date.toISOString().split('T')[0]
+  })
   const [myRequests, setMyRequests] = useState([])
+  const [selectedRequest, setSelectedRequest] = useState(null)
   const [checkInDone, setCheckInDone] = useState(false)
   const [voiceMessage, setVoiceMessage] = useState('')
   const hindi = language === 'hi'
@@ -92,12 +96,13 @@ function SeniorApp({ username, onLogout }) {
       location: 'Model Town Phase 2, Ludhiana',
       created_at: 'Just now',
       status: 'NEW',
+      meeting_date: meetingDate,
     }
     try {
       const response = await fetch('/api/assistance/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ citizen_id: 'CIT-8841', request_type: helpType, description: problem, location: request.location }),
+        body: JSON.stringify({ citizen_id: 'CIT-8841', request_type: helpType, description: problem, location: request.location, meeting_date: meetingDate }),
       })
       const data = await response.json()
       if (!response.ok) throw new Error('Request service unavailable')
@@ -115,13 +120,13 @@ function SeniorApp({ username, onLogout }) {
   }
 
   function renderHome() {
-    return <>
-      <div className="mt-4 flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#dcebf2] text-3xl">👴</div><div><h2 className="text-lg font-extrabold text-[#142b59]">{hindi ? 'सुप्रभात, राजेश! 👋' : 'Good Morning, Rajesh! 👋'}</h2><p className="mt-1 text-sm text-slate-600">{hindi ? 'हम आपकी सुरक्षा के लिए यहां हैं।' : 'We are here for your safety.'}</p></div></div>
+    return <div className="home-content flex flex-col">
+      <div className="mt-4 flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#dcebf2] text-2xl">👤</div><div><h2 className="text-lg font-extrabold text-[#142b59]">{hindi ? 'सुप्रभात, राजेश! 👋' : 'Good Morning, Rajesh! 👋'}</h2><p className="mt-1 text-sm text-slate-600">{hindi ? 'हम आपकी सुरक्षा के लिए यहां हैं।' : 'We are here for your safety.'}</p></div></div>
       <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4"><div className="flex items-center gap-3"><span className="text-3xl">🟢</span><div><h2 className="text-lg font-extrabold text-emerald-900">{hindi ? 'आप सुरक्षित हैं' : 'YOU ARE SAFE'}</h2><p className="mt-1 text-sm leading-5 text-emerald-800">{hindi ? 'सब ठीक है। अगला चेक-इन: सुबह 10:00 बजे।' : 'Everything is okay. Next check-in: 10:00 AM.'}</p></div></div></div>
       <div className="mt-4 grid grid-cols-2 items-stretch gap-3"><ActionButton icon="🚨" title="SOS" subtitle={hindi ? 'तुरंत सहायता पाएं' : 'Get immediate assistance'} className="min-h-[132px] flex-col items-start justify-between rounded-2xl bg-red-600 p-4 text-white shadow-red-200" onClick={() => { setSosStep('confirm'); setView('sos') }} /><ActionButton icon="🤝" title={hindi ? 'मदद चाहिए' : 'Need Help'} subtitle={hindi ? 'गैर-आपातकालीन सहायता' : 'Request non-emergency help'} className="min-h-[132px] flex-col items-start justify-between rounded-2xl bg-amber-300 p-4 text-slate-950 shadow-amber-100" onClick={() => { setHelpStep('choose'); setView('help') }} /></div>
       <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><div className="flex items-start gap-3"><span className="text-3xl">📅</span><div><h2 className="text-lg font-extrabold">{hindi ? 'अगला सुरक्षा चेक' : 'Next Safety Check'}</h2><p className="mt-1 font-bold text-[#426d5f]">{hindi ? 'आज • सुबह 10:00 बजे' : 'Today • 10:00 AM'}</p><p className="mt-1 text-sm text-slate-600">{hindi ? 'कृपया पुष्टि करें कि आप सुरक्षित हैं।' : 'Please confirm that you are safe.'}</p></div></div><button onClick={() => setCheckInDone(true)} className="mt-4 min-h-14 w-full rounded-xl bg-[#426d5f] text-lg font-extrabold text-white">✅ {hindi ? "मैं ठीक हूं" : "I'M OK"}</button>{checkInDone && <p className="mt-3 rounded-lg bg-emerald-50 p-3 text-center text-sm font-bold text-emerald-800">{hindi ? '✅ सुरक्षा की पुष्टि हो गई। धन्यवाद।' : '✅ Safety Confirmed — Thank you.'}</p>}</section>
       <h2 className="mt-6 text-xl font-extrabold">{hindi ? 'त्वरित पहुंच' : 'Quick Access'}</h2><div className="mt-3 grid grid-cols-2 items-stretch gap-3"><QuickCard icon="👨‍👩‍👧" title={hindi ? 'मेरा परिवार' : 'My Family'} text={hindi ? 'आपातकालीन संपर्कों को कॉल करें' : 'Call your emergency contacts'} onClick={() => setView('family')} /><QuickCard icon="📋" title={hindi ? 'मेरे अनुरोध' : 'My Requests'} text={hindi ? 'सहायता अनुरोध देखें' : 'Track assistance requests'} onClick={() => setView('requests')} /><QuickCard icon="🔔" title={hindi ? 'सुरक्षा अलर्ट' : 'Safety Alerts'} text={hindi ? 'पुलिस के महत्वपूर्ण संदेश' : 'Important police messages'} onClick={() => setView('alerts')} /><QuickCard icon="👮" title={hindi ? 'वेलफेयर चेक' : 'Welfare Checks'} text={hindi ? 'सुरक्षा जांच देखें' : 'View scheduled checks'} onClick={() => setView('home')} /></div>
-    </>
+    </div>
   }
 
   function renderSos() {
@@ -129,18 +134,47 @@ function SeniorApp({ username, onLogout }) {
     return <ScreenCard icon="🚨" title="Emergency Help" tone="red"><p className="text-lg font-bold">Do you need immediate police assistance?</p>{sosError && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700">{sosError}</p>}<button onClick={sendSosAlert} disabled={sosSending} className="mt-7 min-h-16 w-full rounded-xl bg-red-600 text-lg font-extrabold text-white disabled:cursor-wait disabled:opacity-60">{sosSending ? '⏳ SENDING SOS...' : '🚨 YES, SEND SOS'}</button><button onClick={goHome} className="mt-3 min-h-14 w-full rounded-xl border-2 border-slate-200 text-lg font-bold text-slate-700">Cancel</button></ScreenCard>
   }
 
-  function renderHelp() {
-    if (helpStep === 'submitted') return <ScreenCard icon="✅" title="Request Submitted"><p className="text-lg font-bold">Your request has been sent to the police.</p><div className="mt-6 rounded-xl bg-slate-50 p-4 text-left"><p className="text-sm text-slate-500">Request ID</p><p className="mt-1 break-all text-xl font-extrabold">{helpRequestId}</p><p className="mt-4 text-sm text-slate-500">Status</p><p className="mt-1 font-extrabold text-amber-700">Pending</p></div><button onClick={goHome} className="mt-6 min-h-14 w-full rounded-xl bg-[#426d5f] text-lg font-extrabold text-white">Back to Home</button></ScreenCard>
-    if (helpStep === 'form') return <ScreenCard icon="💬" title="Describe your problem"><p className="text-sm text-slate-600">Selected: <strong>{helpType}</strong></p><textarea value={problem} onChange={(event) => setProblem(event.target.value)} placeholder="Tell us how we can help..." className="mt-5 min-h-32 w-full resize-none rounded-xl border-2 border-slate-200 p-4 text-base outline-none focus:border-[#426d5f]" /><button onClick={startVoiceInput} className="mt-3 min-h-14 w-full rounded-xl border-2 border-[#426d5f] text-base font-extrabold text-[#426d5f]">🎙️ Speak instead of typing</button>{voiceMessage && <p className="mt-2 text-center text-sm text-[#426d5f]">{voiceMessage}</p>}<button disabled={!problem.trim() || helpSubmitting} onClick={submitHelpRequest} className="mt-5 min-h-16 w-full rounded-xl bg-[#426d5f] text-lg font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-40">{helpSubmitting ? 'Submitting...' : 'Submit Request'}</button><button onClick={() => setHelpStep('choose')} className="mt-2 w-full py-3 font-bold text-slate-600">Back</button></ScreenCard>
-    return <><h2 className="mt-7 text-3xl font-extrabold">How can we help you?</h2><div className="mt-6 space-y-3">{['👮 Police Assistance', '🏠 Home Safety', '📞 Welfare Check', '📄 Other Assistance', '💬 Other'].map((item) => <button key={item} onClick={() => { setHelpType(item.slice(2)); setHelpStep('form') }} className="min-h-16 w-full rounded-xl border-2 border-slate-200 bg-white px-5 text-left text-lg font-bold shadow-sm transition hover:border-[#426d5f]">{item}</button>)}</div></>
+  function cancelHelpRequest() {
+    const currentRequest = myRequests[0]
+    if (currentRequest) {
+      const cancelledRequest = { ...currentRequest, status: 'CANCELLED' }
+      setMyRequests(prev => [cancelledRequest, ...prev.slice(1)])
+      localStorage.setItem('anubhavi_local_assistance_request', JSON.stringify(cancelledRequest))
+    }
+    setHelpStep('choose')
   }
 
-  function renderRequests() { const visibleRequests = myRequests.length ? myRequests : requests; return <><h2 className="mt-7 text-3xl font-extrabold">My Assistance Requests</h2><div className="mt-6 space-y-4">{visibleRequests.map((request) => { const status = request.status === 'NEW' ? 'Pending' : request.status === 'IN_PROGRESS' ? 'In Progress' : request.status; const color = request.status === 'NEW' ? 'bg-amber-100 text-amber-800' : request.status === 'RESOLVED' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'; return <div key={request.id || request.name} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-start justify-between gap-3"><div><h3 className="text-lg font-extrabold">{request.request_type || request.name}</h3><p className="mt-1 text-slate-500">{request.created_at || request.date}</p></div><span className={`rounded-full px-3 py-1 text-xs font-extrabold ${color}`}>{status}</span></div><p className="mt-4 text-sm text-slate-600">Request ID: <strong>{request.id}</strong></p><button className="mt-3 text-sm font-bold text-[#426d5f]">View details →</button></div>})}</div></> }
+  function cancelSelectedRequest() {
+    if (!selectedRequest) return
+    const cancelledRequest = { ...selectedRequest, status: 'CANCELLED' }
+    setMyRequests(prev => prev.length ? prev.map(item => item.id === cancelledRequest.id ? cancelledRequest : item) : [cancelledRequest, ...requests.filter(item => item !== selectedRequest)])
+    localStorage.setItem('anubhavi_local_assistance_request', JSON.stringify(cancelledRequest))
+    setSelectedRequest(null)
+  }
+
+  function modifySelectedRequest() {
+    if (!selectedRequest) return
+    setHelpType(selectedRequest.request_type || selectedRequest.name || '')
+    setProblem(selectedRequest.description || '')
+    if (selectedRequest.meeting_date) setMeetingDate(selectedRequest.meeting_date)
+    setSelectedRequest(null)
+    setHelpStep('form')
+    setView('help')
+  }
+
+  function renderHelp() {
+    if (helpStep === 'submitted') return <ScreenCard icon="✅" title="Request Submitted"><p className="text-lg font-bold">Your request has been sent to the police.</p><div className="mt-6 rounded-xl bg-slate-50 p-4 text-left"><p className="text-sm text-slate-500">Request ID</p><p className="mt-1 break-all text-xl font-extrabold">{helpRequestId}</p><p className="mt-4 text-sm text-slate-500">Meeting Date</p><p className="mt-1 font-extrabold text-[#426d5f]">{meetingDate}</p><p className="mt-4 text-sm text-slate-500">Status</p><p className="mt-1 font-extrabold text-amber-700">Pending</p></div><div className="mt-5 grid grid-cols-2 gap-3"><button onClick={() => setHelpStep('form')} className="min-h-12 rounded-xl border-2 border-[#426d5f] px-3 text-sm font-extrabold text-[#426d5f]">Modify Request</button><button onClick={cancelHelpRequest} className="min-h-12 rounded-xl border-2 border-red-200 px-3 text-sm font-extrabold text-red-600">Cancel Request</button></div><button onClick={goHome} className="mt-4 min-h-14 w-full rounded-xl bg-[#426d5f] text-lg font-extrabold text-white">Back to Home</button></ScreenCard>
+    if (helpStep === 'form') { const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); const nextDate = tomorrow.toISOString().split('T')[0]; return <ScreenCard icon="💬" title="Describe your problem"><p className="text-sm text-slate-600">Selected: <strong>{helpType}</strong></p><label className="mt-5 block text-sm font-extrabold text-slate-700" htmlFor="meeting-date">Meeting Date</label><input id="meeting-date" type="date" value={meetingDate} min={nextDate} onChange={(event) => setMeetingDate(event.target.value)} className="mt-2 min-h-14 w-full rounded-xl border-2 border-slate-200 px-4 text-base outline-none focus:border-[#426d5f]" /><textarea value={problem} onChange={(event) => setProblem(event.target.value)} placeholder="Tell us how we can help..." className="mt-5 min-h-32 w-full resize-none rounded-xl border-2 border-slate-200 p-4 text-base outline-none focus:border-[#426d5f]" /><button onClick={startVoiceInput} className="mt-3 min-h-14 w-full rounded-xl border-2 border-[#426d5f] text-base font-extrabold text-[#426d5f]">🎙️ Speak instead of typing</button>{voiceMessage && <p className="mt-2 text-center text-sm text-[#426d5f]">{voiceMessage}</p>}<button disabled={!problem.trim() || helpSubmitting} onClick={submitHelpRequest} className="mt-5 min-h-16 w-full rounded-xl bg-[#426d5f] text-lg font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-40">{helpSubmitting ? 'Submitting...' : 'Submit Request'}</button><button onClick={() => setHelpStep('choose')} className="mt-2 w-full py-3 font-bold text-slate-600">Back</button></ScreenCard> }
+    return <><h2 className="mt-7 text-3xl font-extrabold">How can we help you?</h2><div className="mt-6 space-y-3">{['👮 Police Assistance', '🏠 Home Safety', '📞 Welfare Check', '📄 Other Assistance'].map((item) => <button key={item} onClick={() => { setHelpType(item.slice(2)); setHelpStep('form') }} className="min-h-16 w-full rounded-xl border-2 border-slate-200 bg-white px-5 text-left text-lg font-bold shadow-sm transition hover:border-[#426d5f]">{item}</button>)}</div></>
+  }
+
+  function renderRequestDetail() { const request = selectedRequest; if (!request) return null; const status = request.status === 'NEW' ? 'Pending' : request.status === 'IN_PROGRESS' ? 'In Progress' : request.status; return <><h2 className="mt-7 text-3xl font-extrabold">Request Details</h2><div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm"><div className="flex items-start justify-between gap-3"><h3 className="text-xl font-extrabold">{request.request_type || request.name}</h3><span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-extrabold text-blue-800">{status}</span></div><div className="mt-5 space-y-3 text-sm"><p><span className="text-slate-500">Request ID</span><br /><strong>{request.id}</strong></p><p><span className="text-slate-500">Submitted</span><br /><strong>{request.created_at || request.date}</strong></p><p><span className="text-slate-500">Meeting Date</span><br /><strong>{request.meeting_date || 'To be scheduled'}</strong></p><p><span className="text-slate-500">Description</span><br /><strong>{request.description || 'No description provided.'}</strong></p><p><span className="text-slate-500">Location</span><br /><strong>{request.location || 'Model Town Phase 2, Ludhiana'}</strong></p></div></div><div className="mt-5 grid grid-cols-2 gap-3"><button onClick={modifySelectedRequest} className="min-h-14 rounded-xl border-2 border-[#426d5f] px-3 text-sm font-extrabold text-[#426d5f]">Modify Request</button><button onClick={cancelSelectedRequest} className="min-h-14 rounded-xl border-2 border-red-200 px-3 text-sm font-extrabold text-red-600">Cancel Request</button></div><button onClick={() => setSelectedRequest(null)} className="mt-4 min-h-14 w-full rounded-xl bg-[#426d5f] text-lg font-extrabold text-white">Back to Requests</button></> }
+  function renderRequests() { const visibleRequests = myRequests.length ? myRequests : requests; return <><h2 className="mt-7 text-3xl font-extrabold">My Assistance Requests</h2><div className="mt-6 space-y-4">{visibleRequests.map((request) => { const status = request.status === 'NEW' ? 'Pending' : request.status === 'IN_PROGRESS' ? 'In Progress' : request.status; const color = request.status === 'NEW' ? 'bg-amber-100 text-amber-800' : request.status === 'RESOLVED' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'; return <div key={request.id || request.name} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-start justify-between gap-3"><div><h3 className="text-lg font-extrabold">{request.request_type || request.name}</h3><p className="mt-1 text-slate-500">{request.created_at || request.date}</p></div><span className={`rounded-full px-3 py-1 text-xs font-extrabold ${color}`}>{status}</span></div><p className="mt-4 text-sm text-slate-600">Request ID: <strong>{request.id}</strong></p><button onClick={() => setSelectedRequest(request)} className="mt-3 text-sm font-bold text-[#426d5f]">View details →</button></div>})}</div></> }
   function renderFamily() { return <><h2 className="mt-7 text-3xl font-extrabold">My Family</h2><p className="mt-2 text-slate-600">Your trusted emergency contacts</p><div className="mt-6 space-y-4"><Contact name="Rahul Sharma" relation="Son" phone="tel:+919876543210" /><Contact name="Neha Sharma" relation="Daughter" phone="tel:+919876543211" /></div><button className="mt-5 min-h-14 w-full rounded-xl border-2 border-[#426d5f] text-lg font-extrabold text-[#426d5f]">+ Add Emergency Contact</button></> }
   function renderAlerts() { return <><h2 className="mt-7 text-3xl font-extrabold">Safety Alerts</h2><div className="mt-6 space-y-3"><Alert icon="🔔" title="Safety Advisory" text="Please remain alert and keep your emergency contacts updated." /><Alert icon="📅" title="Welfare Check Reminder" text="Your scheduled check-in is at 10:00 AM." /><Alert icon="👮" title="Police Message" text="Your assistance request has been assigned to an officer." /></div></> }
-  function renderProfile() { return <><h2 className="mt-7 text-3xl font-extrabold">My Profile</h2><div className="mt-6 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white px-5"><ProfileRow label="Name" value="Senior Citizen" /><ProfileRow label="Mobile Number" value={username || 'Rajesh Sharma'} /><ProfileRow label="Address" value="H.No 412, Lane 4, Model Town Phase 2, Ludhiana" /><ProfileRow label="Police Station / Area" value="Model Town Police Station" /></div><div className="mt-5 space-y-2">{['Edit Profile', 'Emergency Contacts', 'Language / भाषा', 'Notifications', 'Privacy & Consent'].map((item) => <button key={item} className="min-h-14 w-full rounded-xl border border-slate-200 bg-white px-5 text-left text-base font-bold">{item}<span className="float-right text-slate-400">›</span></button>)}<button onClick={onLogout} className="min-h-14 w-full rounded-xl border-2 border-red-200 text-base font-extrabold text-red-600">Logout</button></div></> }
+  function renderProfile() { return <><div className="mt-7 flex items-center gap-3"><div className="grid h-12 w-12 place-items-center rounded-full bg-[#dcebf2] text-2xl">👤</div><h2 className="text-3xl font-extrabold">My Profile</h2></div><div className="mt-6 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white px-5"><ProfileRow label="Name" value="Senior Citizen" /><ProfileRow label="Mobile Number" value={username || 'Rajesh Sharma'} /><ProfileRow label="Address" value="H.No 412, Lane 4, Model Town Phase 2, Ludhiana" /><ProfileRow label="Police Station / Area" value="Model Town Police Station" /></div><div className="mt-5 space-y-2">{['Edit Profile', 'Emergency Contacts', 'Language / भाषा', 'Notifications', 'Privacy & Consent'].map((item) => <button key={item} className="min-h-14 w-full rounded-xl border border-slate-200 bg-white px-5 text-left text-base font-bold">{item}<span className="float-right text-slate-400">›</span></button>)}<button onClick={onLogout} className="min-h-14 w-full rounded-xl border-2 border-red-200 text-base font-extrabold text-red-600">Logout</button></div></> }
 
-  let content = view === 'home' ? renderHome() : view === 'sos' ? renderSos() : view === 'help' ? renderHelp() : view === 'requests' ? renderRequests() : view === 'family' ? renderFamily() : view === 'alerts' ? renderAlerts() : renderProfile()
+  let content = view === 'home' ? renderHome() : view === 'sos' ? renderSos() : view === 'help' ? renderHelp() : view === 'requests' ? (selectedRequest ? renderRequestDetail() : renderRequests()) : view === 'family' ? renderFamily() : view === 'alerts' ? renderAlerts() : renderProfile()
   const title = view === 'home' ? `Namaste, Senior Citizen 👋` : view === 'sos' ? '' : view === 'help' ? '' : ''
 
   const languageButton = <button onClick={() => setLanguage(hindi ? 'en' : 'hi')} className="rounded-full border border-[#426d5f] px-3 py-2 text-xs font-extrabold text-[#426d5f] transition hover:bg-[#eef7f1]" aria-label="Change language">{hindi ? 'English' : 'हिंदी'}</button>
@@ -148,7 +182,7 @@ function SeniorApp({ username, onLogout }) {
 }
 
 function ScreenCard({ icon, title, tone = 'green', children }) { return <section className="mt-7 rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm"><div className={`mx-auto grid h-16 w-16 place-items-center rounded-2xl text-3xl ${tone === 'red' ? 'bg-red-100' : 'bg-emerald-100'}`}>{icon}</div><h2 className="mt-5 text-2xl font-extrabold">{title}</h2><div className="mt-4 text-slate-700">{children}</div></section> }
-function QuickCard({ icon, title, text, onClick }) { return <button onClick={onClick} className="min-h-[112px] rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 active:scale-[.98]"><span className="text-2xl">{icon}</span><span className="mt-2 block text-sm font-extrabold">{title}</span><span className="mt-1 block text-xs leading-4 text-slate-500">{text}</span></button> }
+function QuickCard({ icon, title, text, onClick }) { const displayIcon = title === 'My Family' ? '👮' : title === 'My Requests' ? '▤' : title === 'Safety Alerts' ? '⚠' : '🛡️'; return <button onClick={onClick} className="min-h-[112px] rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 active:scale-[.98]"><span className="text-2xl text-[#426d5f]">{displayIcon}</span><span className="mt-2 block text-sm font-extrabold">{title}</span><span className="mt-1 block text-xs leading-4 text-slate-500">{text}</span></button> }
 function Contact({ name, relation, phone }) { return <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-lg font-extrabold">{name}</p><p className="mt-1 text-slate-500">{relation}</p><a href={phone} className="mt-4 block rounded-xl bg-[#426d5f] py-3 text-center font-extrabold text-white">📞 Call</a></div> }
 function Alert({ icon, title, text }) { return <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-lg font-extrabold">{icon} {title}</p><p className="mt-2 text-sm leading-5 text-slate-600">{text}</p></div> }
 function ProfileRow({ label, value }) { return <div className="py-4"><p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</p><p className="mt-1 break-all text-base font-bold text-slate-700">{value}</p></div> }
