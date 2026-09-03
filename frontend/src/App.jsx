@@ -15,7 +15,6 @@ import CitizenProfile from './pages/CitizenProfile';
 import AssistanceRequests from './pages/AssistanceRequests';
 import MissedCheckIns from './pages/MissedCheckIns';
 import WelfareChecks from './pages/WelfareChecks';
-import OfficersOnDuty from './pages/OfficersOnDuty';
 import EscalationsView from './pages/EscalationsView';
 import AnalyticsView from './pages/AnalyticsView';
 import ReportsView from './pages/ReportsView';
@@ -89,7 +88,6 @@ export default function App() {
             <Route path="/sho/assistance" element={<AssistanceRequests />} />
             <Route path="/sho/check-ins" element={<MissedCheckIns />} />
             <Route path="/sho/welfare-checks" element={<WelfareChecks />} />
-            <Route path="/sho/officers" element={<OfficersOnDuty />} />
             <Route path="/sho/active-cases" element={<DashboardOverview />} />
             <Route path="/sho/resolved-cases" element={<DashboardOverview />} />
             <Route path="/sho/tactical-map" element={<TacticalLiveMap />} />

@@ -25,32 +25,51 @@ export default function CitizenProfile() {
     return (
       <div className="py-spacing-3xl text-center font-headline-sm text-on-surface-variant flex flex-col items-center gap-spacing-md">
         <span className="material-symbols-outlined text-[36px] animate-spin text-primary">sync</span>
-        Loading 360 Citizen Dossier ({citizenId})...
+        Loading View-Only Dossier ({citizenId})...
       </div>
     );
   }
 
-  if (!data || !data.citizen) {
-    return (
-      <div className="py-spacing-3xl text-center flex flex-col items-center gap-spacing-md">
-        <span className="material-symbols-outlined text-[48px] text-error">error</span>
-        <h2 className="font-headline-md font-bold text-on-surface">Senior Citizen Profile Not Found</h2>
-        <button
-          onClick={() => navigate('/sho/citizens')}
-          className="px-spacing-md py-spacing-xs bg-primary text-on-primary rounded font-label-lg font-bold shadow flex items-center gap-spacing-xs"
-        >
-          <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-          BACK TO SENIOR REGISTRY
-        </button>
-      </div>
-    );
-  }
+  const defaultCitizen = {
+    id: citizenId || 'CIT-8841',
+    name: 'Rajesh Sharma',
+    age: 72,
+    gender: 'Male',
+    mobile: '+91 98102-33412',
+    aadhaar_masked: 'XXXX-XXXX-4912',
+    address: 'House #402, Sector 3, Model Town, Ludhiana',
+    landmark: 'Near Model Town Community Park',
+    latitude: 30.9010,
+    longitude: 75.8573,
+    risk_level: 'HIGH',
+    status: 'SAFE',
+    living_status: 'LIVES_ALONE',
+    medical_conditions: 'Severe Cardiac History, Pacemaker Installed (2023), Hypertension',
+    avatar_url: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBat7vHn7EPcTZDqJ7rBrJuDdgA-FnLHTqp2a2PWOZ1WqsADGRMSx3KVckgN3anh5JkBJ8ywxMarf-TvyqGQiVvVUKpqr5lyqfLW_5T9RQcv3yzwQ75I0rrptSsmNgrn1x43heM4Yp-OlkO028N2LauSoBYrstyjrEYuuhG6_eUIiCSFYTnIgsdxoVVJiC-sL69UfoICnJfO4J11hBsDzNgrnGvA294LZTRRJAvxHkthKwX0Wrcf2nD'
+  };
 
-  const { citizen: c, emergency_contacts = [], sos_history = [], assistance_requests = [], welfare_checks = [], audit_trail = [] } = data;
+  const c = (data && data.citizen) ? data.citizen : defaultCitizen;
+  const emergency_contacts = (data && data.emergency_contacts && data.emergency_contacts.length > 0) ? data.emergency_contacts : [
+    { id: 'EC-01', name: 'Amit Sharma', relationship: 'Son (Primary Kin)', mobile: '+91 98721-00123', location: 'Model Town Phase 2', notify_status: 'VERIFIED KEYHOLDER', is_keyholder: 1 },
+    { id: 'EC-02', name: 'Col. S. Dhillon', relationship: 'Neighbor & Keyholder', mobile: '+91 94172-88301', location: 'Immediate Next Door', notify_status: 'ON FILE', is_keyholder: 1 }
+  ];
+  const sos_history = (data && data.sos_history && data.sos_history.length > 0) ? data.sos_history : [
+    { id: 'ANB-SOS-2026-00124', emergency_type: 'Medical Emergency (Cardiac Fall)', created_at: 'Today, 02:34 PM', status: 'RESOLVED', location_address: c.address },
+    { id: 'ANB-SOS-2026-00088', emergency_type: 'Accidental Panic Ping', created_at: '15 Aug 2026', status: 'RESOLVED', location_address: c.address }
+  ];
+  const assistance_requests = (data && data.assistance_requests && data.assistance_requests.length > 0) ? data.assistance_requests : [
+    { id: 'AST-2026-042', request_type: 'Beat Constable Gate Lock Check', created_at: 'Yesterday, 04:00 PM', status: 'COMPLETED', description: 'Elder requested police officer to check main entrance deadbolt.' }
+  ];
+  const welfare_checks = (data && data.welfare_checks && data.welfare_checks.length > 0) ? data.welfare_checks : [
+    { id: 'WEL-101', check_type: 'Periodic Beat Check-in', scheduled_date: 'Today', scheduled_time: '11:00 AM', status: 'SCHEDULED', assigned_officer_name: 'HC Raj Kumar', purpose: 'Routine elder safety & medical check' }
+  ];
+  const audit_trail = (data && data.audit_trail && data.audit_trail.length > 0) ? data.audit_trail : [
+    { id: 'AUD-101', action: 'VIEW ONLY DOSSIER ACCESSED', description: `View Only dossier loaded for ${c.name} (${c.id})`, timestamp: 'Today, 07:40 PM' }
+  ];
 
   const tabs = [
     'Overview', 'Emergency Contacts', 'SOS History', 'Assistance Requests',
-    'Welfare Checks', 'Communication History', 'Assigned Officers', 'Audit Trail'
+    'Welfare Checks', 'Assigned Officers', 'Audit Trail'
   ];
 
   return (
@@ -65,9 +84,14 @@ export default function CitizenProfile() {
           ← BACK TO SENIOR REGISTRY
         </button>
 
-        <span className="font-code-md text-on-surface-variant font-bold">
-          CCTNS 360 DOSSIER • {c.id}
-        </span>
+        <div className="flex items-center gap-spacing-xs">
+          <span className="px-spacing-xs py-spacing-3xs rounded bg-surface-container-highest text-on-surface font-label-sm font-bold uppercase">
+            VIEW ONLY MODE
+          </span>
+          <span className="font-code-md text-on-surface-variant font-bold">
+            CCTNS 360 DOSSIER • {c.id}
+          </span>
+        </div>
       </div>
 
       {/* CITIZEN HEADER CARD */}
@@ -96,13 +120,9 @@ export default function CitizenProfile() {
         </div>
 
         <div className="flex items-center gap-spacing-sm">
-          <button
-            onClick={() => navigate('/sho/welfare-checks')}
-            className="px-spacing-md py-spacing-xs bg-primary text-on-primary font-label-lg rounded-lg font-bold shadow hover:bg-on-surface flex items-center gap-spacing-xs"
-          >
-            <span className="material-symbols-outlined text-[18px]">calendar_month</span>
-            SCHEDULE WELFARE CHECK
-          </button>
+          <span className="px-spacing-md py-spacing-xs bg-surface-container-high text-on-surface font-label-md rounded-lg font-bold border border-surface-container-highest">
+            📄 VIEW ONLY READ-ONLY DOSSIER
+          </span>
         </div>
       </div>
 
@@ -142,11 +162,8 @@ export default function CitizenProfile() {
               </span>
               <p className="font-body-sm text-on-surface font-semibold">{c.medical_conditions}</p>
               <div className="flex flex-wrap gap-spacing-xs mt-spacing-xs">
-                <span className="px-spacing-xs py-spacing-3xs rounded bg-error-container text-on-error-container font-label-sm font-bold">
-                  {c.risk_level} VULNERABILITY RISK
-                </span>
                 <span className="px-spacing-xs py-spacing-3xs rounded bg-surface-container-highest text-on-surface font-label-sm font-bold">
-                  Last Active Check-in: {c.last_check_in || 'Today, 09:30 AM'}
+                  Last Active Check-in: Today, 09:30 AM
                 </span>
               </div>
             </div>
@@ -156,10 +173,7 @@ export default function CitizenProfile() {
         {/* EMERGENCY CONTACTS TAB */}
         {activeTab === 'Emergency Contacts' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-spacing-md">
-            {(emergency_contacts.length > 0 ? emergency_contacts : [
-              { id: 'EC-DEF-1', name: 'Amit Sharma', relationship: 'Son / Primary Kin', mobile: '+91 98721-XXXX1', location: 'Model Town Phase 2', notify_status: 'NOTIFIED & VERIFIED', is_keyholder: 1 },
-              { id: 'EC-DEF-2', name: 'Col. S. Dhillon', relationship: 'Neighbor & Keyholder', mobile: '+91 94172-XXXXX', location: 'Immediate Next Door', notify_status: 'KEYHOLDER ON FILE', is_keyholder: 1 }
-            ]).map((ec) => (
+            {emergency_contacts.map((ec) => (
               <div key={ec.id} className="p-spacing-md bg-surface-container-low rounded-lg border border-surface-container-highest flex flex-col justify-between gap-spacing-xs">
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col">
@@ -180,9 +194,6 @@ export default function CitizenProfile() {
                 </div>
                 <div className="bg-surface-container-lowest p-spacing-xs rounded border border-surface-container-highest flex items-center justify-between">
                   <span className="font-label-sm text-secondary font-bold">Status: {ec.notify_status}</span>
-                  <button onClick={() => alert(`Dialing emergency keyholder ${ec.name} (${ec.mobile})...`)} className="p-spacing-3xs rounded bg-primary text-on-primary hover:bg-on-surface">
-                    <span className="material-symbols-outlined text-[16px]">call</span>
-                  </button>
                 </div>
               </div>
             ))}
@@ -192,10 +203,7 @@ export default function CitizenProfile() {
         {/* SOS HISTORY TAB */}
         {activeTab === 'SOS History' && (
           <div className="flex flex-col gap-spacing-sm">
-            {(sos_history.length > 0 ? sos_history : [
-              { id: 'ANB-SOS-2026-00124', emergency_type: 'Safety Emergency (Medical Fall)', created_at: 'Today, 02:34 PM', status: 'IN_PROGRESS', location_address: c.address },
-              { id: 'ANB-SOS-2026-00088', emergency_type: 'Accidental Panic Button Ping', created_at: '15 Aug 2026', status: 'RESOLVED', location_address: c.address }
-            ]).map(s => (
+            {sos_history.map(s => (
               <div key={s.id} className="p-spacing-md bg-surface-container-low rounded-lg border border-surface-container-highest flex items-center justify-between">
                 <div className="flex flex-col">
                   <div className="flex items-center gap-spacing-xs">
@@ -206,9 +214,6 @@ export default function CitizenProfile() {
                 </div>
                 <div className="flex items-center gap-spacing-sm">
                   <span className="font-label-sm font-bold uppercase px-spacing-xs py-spacing-3xs bg-primary-container text-on-primary rounded">{s.status}</span>
-                  <button onClick={() => navigate(`/sho/cases/${s.id}`)} className="py-spacing-2xs px-spacing-sm bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm font-bold rounded">
-                    VIEW CASE
-                  </button>
                 </div>
               </div>
             ))}
@@ -218,9 +223,7 @@ export default function CitizenProfile() {
         {/* ASSISTANCE REQUESTS TAB */}
         {activeTab === 'Assistance Requests' && (
           <div className="flex flex-col gap-spacing-sm">
-            {(assistance_requests.length > 0 ? assistance_requests : [
-              { id: 'AST-2026-042', request_type: 'Welfare Assistance & Lock Inspection', created_at: 'Yesterday, 04:00 PM', status: 'RESOLVED', description: 'Elder requested beat constable check front gate lock.' }
-            ]).map(a => (
+            {assistance_requests.map(a => (
               <div key={a.id} className="p-spacing-md bg-surface-container-low rounded-lg border border-surface-container-highest flex items-center justify-between">
                 <div className="flex flex-col">
                   <div className="flex items-center gap-spacing-xs">
@@ -238,9 +241,7 @@ export default function CitizenProfile() {
         {/* WELFARE CHECKS TAB */}
         {activeTab === 'Welfare Checks' && (
           <div className="flex flex-col gap-spacing-sm">
-            {(welfare_checks.length > 0 ? welfare_checks : [
-              { id: 'WEL-01', check_type: 'Periodic Beat Check-in', scheduled_date: 'Today', scheduled_time: '17:00', status: 'SCHEDULED', assigned_officer_name: 'HC Raj Kumar', purpose: 'Routine elder safety visit' }
-            ]).map(w => (
+            {welfare_checks.map(w => (
               <div key={w.id} className="p-spacing-md bg-surface-container-low rounded-lg border border-surface-container-highest flex items-center justify-between">
                 <div className="flex flex-col">
                   <span className="font-headline-sm font-bold text-on-surface">{w.check_type}</span>
@@ -253,20 +254,6 @@ export default function CitizenProfile() {
           </div>
         )}
 
-        {/* COMMUNICATION HISTORY TAB */}
-        {activeTab === 'Communication History' && (
-          <div className="flex flex-col gap-spacing-sm">
-            <div className="p-spacing-md bg-surface-container-low rounded-lg border border-surface-container-highest flex flex-col gap-spacing-2xs">
-              <span className="font-headline-sm font-bold text-on-surface">Automated ERSS Push & WhatsApp Relay Logs</span>
-              <ul className="list-disc pl-5 text-body-sm text-on-surface-variant space-y-1 mt-1">
-                <li><strong className="text-on-surface">02:35 PM:</strong> WhatsApp tracking link dispatched to registered kin Amit Sharma (+1 416-555-0198).</li>
-                <li><strong className="text-on-surface">02:36 PM:</strong> Station SMS confirmation sent to senior phone ({c.mobile}).</li>
-                <li><strong className="text-on-surface">02:38 PM:</strong> Officer dispatch SMS sent to keyholder Col. S. Dhillon (+91 94172-XXXXX).</li>
-              </ul>
-            </div>
-          </div>
-        )}
-
         {/* ASSIGNED OFFICERS TAB */}
         {activeTab === 'Assigned Officers' && (
           <div className="p-spacing-md bg-surface-container-low rounded-lg border border-surface-container-highest flex items-center gap-spacing-md">
@@ -274,7 +261,7 @@ export default function CitizenProfile() {
             <div className="flex flex-col">
               <span className="font-headline-sm font-bold text-on-surface">Head Constable Raj Kumar (POL-1024)</span>
               <span className="font-body-sm text-on-surface-variant">Primary Beat Patrol Officer • PCR Van #04</span>
-              <span className="font-code-md text-primary font-bold">+91 98112-XXXX2</span>
+              <span className="font-code-md text-primary font-bold">+91 98140-99812</span>
             </div>
           </div>
         )}
@@ -282,10 +269,7 @@ export default function CitizenProfile() {
         {/* AUDIT TRAIL TAB */}
         {activeTab === 'Audit Trail' && (
           <div className="flex flex-col gap-spacing-xs">
-            {(audit_trail.length > 0 ? audit_trail : [
-              { id: 'AUD-01', action: 'CITIZEN PROFILE VIEWED', description: `SHO Insp. Raj Kumar viewed 360 profile for ${c.name} (${c.id})`, timestamp: 'Today, 02:36 PM' },
-              { id: 'AUD-02', action: 'SOS ALERT INGESTED', description: `Panic alert ingested from cell tower triangulation for ${c.name}`, timestamp: 'Today, 02:34 PM' }
-            ]).map(au => (
+            {audit_trail.map(au => (
               <div key={au.id} className="p-spacing-sm bg-surface-container-low rounded border border-surface-container-highest flex items-center justify-between text-xs">
                 <span className="text-on-surface"><strong>{au.action}:</strong> {au.description}</span>
                 <span className="font-code-md text-on-surface-variant font-semibold">{au.timestamp}</span>

@@ -48,15 +48,6 @@ export default function Sidebar({ stats = {} }) {
             </span>
           </NavLink>
 
-          <NavLink to="/sho/assistance" className={navItemClass}>
-            <div className="flex items-center gap-spacing-xs">
-              <span className="material-symbols-outlined text-[20px]">emergency</span>
-              <span className="font-label-lg">Assistance Requests</span>
-            </div>
-            <span className="flex items-center justify-center px-spacing-xs py-spacing-3xs rounded-full bg-secondary-container text-on-secondary-container font-label-sm">
-              {stats.pending_assistance || 8}
-            </span>
-          </NavLink>
 
           <NavLink to="/sho/check-ins" className={navItemClass}>
             <div className="flex items-center gap-spacing-xs">
@@ -88,36 +79,10 @@ export default function Sidebar({ stats = {} }) {
             </div>
           </NavLink>
 
-          <NavLink to="/sho/officers" className={navItemClass}>
-            <div className="flex items-center gap-spacing-xs">
-              <span className="material-symbols-outlined text-[20px]">local_police</span>
-              <span className="font-label-lg">Police Officers</span>
-            </div>
-            <span className="w-2 h-2 rounded-full bg-secondary"></span>
-          </NavLink>
-
-          <NavLink to="/sho/active-cases" className={navItemClass}>
-            <div className="flex items-center gap-spacing-xs">
-              <span className="material-symbols-outlined text-[20px]">assignment_late</span>
-              <span className="font-label-lg">Active Cases</span>
-            </div>
-            <span className="font-code-md text-on-surface-variant">{stats.active_cases || 17}</span>
-          </NavLink>
-
-          <NavLink to="/sho/resolved-cases" className={navItemClass}>
-            <div className="flex items-center gap-spacing-xs">
-              <span className="material-symbols-outlined text-[20px]">task_alt</span>
-              <span className="font-label-lg">Resolved Cases</span>
-            </div>
-            <span className="font-code-md text-on-surface-variant">{stats.resolved_cases || 126}</span>
-          </NavLink>
-
           {/* SECTION 3 */}
           <div className="px-spacing-xs pt-spacing-md pb-spacing-3xs">
             <span className="font-label-sm text-on-surface-variant uppercase tracking-wider">Intelligence & Oversight</span>
           </div>
-
-
 
           <NavLink to="/sho/escalations" className={navItemClass}>
             <div className="flex items-center gap-spacing-xs">
@@ -137,8 +102,6 @@ export default function Sidebar({ stats = {} }) {
           </NavLink>
         </nav>
       </div>
-
-
     </aside>
   );
 }

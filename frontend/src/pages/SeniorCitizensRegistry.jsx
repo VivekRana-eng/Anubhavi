@@ -72,7 +72,7 @@ export default function SeniorCitizensRegistry() {
             onChange={(e) => setRiskFilter(e.target.value)}
             className="h-10 px-spacing-sm bg-surface-container-low text-on-surface font-label-sm rounded border border-outline-variant font-bold focus:outline-none"
           >
-            <option value="">ALL VULNERABILITY LEVELS</option>
+            <option value="">ALL RISK LEVELS</option>
             <option value="HIGH">🔴 HIGH RISK (LIVES ALONE)</option>
             <option value="MEDIUM">🟡 MEDIUM RISK</option>
             <option value="LOW">🟢 LOW RISK</option>
@@ -95,8 +95,6 @@ export default function SeniorCitizensRegistry() {
                   <th className="p-spacing-md">Name & Age</th>
                   <th className="p-spacing-md">Contact Number</th>
                   <th className="p-spacing-md">Registered Residence</th>
-                  <th className="p-spacing-md">Vulnerability</th>
-                  <th className="p-spacing-md">Status</th>
                   <th className="p-spacing-md text-right">Action</th>
                 </tr>
               </thead>
@@ -115,28 +113,12 @@ export default function SeniorCitizensRegistry() {
                     </td>
                     <td className="p-spacing-md font-code-md text-on-surface font-semibold">{c.mobile}</td>
                     <td className="p-spacing-md font-body-sm text-on-surface-variant max-w-xs truncate">{c.address}</td>
-                    <td className="p-spacing-md">
-                      <span className={`px-spacing-xs py-spacing-3xs rounded font-label-sm font-bold uppercase ${
-                        c.risk_level === 'HIGH' ? 'bg-error-container text-on-error-container' : 'bg-surface-container-highest text-on-surface'
-                      }`}>
-                        {c.risk_level} RISK
-                      </span>
-                    </td>
-                    <td className="p-spacing-md">
-                      <span className={`px-spacing-xs py-spacing-3xs rounded font-label-sm font-bold uppercase ${
-                        c.status === 'SOS_ACTIVE' ? 'bg-error text-on-error animate-pulse' :
-                        c.status === 'MISSED_CHECKIN' ? 'bg-error-container text-on-error-container' :
-                        'bg-secondary-container text-on-secondary-container'
-                      }`}>
-                        {c.status}
-                      </span>
-                    </td>
                     <td className="p-spacing-md text-right">
                       <button
                         onClick={() => navigate(`/sho/citizens/${c.id}`)}
-                        className="py-spacing-2xs px-spacing-sm bg-primary text-on-primary font-label-sm font-bold rounded shadow-sm hover:bg-on-surface transition-all"
+                        className="py-spacing-2xs px-spacing-md bg-primary text-on-primary font-label-sm font-bold rounded shadow-sm hover:bg-on-surface transition-all"
                       >
-                        VIEW 360 PROFILE
+                        VIEW ONLY
                       </button>
                     </td>
                   </tr>

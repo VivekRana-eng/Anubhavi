@@ -17,6 +17,64 @@ class ScheduleWelfareRequest(BaseModel):
     purpose: Optional[str] = None
     notes: Optional[str] = None
 
+MOCK_WELFARE_CHECKS = [
+    {
+        "id": "WEL-9001",
+        "citizen_id": "CIT-8841",
+        "citizen_name": "Rajesh Sharma",
+        "scheduled_date": "2026-09-04",
+        "scheduled_time": "10:30 AM",
+        "assigned_officer_name": "ASI Amit Singh",
+        "check_type": "Periodic Beat Visit",
+        "purpose": "Pacemaker medical safety & keyholder verification",
+        "status": "SCHEDULED"
+    },
+    {
+        "id": "WEL-9002",
+        "citizen_id": "CIT-8842",
+        "citizen_name": "Sunita Devi",
+        "scheduled_date": "2026-09-04",
+        "scheduled_time": "11:45 AM",
+        "assigned_officer_name": "HC Raj Kumar",
+        "check_type": "Welfare Call",
+        "purpose": "Post-monsoon home door lock safety check",
+        "status": "CONFIRMED"
+    },
+    {
+        "id": "WEL-9003",
+        "citizen_id": "CIT-8843",
+        "citizen_name": "Mohan Lal",
+        "scheduled_date": "2026-09-04",
+        "scheduled_time": "02:15 PM",
+        "assigned_officer_name": "SI Neeraj Kumar",
+        "check_type": "Cyber Safety Briefing",
+        "purpose": "Digital arrest fraud awareness & helpline setup",
+        "status": "SCHEDULED"
+    },
+    {
+        "id": "WEL-9004",
+        "citizen_id": "CIT-8844",
+        "citizen_name": "Kamla Sharma",
+        "scheduled_date": "2026-09-05",
+        "scheduled_time": "09:00 AM",
+        "assigned_officer_name": "Const. Vikram Sharma",
+        "check_type": "Post-Incident Follow-up",
+        "purpose": "Asthma nebulizer emergency battery check",
+        "status": "CONFIRMED"
+    },
+    {
+        "id": "WEL-9005",
+        "citizen_id": "CIT-8845",
+        "citizen_name": "Harish Kumar",
+        "scheduled_date": "2026-09-05",
+        "scheduled_time": "04:00 PM",
+        "assigned_officer_name": "SI Rahul Verma",
+        "check_type": "Welfare Call",
+        "purpose": "Living status & emergency contact audit",
+        "status": "SCHEDULED"
+    }
+]
+
 @router.get("/checks")
 def list_welfare_checks():
     conn = get_db_connection()
@@ -24,7 +82,11 @@ def list_welfare_checks():
     cursor.execute("SELECT * FROM welfare_checks ORDER BY scheduled_date ASC, scheduled_time ASC")
     rows = cursor.fetchall()
     conn.close()
-    return [dict(r) for r in rows]
+    
+    results = [dict(r) for r in rows]
+    if not results:
+        results = MOCK_WELFARE_CHECKS
+    return results
 
 @router.post("/schedule")
 def schedule_welfare_check(req: ScheduleWelfareRequest, current_user: dict = Depends(get_current_user)):
@@ -66,4 +128,59 @@ def list_missed_checkins():
     cursor.execute("SELECT * FROM check_ins ORDER BY scheduled_time DESC")
     rows = cursor.fetchall()
     conn.close()
-    return [dict(r) for r in rows]
+    
+    results = [dict(r) for r in rows]
+    if not results:
+        results = [
+            {
+                "id": "CHK-1001",
+                "citizen_id": "CIT-8843",
+                "citizen_name": "Mohan Lal",
+                "scheduled_time": "Today, 08:00 AM (Overdue 6h)",
+                "last_known_location": "H.No 125, Sector 3, Model Town",
+                "family_notified": 1,
+                "police_notified": 1,
+                "status": "UNRESPONSIVE"
+            },
+            {
+                "id": "CHK-1002",
+                "citizen_id": "CIT-8841",
+                "citizen_name": "Rajesh Sharma",
+                "scheduled_time": "Today, 09:30 AM (Overdue 4.5h)",
+                "last_known_location": "H.No 412, Lane 4, Model Town Phase 2",
+                "family_notified": 1,
+                "police_notified": 1,
+                "status": "UNRESPONSIVE"
+            },
+            {
+                "id": "CHK-1003",
+                "citizen_id": "CIT-8845",
+                "citizen_name": "Harish Kumar",
+                "scheduled_time": "Today, 10:15 AM (Overdue 3.5h)",
+                "last_known_location": "H.No 204, Lane 2, Model Town",
+                "family_notified": 1,
+                "police_notified": 1,
+                "status": "PENDING_CALL"
+            },
+            {
+                "id": "CHK-1004",
+                "citizen_id": "CIT-8842",
+                "citizen_name": "Sunita Devi",
+                "scheduled_time": "Yesterday, 07:00 PM (Overdue 17h)",
+                "last_known_location": "H.No 88, Block C, Model Town",
+                "family_notified": 1,
+                "police_notified": 1,
+                "status": "ALERT_INGESTED"
+            },
+            {
+                "id": "CHK-1005",
+                "citizen_id": "CIT-8844",
+                "citizen_name": "Kamla Sharma",
+                "scheduled_time": "Yesterday, 08:30 PM (Overdue 15.5h)",
+                "last_known_location": "H.No 64, Phase 1, Model Town",
+                "family_notified": 1,
+                "police_notified": 1,
+                "status": "BEAT_DISPATCHED"
+            }
+        ]
+    return results

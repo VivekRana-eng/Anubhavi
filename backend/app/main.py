@@ -17,6 +17,7 @@ from app.routes.escalation_routes import router as escalation_router
 from app.routes.analytics_routes import router as analytics_router
 from app.routes.reports_routes import router as reports_router
 from app.routes.audit_routes import router as audit_router
+from app.routes.notification_routes import router as notification_router
 
 app = FastAPI(
     title="ANUBHAVI Police Command API",
@@ -51,6 +52,7 @@ app.include_router(escalation_router)
 app.include_router(analytics_router)
 app.include_router(reports_router)
 app.include_router(audit_router)
+app.include_router(notification_router)
 
 @app.get("/api/health")
 def health_check():

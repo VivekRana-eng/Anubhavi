@@ -121,9 +121,19 @@ def init_db():
         is_emergency INTEGER DEFAULT 1,
         resolved_at TEXT,
         closed_at TEXT,
-        notes TEXT
+        notes TEXT,
+        assignment_details TEXT
     )
     """)
+
+    # Check if assignment_details column exists for backward compatibility
+    cursor.execute("PRAGMA table_info(sos_cases)")
+    cols = [col[1] for col in cursor.fetchall()]
+    if "assignment_details" not in cols:
+        try:
+            cursor.execute("ALTER TABLE sos_cases ADD COLUMN assignment_details TEXT")
+        except Exception:
+            pass
 
     # Assistance Requests Table
     cursor.execute("""

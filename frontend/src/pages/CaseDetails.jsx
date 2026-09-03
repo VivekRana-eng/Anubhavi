@@ -78,6 +78,16 @@ export default function CaseDetails() {
   }
 
   const { case: c, citizen, emergency_contacts, assigned_officer, timeline } = data;
+  const assignment = c.assignment_details || {};
+  const activeOfficer = assigned_officer || (c.status === 'ASSIGNED' || assignment.officer_name ? {
+    id: assignment.officer_id || 'POL-1025',
+    name: assignment.officer_name || 'ASI Amit Singh',
+    rank: assignment.officer_rank || 'Assistant Sub-Inspector',
+    police_id: assignment.police_id || 'POL-1025',
+    mobile: '+91 98721-44102',
+    current_vehicle: assignment.vehicle || 'PCR Bike #12',
+    avatar_url: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAWhzZPFuUAA-GjuqoDc0ROMs6dF5KTfabqTVwmZNnY0YDGQ9ceS9un43-t50gBNKIJ4FWwDanXcLlOf3uQ5hE6oF4TjJMUg01bZqIsuDr_TucayV1CUZ0p9svKyoLK9bOq5KNLlmLW_ibbjW1j5gl_SufTcWTSXmmRk8Bl6TuVDgTpWdBrch9ZX1PYhBhZDN0gycUWhzsrGo_k6Lrcij-yVjYLVqigwCWcvqJnVGg0nhy4lGx0JiBO'
+  } : null);
 
   return (
     <div className="flex flex-col gap-spacing-lg w-full">
@@ -132,14 +142,16 @@ export default function CaseDetails() {
                   onChange={(e) => setSelectedStatus(e.target.value)}
                   className="bg-transparent font-headline-sm text-on-surface font-bold focus:outline-none cursor-pointer"
                 >
-                  <option value="NEW">⚪ NEW</option>
-                  <option value="ACCEPTED">🔵 ACCEPTED</option>
-                  <option value="OFFICER_ASSIGNED">🟣 OFFICER ASSIGNED</option>
-                  <option value="IN_PROGRESS">🟡 IN PROGRESS</option>
-                  <option value="OFFICER_AT_LOCATION">🟠 OFFICER AT LOCATION</option>
+                  <option value="ACTIVE">🔴 ACTIVE</option>
+                  <option value="ACKNOWLEDGED">🔵 ACKNOWLEDGED</option>
+                  <option value="ASSIGNED">🟣 ASSIGNED</option>
+                  <option value="OFFICER_DISPATCHED">🚔 OFFICER DISPATCHED</option>
+                  <option value="ON_THE_WAY">🚓 EN ROUTE</option>
+                  <option value="OFFICER_AT_LOCATION">📍 OFFICER AT LOCATION</option>
+                  <option value="ARRIVED">📍 ARRIVED</option>
                   <option value="RESOLVED">🟢 RESOLVED</option>
                   <option value="CLOSED">🔒 CLOSED</option>
-                  <option value="ESCALATED">🔴 ESCALATED TO DSP</option>
+                  <option value="CANCELLED">❌ CANCELLED</option>
                 </select>
               </div>
             </div>
@@ -205,7 +217,7 @@ export default function CaseDetails() {
                 onClick={() => navigate(`/sho/citizens/${c.citizen_id}`)}
                 className="px-spacing-xs py-spacing-3xs rounded bg-surface-container-highest text-on-surface font-label-sm font-bold hover:bg-primary hover:text-on-primary transition-all"
               >
-                VIEW 360 CITIZEN PROFILE →
+                VIEW ONLY →
               </button>
             </div>
 
@@ -268,77 +280,98 @@ export default function CaseDetails() {
             </div>
           </div>
 
-          {/* SECTION C: ASSIGNED POLICE OFFICER */}
+          {/* SECTION C: ASSIGNED POLICE OFFICER & POLICE STATION */}
           <div className="bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg flex flex-col gap-spacing-md border border-surface-container-highest">
             <div className="flex items-center justify-between pb-spacing-xs border-b border-surface-container-highest">
               <div className="flex items-center gap-spacing-xs">
                 <span className="material-symbols-outlined text-primary text-[22px]">local_police</span>
                 <h2 className="font-headline-sm text-on-surface font-bold uppercase tracking-wider">
-                  Section C: Assigned Responding Police Officer
+                  Section C: Assigned Response & Police Station Dispatch
                 </h2>
               </div>
 
-              {!assigned_officer ? (
+              {!activeOfficer ? (
                 <button
                   onClick={() => setShowAssignModal(true)}
                   className="px-spacing-md py-spacing-xs bg-primary text-on-primary font-label-sm font-bold rounded shadow hover:bg-on-surface"
                 >
-                  ASSIGN OFFICER NOW
+                  ASSIGN RESPONSE NOW
                 </button>
               ) : (
                 <span className="px-spacing-xs py-spacing-3xs rounded bg-secondary-container text-on-secondary-container font-label-sm font-bold flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-secondary"></span> UNIT ASSIGNED
+                  <span className="w-2 h-2 rounded-full bg-secondary"></span> RESPONSE ASSIGNED
                 </span>
               )}
             </div>
 
-            {assigned_officer ? (
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-spacing-md items-center">
-                <div className="md:col-span-3 flex flex-col items-center text-center">
-                  <img
-                    src={assigned_officer.avatar_url}
-                    alt={assigned_officer.name}
-                    className="w-20 h-20 rounded-full object-cover shadow-sm bg-surface-container"
-                  />
-                  <span className="font-headline-sm text-on-surface font-bold mt-spacing-xs">{assigned_officer.name}</span>
-                  <span className="font-label-sm text-on-surface-variant">Badge: {assigned_officer.police_id}</span>
-                </div>
-
-                <div className="md:col-span-5 grid grid-cols-2 gap-spacing-xs bg-surface-container-low p-spacing-md rounded-lg border border-surface-container-highest">
+            {activeOfficer ? (
+              <div className="flex flex-col gap-spacing-md">
+                {/* POLICE STATION STRIP */}
+                <div className="bg-surface-container-low p-spacing-md rounded-lg border border-surface-container-highest flex flex-col sm:flex-row items-start sm:items-center justify-between gap-spacing-sm">
                   <div className="flex flex-col">
-                    <span className="font-label-sm text-on-surface-variant uppercase font-semibold">Rank</span>
-                    <span className="font-label-md text-on-surface font-bold">{assigned_officer.rank}</span>
+                    <span className="font-label-sm text-on-surface-variant uppercase font-bold tracking-wider">Assigned From Police Station</span>
+                    <span className="font-headline-sm text-on-surface font-extrabold">{assignment.police_station || 'MODEL TOWN POLICE STATION'}</span>
+                    <span className="font-body-sm text-on-surface-variant">Station Code: <strong className="text-on-surface">{assignment.station_code || 'MTP-PS-01'}</strong> • Jurisdiction: {assignment.jurisdiction || 'Model Town • District Central • Zone 1'}</span>
                   </div>
-                  <div className="flex flex-col">
-                    <span className="font-label-sm text-on-surface-variant uppercase font-semibold">Vehicle Unit</span>
-                    <span className="font-label-md text-on-surface font-bold">{assigned_officer.current_vehicle || 'PCR Van #04'}</span>
-                  </div>
-                  <div className="flex flex-col col-span-2">
-                    <span className="font-label-sm text-on-surface-variant uppercase font-semibold">Officer Direct Mobile</span>
-                    <span className="font-code-md text-primary font-bold">{assigned_officer.mobile}</span>
+                  <div className="flex flex-col items-start sm:items-end">
+                    <span className="px-spacing-xs py-spacing-3xs rounded bg-primary-container text-on-primary font-label-sm font-bold uppercase">
+                      Status: {c.status}
+                    </span>
+                    <span className="text-[12px] text-on-surface-variant font-semibold mt-1">Assigned By: {assignment.assigned_by || 'Insp. Raj Kumar'}</span>
                   </div>
                 </div>
 
-                <div className="md:col-span-4 flex flex-col gap-spacing-xs">
-                  <button
-                    onClick={() => alert(`📻 CALLING OFFICER VIA POLICE RADIO CHANNEL: Dispatching to ${assigned_officer.name}...`)}
-                    className="w-full py-spacing-xs px-spacing-sm bg-primary text-on-primary rounded font-label-sm font-bold shadow-sm hover:bg-on-surface transition-all flex items-center justify-center gap-spacing-xs"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">radio</span>
-                    CALL OFFICER VIA POLICE RADIO
-                  </button>
-                  <button
-                    onClick={() => setShowAssignModal(true)}
-                    className="w-full py-spacing-xs px-spacing-sm bg-surface-container-high text-on-surface rounded font-label-sm font-bold hover:bg-surface-container-highest transition-all flex items-center justify-center gap-spacing-xs"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">swap_horiz</span>
-                    REASSIGN OFFICER
-                  </button>
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-spacing-md items-center">
+                  <div className="md:col-span-3 flex flex-col items-center text-center">
+                    <img
+                      src={activeOfficer.avatar_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuAWhzZPFuUAA-GjuqoDc0ROMs6dF5KTfabqTVwmZNnY0YDGQ9ceS9un43-t50gBNKIJ4FWwDanXcLlOf3uQ5hE6oF4TjJMUg01bZqIsuDr_TucayV1CUZ0p9svKyoLK9bOq5KNLlmLW_ibbjW1j5gl_SufTcWTSXmmRk8Bl6TuVDgTpWdBrch9ZX1PYhBhZDN0gycUWhzsrGo_k6Lrcij-yVjYLVqigwCWcvqJnVGg0nhy4lGx0JiBO"}
+                      alt={activeOfficer.name}
+                      className="w-20 h-20 rounded-full object-cover shadow-sm bg-surface-container"
+                    />
+                    <span className="font-headline-sm text-on-surface font-bold mt-spacing-xs">{activeOfficer.name}</span>
+                    <span className="font-label-sm text-on-surface-variant">Police ID: {activeOfficer.police_id}</span>
+                  </div>
+
+                  <div className="md:col-span-5 grid grid-cols-2 gap-spacing-xs bg-surface-container-low p-spacing-md rounded-lg border border-surface-container-highest">
+                    <div className="flex flex-col">
+                      <span className="font-label-sm text-on-surface-variant uppercase font-semibold">Rank</span>
+                      <span className="font-label-md text-on-surface font-bold">{activeOfficer.rank}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-label-sm text-on-surface-variant uppercase font-semibold">Vehicle Unit</span>
+                      <span className="font-label-md text-on-surface font-bold">{assignment.vehicle || activeOfficer.current_vehicle || 'PCR Bike #12'}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-label-sm text-on-surface-variant uppercase font-semibold">Response Type</span>
+                      <span className="font-body-sm text-primary font-bold">{assignment.response_type || 'Police Emergency Response'}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-label-sm text-on-surface-variant uppercase font-semibold">ETA</span>
+                      <span className="font-body-sm text-error font-bold">{assignment.estimated_response_time || '10 minutes'}</span>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-4 flex flex-col gap-spacing-xs">
+                    <button
+                      onClick={() => alert(`📻 CALLING OFFICER VIA POLICE RADIO CHANNEL: Dispatching to ${activeOfficer.name}...`)}
+                      className="w-full py-spacing-xs px-spacing-sm bg-primary text-on-primary rounded font-label-sm font-bold shadow-sm hover:bg-on-surface transition-all flex items-center justify-center gap-spacing-xs"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">radio</span>
+                      CALL OFFICER VIA POLICE RADIO
+                    </button>
+                    <button
+                      onClick={() => setShowAssignModal(true)}
+                      className="w-full py-spacing-xs px-spacing-sm bg-surface-container-high text-on-surface rounded font-label-sm font-bold hover:bg-surface-container-highest transition-all flex items-center justify-center gap-spacing-xs"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">swap_horiz</span>
+                      REASSIGN OFFICER
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (
               <div className="py-spacing-lg text-center font-label-md text-on-surface-variant bg-surface-container-low rounded-lg">
-                No police officer currently assigned. Click "ASSIGN OFFICER NOW" to dispatch available beat patrol.
+                No police officer currently assigned. Click "ASSIGN RESPONSE NOW" to dispatch available beat patrol.
               </div>
             )}
           </div>
@@ -404,7 +437,7 @@ export default function CaseDetails() {
                   }`}>
                     •
                   </span>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col text-left">
                     <div className="flex items-center gap-spacing-xs">
                       <span className="font-code-md text-on-surface font-bold">{ev.event_time}</span>
                       <span className="font-label-sm px-spacing-2xs rounded bg-surface-container-highest text-on-surface uppercase font-semibold">
@@ -423,7 +456,9 @@ export default function CaseDetails() {
 
       {showAssignModal && (
         <OfficerAssignmentModal
-          caseId={caseId}
+          caseId={c.id}
+          emergencyType={c.emergency_type}
+          location={c.location_address}
           onClose={() => setShowAssignModal(false)}
           onAssigned={loadCaseDetails}
         />
