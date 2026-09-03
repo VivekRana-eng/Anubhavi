@@ -199,7 +199,7 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
       created_at: 'Just now'
     }
     try {
-      await fetch('/api/assistance/request', {
+      await fetch('/api/assistance/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

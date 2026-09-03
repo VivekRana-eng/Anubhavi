@@ -3,10 +3,31 @@ import { useNavigate } from 'react-router-dom';
 import { useWebSocket } from '../context/WebSocketContext';
 
 export default function SosAlertModal() {
-  const { activeAlert, dismissAlert } = useWebSocket();
+  const { activeAlert, userNotification, dismissAlert, dismissUserNotification } = useWebSocket();
   const navigate = useNavigate();
   const [accepting, setAccepting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  if (!activeAlert && userNotification?.event === 'NEW_ASSISTANCE_REQUEST') {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/70 backdrop-blur-md p-spacing-md">
+        <div className="w-full max-w-lg rounded-xl border-2 border-secondary bg-surface-container-lowest p-spacing-lg shadow-2xl">
+          <div className="flex items-center gap-spacing-sm border-b border-surface-container-highest pb-spacing-sm">
+            <span className="material-symbols-outlined text-secondary text-[32px]">emergency</span>
+            <div><h2 className="font-headline-sm font-extrabold">🤝 NEW ASSISTANCE REQUEST</h2><p className="font-label-sm text-on-surface-variant">Immediate review required</p></div>
+          </div>
+          <div className="mt-spacing-md space-y-spacing-xs text-left font-body-sm text-on-surface">
+            <p><strong>Senior Citizen:</strong> {userNotification.citizen_name || 'Senior Citizen'}</p>
+            <p><strong>Request:</strong> {userNotification.request_type || 'General Assistance'}</p>
+            <p><strong>Description:</strong> {userNotification.description || userNotification.message || 'Assistance requested'}</p>
+            <p><strong>Location:</strong> {userNotification.location || 'Model Town Ward'}</p>
+            {userNotification.meeting_date && <p><strong>Meeting Date:</strong> {userNotification.meeting_date}</p>}
+          </div>
+          <button onClick={dismissUserNotification} className="mt-spacing-md w-full rounded bg-primary py-spacing-xs font-label-lg font-bold text-on-primary">DISMISS</button>
+        </div>
+      </div>
+    );
+  }
 
   if (!activeAlert) return null;
 

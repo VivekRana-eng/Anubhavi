@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import uuid
 from app.database import get_db_connection, log_audit
 from app.auth import get_current_user
+from app.websocket import manager
 
 router = APIRouter(prefix="/api/assistance", tags=["Assistance Requests"])
 
@@ -13,6 +14,7 @@ class CreateAssistanceRequest(BaseModel):
     request_type: str # Welfare Assistance, Safety Concern, Medical Assistance, Neighbour Concern, Other
     description: Optional[str] = None
     location: Optional[str] = None
+    meeting_date: Optional[str] = None
 
 class UpdateAssistanceStatus(BaseModel):
     status: str
@@ -28,7 +30,7 @@ def list_assistance_requests():
     return [dict(r) for r in rows]
 
 @router.post("/create")
-def create_assistance_request(req: CreateAssistanceRequest):
+async def create_assistance_request(req: CreateAssistanceRequest):
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -55,6 +57,19 @@ def create_assistance_request(req: CreateAssistanceRequest):
     conn.close()
 
     log_audit("SYSTEM", "ANUBHAVI System", "SYSTEM", "ASSISTANCE REQUEST CREATED", f"Created assistance request {req_id} for {citizen['name']}", req_id)
+
+    await manager.broadcast({
+        "event": "NEW_ASSISTANCE_REQUEST",
+        "request_id": req_id,
+        "citizen_id": citizen["id"],
+        "citizen_name": citizen["name"],
+        "request_type": req.request_type,
+        "description": req.description or "General assistance requested",
+        "meeting_date": req.meeting_date,
+        "location": location,
+        "created_at": now_str,
+        "status": "NEW"
+    })
 
     return {"status": "SUCCESS", "request_id": req_id, "message": "Assistance request logged"}
 
