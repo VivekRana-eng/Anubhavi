@@ -251,10 +251,6 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
   let title = ''
 
   if (view === 'home') {
-    content = <SeniorHome hindi={hindi} username={username} setView={setView} setSosStep={setSosStep} handleDailyCheckIn={handleDailyCheckIn} checkInDone={checkInDone} />
-  }
-
-  if (view === 'home' && false) {
     content = (
       <div className="space-y-6 pt-5">
         {/* TOP WELCOME BAR WITH LOGOUT */}
@@ -444,10 +440,6 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
         )}
 
         {sosStep === 'confirm' && (
-          <SosConfirm hindi={hindi} handleSosTriggerSubmit={handleSosTriggerSubmit} sosSending={sosSending} goHome={goHome} />
-        )}
-
-        {sosStep === 'confirm' && false && (
           <div className="space-y-4 text-center">
             <div className="rounded-2xl bg-amber-50 p-5 border border-amber-200">
               <span className="text-5xl">⚠️</span>
@@ -763,7 +755,7 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
         {content}
 
         <nav className="fixed bottom-0 left-1/2 z-10 flex w-full max-w-[390px] -translate-x-1/2 justify-around border-t border-slate-200 bg-white px-1 py-2 shadow-[0_-8px_20px_rgba(20,40,30,0.08)] sm:bottom-8 sm:rounded-b-[26px] sm:border-x-[8px] sm:border-[#263b36]">
-          <button onClick={() => { setSosStep('confirm'); setView('sos') }} className="-mt-8 grid h-16 w-16 place-items-center rounded-full border-4 border-white bg-red-600 text-3xl text-white shadow-lg" aria-label="Emergency SOS">🆘</button>
+          <button onClick={() => { setSosStep('form'); setView('sos') }} className="-mt-8 grid h-16 w-16 place-items-center rounded-full border-4 border-white bg-red-600 text-3xl text-white shadow-lg" aria-label="Emergency SOS">🆘</button>
           {navItems.map(([key, icon, label]) => (
             <button key={key} onClick={() => setView(key)} className={`flex min-w-14 flex-col items-center gap-1 px-1 py-1 text-[10px] font-bold ${view === key ? 'text-[#426d5f]' : 'text-slate-500'}`}>
               <span className="text-xl">{icon}</span>
@@ -774,20 +766,6 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
       </section>
     </main>
   );
-}
-
-function SeniorHome({ hindi, username, setView, setSosStep, handleDailyCheckIn, checkInDone }) {
-  return <div className="space-y-4 pt-4">
-    <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#dcebf2] text-2xl">👤</div><div><h2 className="text-lg font-extrabold text-[#142b59]">{hindi ? `सुप्रभात, ${username}! 👋` : `Good Morning, ${username}! 👋`}</h2><p className="mt-1 text-sm text-slate-600">{hindi ? 'हम आपकी सुरक्षा के लिए यहां हैं।' : 'We are here for your safety.'}</p></div></div>
-    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5"><div className="flex items-center gap-3"><span className="text-3xl">🟢</span><div><h2 className="text-lg font-extrabold text-emerald-900">{hindi ? 'आप सुरक्षित हैं' : 'YOU ARE SAFE'}</h2><p className="mt-1 text-sm leading-5 text-emerald-800">{hindi ? 'सब ठीक है। अगला चेक-इन: सुबह 10:00 बजे।' : 'Everything is okay. Next check-in: 10:00 AM.'}</p></div></div></div>
-    <div className="grid grid-cols-2 items-stretch gap-3"><button onClick={() => { setSosStep('confirm'); setView('sos') }} className="flex min-h-[144px] flex-col items-start justify-between rounded-2xl bg-red-600 p-4 text-left text-white shadow-sm"><span className="self-center text-4xl">🚨</span><span><strong className="block text-lg">SOS</strong><small className="mt-1 block text-xs leading-4">Get immediate assistance</small></span></button><button onClick={() => setView('help')} className="flex min-h-[144px] flex-col items-start justify-between rounded-2xl bg-amber-300 p-4 text-left text-slate-950 shadow-sm"><span className="self-center text-4xl">🤝</span><span><strong className="block text-lg">Need Help</strong><small className="mt-1 block text-xs leading-4">Request non-emergency help</small></span></button></div>
-    <h2 className="pt-2 text-xl font-extrabold">{hindi ? 'त्वरित पहुंच' : 'Quick Access'}</h2><div className="grid grid-cols-2 items-stretch gap-3"><QuickCard icon="👮" title={hindi ? 'मेरा परिवार' : 'My Family'} text={hindi ? 'आपातकालीन संपर्कों को कॉल करें' : 'Call your emergency contacts'} onClick={() => setView('family')} /><QuickCard icon="▤" title={hindi ? 'मेरे अनुरोध' : 'My Requests'} text={hindi ? 'सहायता अनुरोध देखें' : 'Track assistance requests'} onClick={() => setView('requests')} /><QuickCard icon="⚠" title={hindi ? 'सुरक्षा अलर्ट' : 'Safety Alerts'} text={hindi ? 'पुलिस के महत्वपूर्ण संदेश' : 'Important police messages'} onClick={() => setView('alerts')} /><QuickCard icon="🛡️" title={hindi ? 'वेलफेयर चेक' : 'Welfare Checks'} text={hindi ? 'सुरक्षा जांच देखें' : 'View scheduled checks'} onClick={() => setView('home')} /></div>
-    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><div className="flex items-start gap-3"><span className="text-3xl">📅</span><div><h2 className="text-lg font-extrabold">{hindi ? 'अगला सुरक्षा चेक' : 'Next Safety Check'}</h2><p className="mt-1 font-bold text-[#426d5f]">{hindi ? 'कल • सुबह 10:00 बजे' : 'Tomorrow • 10:00 AM'}</p><p className="mt-1 text-sm text-slate-600">{hindi ? 'कृपया पुष्टि करें कि आप सुरक्षित हैं।' : 'Please confirm that you are safe.'}</p></div></div><button onClick={handleDailyCheckIn} disabled={checkInDone} className="mt-4 min-h-14 w-full rounded-xl bg-[#426d5f] text-lg font-extrabold text-white disabled:opacity-70">{checkInDone ? '✅ SAFE TODAY' : "✅ I'M OK"}</button></section>
-  </div>
-}
-
-function SosConfirm({ hindi, handleSosTriggerSubmit, sosSending, goHome }) {
-  return <section className="mt-1 rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm"><div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-red-100 text-4xl">🚨</div><h2 className="mt-5 text-2xl font-extrabold">{hindi ? 'आपातकालीन सहायता' : 'Emergency Help'}</h2><p className="mt-5 text-lg font-bold text-slate-800">{hindi ? 'क्या आपको तुरंत पुलिस सहायता चाहिए?' : 'Do you need immediate police assistance?'}</p><button onClick={handleSosTriggerSubmit} disabled={sosSending} className="mt-8 min-h-16 w-full rounded-xl bg-red-600 text-lg font-extrabold text-white disabled:opacity-60">🚨 {sosSending ? 'SENDING SOS...' : 'YES, SEND SOS'}</button><button onClick={goHome} className="mt-3 min-h-14 w-full rounded-xl border-2 border-slate-200 text-lg font-bold text-slate-700">Cancel</button></section>
 }
 
 function ScreenCard({ icon, title, tone = 'green', children }) { return <section className="mt-7 rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm"><div className={`mx-auto grid h-16 w-16 place-items-center rounded-2xl text-3xl ${tone === 'red' ? 'bg-red-100' : 'bg-emerald-100'}`}>{icon}</div><h2 className="mt-5 text-2xl font-extrabold">{title}</h2><div className="mt-4 text-slate-700">{children}</div></section> }
