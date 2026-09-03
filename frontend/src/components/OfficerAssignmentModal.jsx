@@ -265,53 +265,6 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
             </div>
           </div>
 
-          {/* RESPONSE TYPE */}
-          <div>
-            <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5 block">
-              RESPONSE TYPE
-            </label>
-            <select
-              value={responseType}
-              onChange={(e) => setResponseType(e.target.value)}
-              className="w-full h-11 px-3 bg-white border border-slate-200 rounded-xl text-slate-800 font-bold text-xs focus:outline-none focus:border-[#2e5746]"
-            >
-              <option value="Police Emergency Response">Police Emergency Response</option>
-              <option value="Police Patrol Van">Police Patrol Van</option>
-              <option value="Medical Rapid Response">Medical Rapid Response</option>
-              <option value="Senior Citizen Welfare Support">Senior Citizen Support</option>
-            </select>
-          </div>
-
-          {/* ESTIMATED RESPONSE TIME (ETA) */}
-          <div>
-            <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5 block">
-              ESTIMATED RESPONSE TIME
-            </label>
-            <select
-              value={estimatedResponseTime}
-              onChange={(e) => setEstimatedResponseTime(e.target.value)}
-              className="w-full h-11 px-3 bg-white border border-slate-200 rounded-xl text-slate-800 font-bold text-xs focus:outline-none focus:border-[#2e5746]"
-            >
-              <option value="5 minutes">5 minutes (Rapid Priority)</option>
-              <option value="10 minutes">10 minutes (Standard Response)</option>
-              <option value="15 minutes">15 minutes</option>
-              <option value="20 minutes">20 minutes</option>
-            </select>
-          </div>
-
-          {/* INSTRUCTIONS */}
-          <div>
-            <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5 block">
-              INSTRUCTIONS
-            </label>
-            <textarea
-              value={instructions}
-              onChange={(e) => setInstructions(e.target.value)}
-              placeholder="Enter dispatch instructions for officer..."
-              className="w-full min-h-16 p-3 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2e5746]"
-            />
-          </div>
-
           {/* ADDITIONAL REMARKS */}
           <div>
             <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5 block">
