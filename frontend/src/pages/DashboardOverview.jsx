@@ -116,34 +116,6 @@ export default function DashboardOverview() {
 
   return (
     <div className="flex flex-col gap-spacing-lg w-full">
-      {/* BANNER STRIP WITH CCTNS SYNC & STATION STATUS */}
-      <div className="bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg border border-surface-container-highest flex flex-col md:flex-row items-start md:items-center justify-between gap-spacing-md relative overflow-hidden text-left">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-spacing-xs">
-            <span className="px-spacing-xs py-spacing-3xs rounded bg-primary-container text-on-primary font-label-sm uppercase font-bold tracking-wider">
-              CCTNS ERSS-112 DIRECT PIPE
-            </span>
-            <span className="font-code-md text-on-surface-variant font-bold">MODEL TOWN POLICE STATION</span>
-          </div>
-          <h1 className="font-headline-lg text-on-surface font-extrabold tracking-tight mt-1">
-            Station House Officer Command & Triage Console
-          </h1>
-          <p className="font-body-sm text-on-surface-variant">
-            Suraksha. Saath. Samman • Real-time emergency dispatch, senior citizens registry, and 24h statutory SLA watchdog.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-spacing-sm">
-          <button
-            onClick={() => navigate('/sho/citizens')}
-            className="px-spacing-md py-spacing-xs rounded bg-primary text-on-primary font-label-lg shadow hover:bg-on-surface transition-all flex items-center gap-spacing-xs font-bold"
-          >
-            <span className="material-symbols-outlined text-[18px]">elderly</span>
-            SENIOR REGISTRY (1,248)
-          </button>
-        </div>
-      </div>
-
       {/* STATISTICAL METRIC CARDS (4 CARDS) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-spacing-sm text-left">
         <div className="bg-surface-container-lowest p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between">
