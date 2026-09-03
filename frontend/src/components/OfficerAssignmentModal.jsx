@@ -61,6 +61,31 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
     setSubmitting(true);
     setError('');
 
+    const isReassign = Boolean(selectedOfficerId && selectedOfficerId !== 'POL-1025');
+    const assignedTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const notifData = {
+      event: isReassign ? 'OFFICER_REASSIGNED' : 'SOS_ASSIGNED',
+      type: 'ASSIGNMENT',
+      title: isReassign ? '👮 OFFICER REASSIGNED' : '👮 OFFICER ASSIGNED',
+      message: `Case ${caseId}: Assigned to ${selectedOfficer.rank} ${selectedOfficer.name} (${selectedOfficer.police_id}) • Patrol Vehicle: ${selectedOfficer.vehicle}`,
+      case_id: caseId,
+      citizen_id: 'CIT-8841',
+      police_station: 'MODEL TOWN POLICE STATION',
+      station_code: 'MTP-PS-01',
+      jurisdiction: 'Model Town • District Central • Zone 1',
+      sho_name: 'Insp. Raj Kumar',
+      officer_name: selectedOfficer.name,
+      officer_rank: selectedOfficer.rank,
+      police_id: selectedOfficer.police_id,
+      vehicle: selectedOfficer.vehicle,
+      remarks: remarks || 'Dispatched via Model Town PS Control Room',
+      status: 'ASSIGNED',
+      assigned_at: assignedTime,
+      time: assignedTime,
+      location: location || 'Model Town'
+    };
+
     const payload = {
       caseId: caseId,
       citizenId: 'CIT-8841',
@@ -75,10 +100,6 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
       assignedOfficerName: selectedOfficer.name,
       assignedOfficerRank: selectedOfficer.rank,
       assignedVehicle: selectedOfficer.vehicle,
-      response_type: responseType,
-      priority: 'HIGH',
-      instructions: instructions,
-      estimated_response_time: estimatedResponseTime,
       remarks: remarks,
       status: 'ASSIGNED'
     };
@@ -96,53 +117,17 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
       
       if (!res.ok) throw new Error(data.detail || 'API offline fallback');
 
-      // Mirror to local storage for instant multi-tab offline demo synchronization
-      localStorage.setItem('anubhavi_local_user_notification', JSON.stringify({
-        event: 'SOS_ASSIGNED',
-        case_id: caseId,
-        citizen_id: 'CIT-8841',
-        police_station: 'MODEL TOWN POLICE STATION',
-        station_code: 'MTP-PS-01',
-        jurisdiction: 'Model Town • District Central • Zone 1',
-        sho_name: 'Insp. Raj Kumar',
-        officer_name: selectedOfficer.name,
-        officer_rank: selectedOfficer.rank,
-        police_id: selectedOfficer.police_id,
-        vehicle: selectedOfficer.vehicle,
-        response_type: responseType,
-        priority: 'HIGH',
-        eta: estimatedResponseTime,
-        instructions: instructions,
-        remarks: remarks,
-        status: 'ASSIGNED',
-        assigned_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }));
+      // Sync local storage & window custom event for real-time popups across multi-tabs
+      localStorage.setItem('anubhavi_local_user_notification', JSON.stringify(notifData));
+      window.dispatchEvent(new CustomEvent('anubhavi_new_notification', { detail: notifData }));
 
       if (onAssigned) onAssigned(data);
       onClose();
     } catch (e) {
       console.warn("Using offline fallback assignment dispatch", e);
-      const notifData = {
-        event: 'SOS_ASSIGNED',
-        case_id: caseId,
-        citizen_id: 'CIT-8841',
-        police_station: 'MODEL TOWN POLICE STATION',
-        station_code: 'MTP-PS-01',
-        jurisdiction: 'Model Town • District Central • Zone 1',
-        sho_name: 'Insp. Raj Kumar',
-        officer_name: selectedOfficer.name,
-        officer_rank: selectedOfficer.rank,
-        police_id: selectedOfficer.police_id,
-        vehicle: selectedOfficer.vehicle,
-        response_type: responseType,
-        priority: 'HIGH',
-        eta: estimatedResponseTime,
-        instructions: instructions,
-        remarks: remarks,
-        status: 'ASSIGNED',
-        assigned_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
       localStorage.setItem('anubhavi_local_user_notification', JSON.stringify(notifData));
+      window.dispatchEvent(new CustomEvent('anubhavi_new_notification', { detail: notifData }));
+      
       if (onAssigned) onAssigned({ assignment: notifData });
       onClose();
     } finally {

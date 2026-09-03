@@ -288,6 +288,8 @@ export default function Header() {
                       className={`p-3 rounded-xl border transition-all text-xs flex flex-col gap-1 ${
                         item.type === 'SOS'
                           ? 'bg-red-50/80 border-red-200 text-red-900'
+                          : item.type === 'ASSIGNMENT'
+                          ? 'bg-blue-50/80 border-blue-200 text-blue-900'
                           : item.type === 'ASSISTANCE'
                           ? 'bg-emerald-50/80 border-emerald-200 text-emerald-900'
                           : 'bg-amber-50/80 border-amber-200 text-amber-900'
@@ -300,7 +302,16 @@ export default function Header() {
                         <span className="text-[10px] text-slate-400 font-semibold">{item.time}</span>
                       </div>
                       <p className="font-bold text-slate-800 text-[12px]">{item.message}</p>
-                      {item.location && (
+                      
+                      {item.officer_name && (
+                        <div className="mt-1 p-2 rounded-lg bg-white/80 border border-slate-200 text-[11px] font-medium text-slate-700 flex flex-col gap-0.5">
+                          <p>👮 <strong>Officer:</strong> {item.officer_rank} {item.officer_name} ({item.police_id})</p>
+                          <p>🚓 <strong>Vehicle:</strong> {item.vehicle}</p>
+                          <p>🏬 <strong>Station:</strong> {item.police_station || 'Model Town PS'}</p>
+                        </div>
+                      )}
+
+                      {item.location && !item.officer_name && (
                         <p className="text-[11px] text-slate-500 font-medium truncate">📍 {item.location}</p>
                       )}
                       

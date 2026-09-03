@@ -141,11 +141,16 @@ export const WebSocketProvider = ({ children }) => {
         setLastEvent(notif);
         addNotificationItem({
           id: `NOT-${Date.now()}`,
-          type: notif.type || 'ASSISTANCE',
-          title: notif.title || '🤝 NEW ASSISTANCE REQUEST',
-          message: notif.message || `${notif.citizen_name || 'Senior Citizen'} submitted assistance request`,
+          type: notif.type || (notif.event === 'OFFICER_REASSIGNED' || notif.event === 'SOS_ASSIGNED' ? 'ASSIGNMENT' : 'ASSISTANCE'),
+          title: notif.title || (notif.event === 'OFFICER_REASSIGNED' ? '👮 OFFICER REASSIGNED' : '👮 OFFICER ASSIGNED'),
+          message: notif.message || `Officer ${notif.officer_name || 'Police Unit'} assigned to case ${notif.case_id || ''}`,
+          officer_name: notif.officer_name,
+          officer_rank: notif.officer_rank,
+          police_id: notif.police_id,
+          vehicle: notif.vehicle,
+          police_station: notif.police_station || 'Model Town Police Station',
           location: notif.location || 'Model Town Ward',
-          time: 'Just Now',
+          time: notif.time || 'Just Now',
           unread: true
         });
       }
