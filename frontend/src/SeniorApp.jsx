@@ -19,7 +19,13 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
   const [problem, setProblem] = useState('')
   const [helpSubmitting, setHelpSubmitting] = useState(false)
   const [helpRequestId, setHelpRequestId] = useState('ANB-DEMO-REQUEST')
+  const [meetingDate, setMeetingDate] = useState(() => {
+    const date = new Date()
+    date.setDate(date.getDate() + 1)
+    return date.toISOString().split('T')[0]
+  })
   const [myRequests, setMyRequests] = useState([])
+  const [expandedRequestId, setExpandedRequestId] = useState(null)
   const [checkInDone, setCheckInDone] = useState(false)
   const [voiceMessage, setVoiceMessage] = useState('')
 
@@ -188,6 +194,7 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
       id: `AST-2026-${Math.floor(100 + Math.random() * 900)}`,
       type: helpType,
       problem: problem || 'General Elder Assistance Requested',
+      meeting_date: meetingDate,
       status: 'PENDING',
       created_at: 'Just now'
     }
@@ -199,6 +206,7 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
           citizen_id: 'CIT-8841',
           request_type: helpType,
           description: problem,
+          meeting_date: meetingDate,
           priority: 'MEDIUM'
         })
       })
@@ -239,11 +247,24 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
     }
   }
 
+  const editAssistanceRequest = (request) => {
+    setHelpType(request.type || request.request_type || '')
+    setProblem(request.problem || request.description || '')
+    if (request.meeting_date) setMeetingDate(request.meeting_date)
+    setHelpStep('form')
+    setView('help')
+  }
+
+  const cancelAssistanceRequest = (request) => {
+    const cancelledRequest = { ...request, status: 'CANCELLED' }
+    setMyRequests(prev => prev.map(item => item.id === request.id ? cancelledRequest : item))
+    localStorage.setItem('anubhavi_local_assistance_request', JSON.stringify(cancelledRequest))
+    setExpandedRequestId(null)
+  }
+
   const navItems = [
     ['home', '🏠', 'Home'],
-    ['help', '🤝', 'Need Help'],
     ['requests', '📋', 'My Requests'],
-    ['family', '👨‍👩‍👧', 'Family'],
     ['profile', '👤', 'Profile'],
   ]
 
@@ -251,6 +272,10 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
   let title = ''
 
   if (view === 'home') {
+    content = <SeniorHome hindi={hindi} username={username} setView={setView} setSosStep={setSosStep} handleDailyCheckIn={handleDailyCheckIn} checkInDone={checkInDone} />
+  }
+
+  if (view === 'legacy-home') {
     content = (
       <div className="space-y-6 pt-5">
         {/* TOP WELCOME BAR WITH LOGOUT */}
@@ -440,6 +465,10 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
         )}
 
         {sosStep === 'confirm' && (
+          <SosConfirm hindi={hindi} handleSosTriggerSubmit={handleSosTriggerSubmit} sosSending={sosSending} goHome={goHome} />
+        )}
+
+        {sosStep === 'confirm' && false && (
           <div className="space-y-4 text-center">
             <div className="rounded-2xl bg-amber-50 p-5 border border-amber-200">
               <span className="text-5xl">⚠️</span>
@@ -501,18 +530,16 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
   }
 
   if (view === 'help') {
-    title = hindi ? 'गैर-आपातकालीन सहायता' : 'Request Assistance'
+    title = hindi ? 'मदद चाहिए' : 'Need Help'
     content = (
       <div className="space-y-4 pt-3">
         {helpStep === 'choose' && (
           <div className="space-y-3 text-left">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{hindi ? 'सहायता का प्रकार चुनें' : 'Select Assistance Needed:'}</p>
-
             {[
-              ['Police Beat Check-in', '👮 Police Beat Officer Check-in', 'Request local beat officer to visit senior home.'],
-              ['Lock & Security Check', '🔒 Door & Gate Safety Check', 'Constable inspection of main doors & locks.'],
-              ['Medical Prescription Help', '💊 Medical Delivery Support', 'Assistance fetching urgent pharmacy supplies.'],
-              ['Cyber & Scam Help', '🛡️ Scam / Pension Support', 'Report suspicious phone calls or financial fraud.']
+              ['Police Assistance', '👮 Police Assistance', 'Get help from the police.'],
+              ['Home Safety', '🏠 Home Safety', 'Request a home safety check.'],
+              ['Welfare Check', '📞 Welfare Check', 'Schedule a welfare check visit.'],
+              ['Other Assistance', '📄 Other Assistance', 'Tell us what help you need.']
             ].map(([val, label, sub]) => (
               <button
                 key={val}
@@ -530,6 +557,20 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
           <form onSubmit={handleHelpSubmit} className="space-y-4 text-left">
             <div className="rounded-xl bg-[#eef7f1] p-3 border border-[#426d5f]/20">
               <span className="text-xs font-bold text-[#426d5f]">Request Type: {helpType}</span>
+            </div>
+
+            <div>
+              <label htmlFor="meeting-date" className="mt-1 block text-sm font-extrabold text-slate-700">
+                Meeting Date
+              </label>
+              <input
+                id="meeting-date"
+                type="date"
+                value={meetingDate}
+                min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
+                onChange={(e) => setMeetingDate(e.target.value)}
+                className="mt-2 min-h-14 w-full rounded-xl border-2 border-slate-200 px-4 text-base outline-none focus:border-[#426d5f]"
+              />
             </div>
 
             <div>
@@ -577,6 +618,7 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
         {helpStep === 'submitted' && (
           <ScreenCard icon="✅" title={hindi ? 'अनुरोध प्राप्त हुआ' : 'Assistance Request Logged!'}>
             <p className="text-sm font-bold text-slate-800">Request ID: {helpRequestId}</p>
+            <p className="mt-2 text-xs text-slate-600">Meeting Date: <strong>{meetingDate}</strong></p>
             <p className="mt-2 text-xs text-slate-600">
               {hindi ? 'मॉडल टाउन बीट अधिकारी को आपका अनुरोध भेज दिया गया है।' : 'Model Town Beat Patrol has received your request and will schedule a visit.'}
             </p>
@@ -614,12 +656,16 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
             </div>
           ) : (
             myRequests.map((r) => (
-              <div key={r.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
-                <div>
-                  <p className="font-extrabold text-slate-900">{r.type}</p>
-                  <p className="text-slate-500 text-[11px]">{r.problem}</p>
+              <div key={r.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="font-extrabold text-slate-900">{r.type}</p>
+                    <p className="text-slate-500 text-[11px]">{r.problem}</p>
+                  </div>
+                  <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[10px]">{r.status}</span>
                 </div>
-                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[10px]">{r.status}</span>
+                <button onClick={() => setExpandedRequestId(expandedRequestId === r.id ? null : r.id)} className="mt-2 font-extrabold text-[#426d5f] hover:underline">{expandedRequestId === r.id ? 'Hide Details ↑' : 'View Details →'}</button>
+                {expandedRequestId === r.id && <div className="mt-2 border-t border-slate-200 pt-2 text-[11px] text-slate-600"><p>Request ID: <strong>{r.id}</strong></p><p className="mt-1">Meeting Date: <strong>{r.meeting_date || 'To be scheduled'}</strong></p><p className="mt-1">Submitted: <strong>{r.created_at || 'Just now'}</strong></p><div className="mt-3 grid grid-cols-2 gap-2"><button onClick={() => editAssistanceRequest(r)} className="rounded-lg border-2 border-[#426d5f] px-2 py-2 font-extrabold text-[#426d5f]">Edit Request</button><button onClick={() => cancelAssistanceRequest(r)} className="rounded-lg border-2 border-red-200 px-2 py-2 font-extrabold text-red-600">Cancel Request</button></div></div>}
               </div>
             ))
           )}
@@ -657,6 +703,18 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
 
   const languageButton = <button onClick={() => setLanguage(hindi ? 'en' : 'hi')} className="rounded-full border border-[#426d5f] px-3 py-2 text-xs font-extrabold text-[#426d5f] transition hover:bg-[#eef7f1]" aria-label="Change language">{hindi ? 'English' : 'हिंदी'}</button>
   
+  if (view === 'alerts') {
+    title = hindi ? 'सुरक्षा अलर्ट' : 'Safety Alerts'
+    content = (
+      <div className="space-y-3 pt-3 text-left">
+        <h2 className="mb-6 text-3xl font-extrabold text-slate-950">{hindi ? 'सुरक्षा अलर्ट' : 'Safety Alerts'}</h2>
+        <Alert icon="🔔" title={hindi ? 'सुरक्षा सलाह' : 'Safety Advisory'} text={hindi ? 'सतर्क रहें और अपने आपातकालीन संपर्क अपडेट रखें।' : 'Please remain alert and keep your emergency contacts updated.'} />
+        <Alert icon="📅" title={hindi ? 'वेलफेयर चेक रिमाइंडर' : 'Welfare Check Reminder'} text={hindi ? 'आपका scheduled check-in सुबह 10:00 बजे है।' : 'Your scheduled check-in is at 10:00 AM.'} />
+        <Alert icon="👮" title={hindi ? 'पुलिस संदेश' : 'Police Message'} text={hindi ? 'आपके सहायता अनुरोध को एक अधिकारी को सौंपा गया है।' : 'Your assistance request has been assigned to an officer.'} />
+      </div>
+    )
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-white font-sans text-[#172238] sm:px-5 sm:py-8 relative">
       
@@ -733,7 +791,7 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
         {view === 'home' ? (
           <header className="border-b border-slate-200 bg-white py-4 text-center">
             <div className="flex items-center justify-between">
-              <span className="w-16" />
+              <img src="/delhi_police_emblem.png" alt="Delhi Police" className="h-12 w-12 object-contain" />
               <p className="text-2xl font-black tracking-[0.12em] text-slate-400">ANUBHAVI</p>
               {languageButton}
             </div>
@@ -766,6 +824,20 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
       </section>
     </main>
   );
+}
+
+function SeniorHome({ hindi, username, setView, setSosStep, handleDailyCheckIn, checkInDone }) {
+  return <div className="space-y-4 pt-4">
+    <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#dcebf2] text-2xl">👤</div><div><h2 className="text-lg font-extrabold text-[#142b59]">{hindi ? `सुप्रभात, ${username}! 👋` : `Good Morning, ${username}! 👋`}</h2><p className="mt-1 text-sm text-slate-600">{hindi ? 'हम आपकी सुरक्षा के लिए यहां हैं।' : 'We are here for your safety.'}</p></div></div>
+    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5"><div className="flex items-center gap-3"><span className="text-3xl">🟢</span><div><h2 className="text-lg font-extrabold text-emerald-900">{hindi ? 'आप सुरक्षित हैं' : 'YOU ARE SAFE'}</h2><p className="mt-1 text-sm leading-5 text-emerald-800">{hindi ? 'सब ठीक है। अगला चेक-इन: सुबह 10:00 बजे।' : 'Everything is okay. Next check-in: 10:00 AM.'}</p></div></div></div>
+    <div className="grid grid-cols-2 items-stretch gap-3"><button onClick={() => { setSosStep('confirm'); setView('sos') }} className="flex min-h-[144px] flex-col items-start justify-between rounded-2xl bg-red-600 p-4 text-left text-white shadow-sm"><span className="self-center text-4xl">🚨</span><span><strong className="block text-lg">SOS</strong><small className="mt-1 block text-xs leading-4">Get immediate assistance</small></span></button><button onClick={() => setView('help')} className="flex min-h-[144px] flex-col items-start justify-between rounded-2xl bg-amber-300 p-4 text-left text-slate-950 shadow-sm"><span className="self-center text-4xl">🤝</span><span><strong className="block text-lg">Need Help</strong><small className="mt-1 block text-xs leading-4">Request non-emergency help</small></span></button></div>
+    <h2 className="pt-2 text-xl font-extrabold">{hindi ? 'त्वरित पहुंच' : 'Quick Access'}</h2><div className="grid grid-cols-2 items-stretch gap-3"><QuickCard icon="👮" title={hindi ? 'मेरा परिवार' : 'My Family'} text={hindi ? 'आपातकालीन संपर्कों को कॉल करें' : 'Call your emergency contacts'} onClick={() => setView('family')} /><QuickCard icon="▤" title={hindi ? 'मेरे अनुरोध' : 'My Requests'} text={hindi ? 'सहायता अनुरोध देखें' : 'Track assistance requests'} onClick={() => setView('requests')} /><QuickCard icon="⚠" title={hindi ? 'सुरक्षा अलर्ट' : 'Safety Alerts'} text={hindi ? 'पुलिस के महत्वपूर्ण संदेश' : 'Important police messages'} onClick={() => setView('alerts')} /><QuickCard icon="🛡️" title={hindi ? 'वेलफेयर चेक' : 'Welfare Checks'} text={hindi ? 'सुरक्षा जांच देखें' : 'View scheduled checks'} onClick={() => setView('home')} /></div>
+    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><div className="flex items-start gap-3"><span className="text-3xl">📅</span><div><h2 className="text-lg font-extrabold">{hindi ? 'अगला सुरक्षा चेक' : 'Next Safety Check'}</h2><p className="mt-1 font-bold text-[#426d5f]">{hindi ? 'कल • सुबह 10:00 बजे' : 'Tomorrow • 10:00 AM'}</p><p className="mt-1 text-sm text-slate-600">{hindi ? 'कृपया पुष्टि करें कि आप सुरक्षित हैं।' : 'Please confirm that you are safe.'}</p></div></div><button onClick={handleDailyCheckIn} disabled={checkInDone} className="mt-4 min-h-14 w-full rounded-xl bg-[#426d5f] text-lg font-extrabold text-white disabled:opacity-70">{checkInDone ? '✅ SAFE TODAY' : "✅ I'M OK"}</button></section>
+  </div>
+}
+
+function SosConfirm({ hindi, handleSosTriggerSubmit, sosSending, goHome }) {
+  return <section className="mt-1 rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm"><div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-red-100 text-4xl">🚨</div><h2 className="mt-5 text-2xl font-extrabold">{hindi ? 'आपातकालीन सहायता' : 'Emergency Help'}</h2><p className="mt-5 text-lg font-bold text-slate-800">{hindi ? 'क्या आपको तुरंत पुलिस सहायता चाहिए?' : 'Do you need immediate police assistance?'}</p><button onClick={handleSosTriggerSubmit} disabled={sosSending} className="mt-8 min-h-16 w-full rounded-xl bg-red-600 text-lg font-extrabold text-white disabled:opacity-60">🚨 {sosSending ? 'SENDING SOS...' : 'YES, SEND SOS'}</button><button onClick={goHome} className="mt-3 min-h-14 w-full rounded-xl border-2 border-slate-200 text-lg font-bold text-slate-700">Cancel</button></section>
 }
 
 function ScreenCard({ icon, title, tone = 'green', children }) { return <section className="mt-7 rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm"><div className={`mx-auto grid h-16 w-16 place-items-center rounded-2xl text-3xl ${tone === 'red' ? 'bg-red-100' : 'bg-emerald-100'}`}>{icon}</div><h2 className="mt-5 text-2xl font-extrabold">{title}</h2><div className="mt-4 text-slate-700">{children}</div></section> }
