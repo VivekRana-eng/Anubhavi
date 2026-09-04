@@ -438,16 +438,22 @@ export default function DashboardOverview() {
     ])
       .then(([statsData, casesData]) => {
         if (statsData) setStats(statsData);
-        if (casesData && Array.isArray(casesData) && casesData.length > 0) {
-          setAllSosCases(casesData);
-        } else {
-          setAllSosCases(MOCK_SOS_CASES);
-        }
+        let initialCases = (casesData && Array.isArray(casesData) && casesData.length > 0) ? casesData : MOCK_SOS_CASES;
+        try {
+          const storedStatus = JSON.parse(localStorage.getItem('anubhavi_local_cases_status') || '{}');
+          initialCases = initialCases.map(c => storedStatus[c.id] ? { ...c, status: storedStatus[c.id] } : c);
+        } catch (e) {}
+        setAllSosCases(initialCases);
         setLoading(false);
       })
       .catch(err => {
         console.error(err);
-        setAllSosCases(MOCK_SOS_CASES);
+        let initialCases = MOCK_SOS_CASES;
+        try {
+          const storedStatus = JSON.parse(localStorage.getItem('anubhavi_local_cases_status') || '{}');
+          initialCases = initialCases.map(c => storedStatus[c.id] ? { ...c, status: storedStatus[c.id] } : c);
+        } catch (e) {}
+        setAllSosCases(initialCases);
         setLoading(false);
       });
   };
@@ -513,6 +519,16 @@ export default function DashboardOverview() {
   }, [lastEvent]);
 
   const handleAcceptCase = async (caseId) => {
+    // Optimistic UI state update so button & badge update instantly
+    setAllSosCases(prev => prev.map(c => c.id === caseId ? { ...c, status: 'ACKNOWLEDGED' } : c));
+
+    // Save updated status in localStorage
+    try {
+      const stored = JSON.parse(localStorage.getItem('anubhavi_local_cases_status') || '{}');
+      stored[caseId] = 'ACKNOWLEDGED';
+      localStorage.setItem('anubhavi_local_cases_status', JSON.stringify(stored));
+    } catch (e) {}
+
     try {
       const res = await fetch(`/api/sos/${caseId}/accept`, {
         method: 'POST',
@@ -525,8 +541,7 @@ export default function DashboardOverview() {
         loadDashboardData();
       }
     } catch (e) {
-      console.error(e);
-      setAllSosCases(prev => prev.map(c => c.id === caseId ? { ...c, status: 'ACKNOWLEDGED' } : c));
+      console.warn("Offline fallback for accept case", e);
     }
   };
 
@@ -681,7 +696,7 @@ export default function DashboardOverview() {
                     )}
 
                     <button
-                      onClick={() => navigate(`/sho/cases/${c.id}`)}
+                      onClick={() => navigate(`/sho/cases/${c.id}`, { state: { caseData: c } })}
                       className="py-spacing-xs px-spacing-md bg-surface-container-high text-on-surface font-label-sm font-bold rounded hover:bg-surface-container-highest transition-all flex items-center gap-1"
                     >
                       <span className="material-symbols-outlined text-[16px]">visibility</span>
