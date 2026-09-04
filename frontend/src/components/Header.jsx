@@ -10,7 +10,7 @@ import {
   CASE_TYPE_OPTIONS
 } from '../context/FilterContext';
 
-export default function Header() {
+export default function Header({ onToggleMobileSidebar }) {
   const { user, logout } = useAuth();
   const {
     audioEnabled,
@@ -61,12 +61,20 @@ export default function Header() {
   }, [setIsFilterPanelOpen]);
 
   return (
-    <header className="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl z-40 flex items-center justify-between px-spacing-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-b border-surface-container-highest">
-      {/* BRAND, BACK BUTTON & TAGLINE */}
-      <div className="flex items-center gap-spacing-md">
+    <header className="fixed top-0 left-0 lg:left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl z-40 flex items-center justify-between px-3 sm:px-spacing-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-b border-surface-container-highest">
+      {/* BRAND, BACK BUTTON, MOBILE MENU & TAGLINE */}
+      <div className="flex items-center gap-2 sm:gap-spacing-md">
+        <button
+          onClick={onToggleMobileSidebar}
+          className="lg:hidden p-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface border border-surface-container-highest shadow-sm"
+          title="Toggle Navigation Menu"
+        >
+          <span className="material-symbols-outlined text-[22px] text-primary">menu</span>
+        </button>
+
         <button
           onClick={() => navigate(-1)}
-          className="px-3 py-1.5 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-lg font-label-md font-bold flex items-center gap-1 border border-surface-container-highest shadow-sm transition-all text-primary"
+          className="hidden sm:flex px-3 py-1.5 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-lg font-label-md font-bold items-center gap-1 border border-surface-container-highest shadow-sm transition-all text-primary"
           title="Go back to previous page"
         >
           <span className="material-symbols-outlined text-[18px]">arrow_back</span>
@@ -77,7 +85,7 @@ export default function Header() {
           <div className="flex items-center gap-spacing-xs">
             <span className="font-headline-sm text-on-surface font-extrabold tracking-tight text-primary">ANUBHAVI</span>
           </div>
-          <span className="font-label-sm text-on-surface-variant tracking-wider">
+          <span className="hidden sm:block font-label-sm text-on-surface-variant tracking-wider">
             "Suraksha. Saath. Samman." • Model Town PS
           </span>
         </div>
@@ -95,134 +103,9 @@ export default function Header() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search Case ID, Senior Name, Mobile, Location, Officer..."
-            className="w-full h-10 pl-10 pr-28 bg-surface-container-low text-on-surface font-body-sm rounded-xl border border-surface-container-highest focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all shadow-inner"
+            className="w-full h-10 pl-10 pr-4 bg-surface-container-low text-on-surface font-body-sm rounded-xl border border-surface-container-highest focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all shadow-inner"
           />
-
-          {/* FILTER BUTTON WITH ACTIVE BADGE */}
-          <button
-            type="button"
-            onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
-            className={`absolute right-1.5 h-7 px-2.5 rounded-lg text-xs font-black tracking-wider flex items-center gap-1.5 transition-all ${
-              activeFilterCount > 0 || isFilterPanelOpen
-                ? 'bg-[#2e5746] text-white shadow-sm'
-                : 'bg-surface-container hover:bg-surface-container-high text-on-surface-variant'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[16px]">tune</span>
-            <span>FILTERS</span>
-            {activeFilterCount > 0 && (
-              <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-900 text-[10px] font-black flex items-center justify-center">
-                {activeFilterCount}
-              </span>
-            )}
-          </button>
         </div>
-
-        {/* 4-FILTER POPOVER PANEL */}
-        {isFilterPanelOpen && (
-          <div className="absolute top-12 left-0 right-0 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-left">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-3">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#2e5746] text-[20px]">tune</span>
-                <span className="font-extrabold text-sm text-slate-800 uppercase tracking-wider">
-                  Filter Case Records
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsFilterPanelOpen(false)}
-                className="text-slate-400 hover:text-slate-700 text-xs font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              {/* 1. POLICE STATION */}
-              <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1 block">
-                  POLICE STATION
-                </label>
-                <select
-                  value={filters.policeStation === 'ALL' ? 'All Police Stations' : filters.policeStation}
-                  onChange={(e) => setFilter('policeStation', e.target.value === 'All Police Stations' ? 'ALL' : e.target.value)}
-                  className="w-full h-9 px-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-bold text-xs focus:outline-none focus:border-[#2e5746]"
-                >
-                  {POLICE_STATIONS_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* 2. ASSIGNED POLICE OFFICER */}
-              <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1 block">
-                  ASSIGNED OFFICER
-                </label>
-                <select
-                  value={filters.assignedOfficer === 'ALL' ? 'All Officers' : filters.assignedOfficer}
-                  onChange={(e) => setFilter('assignedOfficer', e.target.value === 'All Officers' ? 'ALL' : e.target.value)}
-                  className="w-full h-9 px-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-bold text-xs focus:outline-none focus:border-[#2e5746]"
-                >
-                  {OFFICERS_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* 3. CASE STATUS */}
-              <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1 block">
-                  CASE STATUS
-                </label>
-                <select
-                  value={filters.status === 'ALL' ? 'All Statuses' : filters.status}
-                  onChange={(e) => setFilter('status', e.target.value === 'All Statuses' ? 'ALL' : e.target.value)}
-                  className="w-full h-9 px-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-bold text-xs focus:outline-none focus:border-[#2e5746]"
-                >
-                  {STATUS_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* 4. EMERGENCY / CASE TYPE */}
-              <div>
-                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1 block">
-                  CASE TYPE
-                </label>
-                <select
-                  value={filters.caseType === 'ALL' ? 'All Case Types' : filters.caseType}
-                  onChange={(e) => setFilter('caseType', e.target.value === 'All Case Types' ? 'ALL' : e.target.value)}
-                  className="w-full h-9 px-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-bold text-xs focus:outline-none focus:border-[#2e5746]"
-                >
-                  {CASE_TYPE_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* PANEL FOOTER BUTTONS */}
-            <div className="flex items-center justify-between border-t border-slate-200 pt-3.5 mt-4">
-              <button
-                type="button"
-                onClick={clearAllFilters}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all text-xs"
-              >
-                CLEAR ALL
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsFilterPanelOpen(false)}
-                className="px-5 py-2 bg-[#2e5746] hover:bg-[#244638] text-white font-extrabold rounded-xl shadow-md transition-all text-xs"
-              >
-                APPLY FILTERS
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* RIGHT ACTION ITEMS: AUDIO, NOTIFICATIONS, SHO PROFILE */}

@@ -1,60 +1,14 @@
 import React, { useState } from 'react';
 
-const MOCK_POLICE_OFFICERS = [
-  {
-    id: 'POL-1025',
-    name: 'ASI Amit Singh',
-    rank: 'Assistant Sub-Inspector',
-    police_id: 'POL-1025',
-    vehicle: 'PCR Bike #12',
-    status: 'AVAILABLE'
-  },
-  {
-    id: 'POL-1024',
-    name: 'HC Raj Kumar',
-    rank: 'Head Constable',
-    police_id: 'POL-1024',
-    vehicle: 'PCR Van #04',
-    status: 'AVAILABLE'
-  },
-  {
-    id: 'POL-1027',
-    name: 'SI Neeraj Kumar',
-    rank: 'Sub-Inspector',
-    police_id: 'POL-1027',
-    vehicle: 'PCR Car #01',
-    status: 'AVAILABLE'
-  },
-  {
-    id: 'POL-1026',
-    name: 'Const. Vikram Sharma',
-    rank: 'Constable',
-    police_id: 'POL-1026',
-    vehicle: 'PCR Van #02',
-    status: 'ON_DUTY'
-  }
-];
-
 export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emergencyType = 'Medical Emergency', location = 'Model Town', onClose, onAssigned }) {
-  const [presetId, setPresetId] = useState('POL-1025');
-  const [officerName, setOfficerName] = useState('ASI Amit Singh');
-  const [officerRank, setOfficerRank] = useState('Assistant Sub-Inspector');
-  const [policeId, setPoliceId] = useState('POL-1025');
-  const [vehicle, setVehicle] = useState('PCR Bike #12');
+  const [policeStation, setPoliceStation] = useState('MODEL TOWN POLICE STATION');
+  const [officerName, setOfficerName] = useState('');
+  const [officerRank, setOfficerRank] = useState('');
+  const [policeId, setPoliceId] = useState('');
+  const [vehicle, setVehicle] = useState('');
   const [remarks, setRemarks] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-
-  const handleSelectPreset = (id) => {
-    setPresetId(id);
-    const found = MOCK_POLICE_OFFICERS.find(o => o.id === id);
-    if (found) {
-      setOfficerName(found.name);
-      setOfficerRank(found.rank);
-      setPoliceId(found.police_id);
-      setVehicle(found.vehicle);
-    }
-  };
 
   const handleAssignSubmit = async (e) => {
     if (e) e.preventDefault();
@@ -67,25 +21,24 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
     setSubmitting(true);
     setError('');
 
-    const isReassign = Boolean(presetId && presetId !== 'POL-1025');
     const assignedTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     const notifData = {
-      event: isReassign ? 'OFFICER_REASSIGNED' : 'SOS_ASSIGNED',
+      event: 'SOS_ASSIGNED',
       type: 'ASSIGNMENT',
-      title: isReassign ? '👮 OFFICER REASSIGNED' : '👮 OFFICER ASSIGNED',
-      message: `Case ${caseId}: Assigned to ${officerRank || 'Officer'} ${officerName} (${policeId || 'POL-ID'}) • Patrol Vehicle: ${vehicle || 'PCR Unit'}`,
+      title: '👮 OFFICER ASSIGNED BY DSP',
+      message: `Case ${caseId}: Assigned to ${officerRank ? officerRank + ' ' : ''}${officerName} (${policeId || 'POL-ID'}) from ${policeStation || 'Police Station'} • Patrol Vehicle: ${vehicle || 'PCR Unit'}`,
       case_id: caseId,
       citizen_id: 'CIT-8841',
-      police_station: 'MODEL TOWN POLICE STATION',
+      police_station: policeStation || 'MODEL TOWN POLICE STATION',
       station_code: 'MTP-PS-01',
       jurisdiction: 'Model Town • District Central • Zone 1',
       sho_name: 'Insp. Raj Kumar',
       officer_name: officerName,
       officer_rank: officerRank || 'Officer',
-      police_id: policeId || 'POL-1025',
+      police_id: policeId || 'POL-101',
       vehicle: vehicle || 'PCR Patrol Unit',
-      remarks: remarks || 'Dispatched via Model Town PS Control Room',
+      remarks: remarks || 'Dispatched via Control Room',
       status: 'ASSIGNED',
       assigned_at: assignedTime,
       time: assignedTime,
@@ -96,12 +49,12 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
       caseId: caseId,
       citizenId: 'CIT-8841',
       citizenName: 'Rajesh Sharma',
-      policeStation: 'MODEL TOWN POLICE STATION',
+      policeStation: policeStation || 'MODEL TOWN POLICE STATION',
       stationCode: 'MTP-PS-01',
       jurisdiction: 'Model Town • District Central • Zone 1',
       shoId: 'SHO-101',
       shoName: 'Insp. Raj Kumar',
-      officer_id: policeId || 'POL-1025',
+      officer_id: policeId || 'POL-101',
       officer_name: officerName,
       officer_rank: officerRank,
       police_id: policeId,
@@ -182,42 +135,31 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
           </div>
 
           {/* POLICE STATION DETAILS ("ASSIGNING FROM") */}
-          <div className="bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200/80 flex flex-col gap-1">
+          <div className="bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200/80 flex flex-col gap-2">
             <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#2e5746] flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px]">domain</span>
               ASSIGNING FROM POLICE STATION
             </span>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
               <div>
-                <h4 className="text-sm font-extrabold text-slate-900">MODEL TOWN POLICE STATION</h4>
-                <p className="text-xs text-slate-600 font-medium">Station Code: <strong className="text-slate-800">MTP-PS-01</strong></p>
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1 block">
+                  Police Station Name *
+                </label>
+                <input
+                  type="text"
+                  value={policeStation}
+                  onChange={(e) => setPoliceStation(e.target.value)}
+                  placeholder="e.g. MODEL TOWN POLICE STATION"
+                  className="w-full h-10 px-3 bg-white border border-emerald-300 rounded-xl text-slate-900 font-extrabold text-xs focus:outline-none focus:border-[#2e5746]"
+                />
               </div>
-              <div className="text-left sm:text-right">
-                <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-200/80 text-[#2e5746] text-[11px] font-bold">
+              <div className="flex flex-col justify-end text-left sm:text-right">
+                <span className="inline-block px-2.5 py-1 rounded-full bg-emerald-200/80 text-[#2e5746] text-[11px] font-bold self-start sm:self-end">
                   District Central • Zone 1
                 </span>
-                <p className="text-[11px] text-slate-500 font-semibold mt-0.5">Assigned By: Insp. Raj Kumar (SHO)</p>
+                <p className="text-[11px] text-slate-500 font-semibold mt-1">Assigned By: DSP / SHO</p>
               </div>
             </div>
-          </div>
-
-          {/* OPTIONAL PRESET SELECTOR */}
-          <div>
-            <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1 block">
-              QUICK AUTO-FILL FROM ROSTER PRESET (OPTIONAL)
-            </label>
-            <select
-              value={presetId}
-              onChange={(e) => handleSelectPreset(e.target.value)}
-              className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-bold text-xs focus:outline-none focus:border-[#2e5746]"
-            >
-              <option value="">-- SELECT PRESET TO AUTO-FILL (OR TYPE MANUALLY BELOW) --</option>
-              {MOCK_POLICE_OFFICERS.map((off) => (
-                <option key={off.id} value={off.id}>
-                  {off.name} ({off.rank}) — {off.vehicle} — [{off.police_id}]
-                </option>
-              ))}
-            </select>
           </div>
 
           {/* MANUALLY WRITTEN POLICE OFFICER INPUT FIELDS */}
@@ -295,7 +237,7 @@ export default function OfficerAssignmentModal({ caseId = 'SOS-2026-0001', emerg
                   {officerRank || 'Officer'} {officerName || 'Name'}
                 </span>
                 <span className="text-[11px] text-slate-500 font-medium">
-                  ID: <strong className="text-[#2e5746]">{policeId || 'POL-ID'}</strong> • Vehicle: <strong>{vehicle || 'PCR Unit'}</strong>
+                  Station: <strong className="text-[#2e5746]">{policeStation || 'Police Station'}</strong> • ID: <strong>{policeId || 'POL-ID'}</strong> • Vehicle: <strong>{vehicle || 'PCR Unit'}</strong>
                 </span>
               </div>
             </div>

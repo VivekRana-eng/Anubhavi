@@ -139,19 +139,7 @@ export default function SeniorCitizensRegistry() {
           />
         </div>
 
-        <div className="flex items-center gap-spacing-sm w-full sm:w-auto">
-          <span className="font-label-sm text-on-surface-variant uppercase font-bold">Risk Level:</span>
-          <select
-            value={riskFilter}
-            onChange={(e) => setRiskFilter(e.target.value)}
-            className="h-10 px-spacing-sm bg-surface-container-low rounded-lg border border-surface-container-highest font-body-sm focus:outline-none font-bold"
-          >
-            <option value="">ALL RISKS</option>
-            <option value="HIGH">🔴 HIGH RISK</option>
-            <option value="MEDIUM">🟡 MEDIUM RISK</option>
-            <option value="LOW">🟢 LOW RISK</option>
-          </select>
-        </div>
+
       </div>
 
       {/* CITIZENS GRID */}
@@ -170,11 +158,6 @@ export default function SeniorCitizensRegistry() {
                 <div className="flex flex-col text-left">
                   <div className="flex items-center gap-spacing-xs">
                     <span className="font-headline-sm font-bold text-on-surface">{c.name}</span>
-                    <span className={`px-spacing-2xs py-spacing-3xs rounded text-[10px] font-bold uppercase ${
-                      c.risk_level === 'HIGH' ? 'bg-error-container text-on-error-container' : 'bg-surface-container-highest text-on-surface-variant'
-                    }`}>
-                      {c.risk_level} RISK
-                    </span>
                   </div>
                   <span className="font-label-sm text-on-surface-variant">{c.age} Yrs • {c.gender} • {c.living_status}</span>
                   <span className="font-code-md text-primary font-bold mt-1">{c.mobile}</span>
@@ -186,13 +169,7 @@ export default function SeniorCitizensRegistry() {
                 <span className="font-body-sm text-on-surface line-clamp-1">{c.address}</span>
               </div>
 
-              <div className="flex items-center justify-between pt-spacing-2xs border-t border-surface-container-highest">
-                <span className={`px-spacing-xs py-spacing-3xs rounded font-label-sm font-bold uppercase ${
-                  c.status === 'SOS_ACTIVE' ? 'bg-error text-on-error animate-pulse' :
-                  c.status === 'MISSED_CHECKIN' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900'
-                }`}>
-                  {c.status}
-                </span>
+              <div className="flex items-center justify-end pt-spacing-2xs border-t border-surface-container-highest">
 
                 <button
                   onClick={() => navigate(`/sho/citizens/${c.id}`)}

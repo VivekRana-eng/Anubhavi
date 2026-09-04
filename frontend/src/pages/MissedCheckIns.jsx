@@ -105,8 +105,6 @@ export default function MissedCheckIns() {
                   <th className="p-spacing-md">Citizen Name</th>
                   <th className="p-spacing-md">Scheduled Time</th>
                   <th className="p-spacing-md">Last Known Location</th>
-                  <th className="p-spacing-md">Family Notified</th>
-                  <th className="p-spacing-md">Police Notified</th>
                   <th className="p-spacing-md">Status</th>
                   <th className="p-spacing-md text-right">Action</th>
                 </tr>
@@ -120,12 +118,6 @@ export default function MissedCheckIns() {
                     </td>
                     <td className="p-spacing-md font-code-md text-error font-bold">{chk.scheduled_time}</td>
                     <td className="p-spacing-md font-body-sm text-on-surface-variant">{chk.last_known_location}</td>
-                    <td className="p-spacing-md font-label-sm font-bold text-secondary">
-                      {chk.family_notified ? 'YES (SMS SENT ✓)' : 'NO'}
-                    </td>
-                    <td className="p-spacing-md font-label-sm font-bold text-error">
-                      {chk.police_notified ? 'YES (ALERT INGESTED 🚨)' : 'NO'}
-                    </td>
                     <td className="p-spacing-md">
                       <span className="px-spacing-xs py-spacing-3xs rounded font-label-sm font-bold uppercase bg-error-container text-on-error-container">
                         {chk.status}

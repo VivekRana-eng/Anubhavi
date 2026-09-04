@@ -178,40 +178,7 @@ export default function CaseDetails() {
             </p>
           </div>
 
-          {/* STATUS MODIFIER & DISPATCH TRIGGER */}
-          <div className="flex flex-wrap items-center gap-spacing-sm bg-surface-container-low p-spacing-xs rounded-lg shadow-sm border border-surface-container-highest">
-            <div className="flex flex-col px-spacing-xs">
-              <span className="font-label-sm text-on-surface-variant uppercase font-bold">Current Status</span>
-              <div className="flex items-center gap-spacing-2xs">
-                <span className="w-2.5 h-2.5 rounded-full bg-secondary animate-ping"></span>
-                <select
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="bg-transparent font-headline-sm text-on-surface font-bold focus:outline-none cursor-pointer"
-                >
-                  <option value="ACTIVE">🔴 ACTIVE</option>
-                  <option value="ACKNOWLEDGED">🔵 ACKNOWLEDGED</option>
-                  <option value="ASSIGNED">🟣 ASSIGNED</option>
-                  <option value="OFFICER_DISPATCHED">🚔 OFFICER DISPATCHED</option>
-                  <option value="ON_THE_WAY">🚓 EN ROUTE</option>
-                  <option value="OFFICER_AT_LOCATION">📍 OFFICER AT LOCATION</option>
-                  <option value="ARRIVED">📍 ARRIVED</option>
-                  <option value="RESOLVED">🟢 RESOLVED</option>
-                  <option value="CLOSED">🔒 CLOSED</option>
-                  <option value="CANCELLED">❌ CANCELLED</option>
-                </select>
-              </div>
-            </div>
 
-            <button
-              onClick={handleUpdateStatus}
-              disabled={updating}
-              className="px-spacing-md py-spacing-xs rounded bg-primary text-on-primary font-label-lg shadow-sm hover:bg-on-surface transition-all flex items-center gap-spacing-xs font-bold"
-            >
-              <span className="material-symbols-outlined text-[18px]">published_with_changes</span>
-              {updating ? 'SAVING...' : 'UPDATE CASE STATUS'}
-            </button>
-          </div>
         </div>
       </div>
 
@@ -253,14 +220,7 @@ export default function CaseDetails() {
               <span className="font-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Registered Residence</span>
               <span className="font-body-sm text-on-surface font-semibold">{c.location_address}</span>
 
-              <span className="font-label-sm text-error font-bold uppercase tracking-wider flex items-center gap-1 mt-spacing-xs">
-                <span className="material-symbols-outlined text-[14px]">medical_services</span> Medical Dossier (Critical)
-              </span>
-              <div className="flex flex-wrap gap-spacing-3xs mt-spacing-2xs">
-                <span className="px-spacing-xs py-spacing-3xs rounded bg-error-container text-on-error-container font-label-sm font-bold">
-                  {citizen.medical_conditions || 'Severe Cardiac History, Pacemaker Fitted (2023)'}
-                </span>
-              </div>
+
             </div>
           </div>
         </div>
@@ -277,7 +237,7 @@ export default function CaseDetails() {
             <span className="font-label-sm text-on-surface-variant font-semibold">Cell Tower Triangulation + GPS Active</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-spacing-md bg-surface-container-low p-spacing-md rounded-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-spacing-md bg-surface-container-low p-spacing-md rounded-xl">
             <div className="flex flex-col bg-surface-container-lowest p-spacing-sm rounded-lg shadow-sm border border-surface-container-highest">
               <span className="font-label-sm text-on-surface-variant uppercase font-semibold">Triggered At</span>
               <span className="font-code-md text-on-surface font-bold mt-0.5">{c.created_at}</span>
@@ -285,10 +245,6 @@ export default function CaseDetails() {
             <div className="flex flex-col bg-surface-container-lowest p-spacing-sm rounded-lg shadow-sm border border-surface-container-highest">
               <span className="font-label-sm text-on-surface-variant uppercase font-semibold">Beat Sector</span>
               <span className="font-label-md text-on-surface font-bold mt-0.5">Model Town Sector 3</span>
-            </div>
-            <div className="flex flex-col bg-surface-container-lowest p-spacing-sm rounded-lg shadow-sm border border-surface-container-highest">
-              <span className="font-label-sm text-on-surface-variant uppercase font-semibold">GPS Coordinates</span>
-              <span className="font-code-md text-primary font-bold mt-0.5">{c.latitude || 30.9010}° N, {c.longitude || 75.8573}° E</span>
             </div>
           </div>
         </div>

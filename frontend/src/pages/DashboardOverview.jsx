@@ -537,56 +537,52 @@ export default function DashboardOverview() {
   return (
     <div className="flex flex-col gap-spacing-lg w-full">
       {/* STATISTICAL METRIC CARDS (4 CARDS) */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-spacing-sm text-left">
-        <div className="bg-surface-container-lowest p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between">
-          <span className="font-label-sm text-on-surface-variant uppercase font-semibold">Total Citizens</span>
-          <span className="font-headline-xl text-primary font-extrabold mt-1">{stats?.total_citizens || 1248}</span>
-          <span className="font-label-sm text-secondary mt-1 font-bold">Model Town Ward</span>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-spacing-sm text-left">
+        <div className="bg-surface-container-lowest p-3 sm:p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between">
+          <span className="text-[11px] sm:font-label-sm text-on-surface-variant uppercase font-semibold">Total Citizens</span>
+          <span className="text-xl sm:font-headline-xl text-primary font-extrabold mt-1">{stats?.total_citizens || 1248}</span>
+          <span className="text-[10px] sm:font-label-sm text-secondary mt-1 font-bold">Model Town Ward</span>
         </div>
 
-        <div className="bg-error-container/20 p-spacing-md rounded-xl shadow-sm border border-error-container flex flex-col justify-between">
-          <span className="font-label-sm text-error uppercase font-extrabold flex items-center gap-1">
+        <div className="bg-error-container/20 p-3 sm:p-spacing-md rounded-xl shadow-sm border border-error-container flex flex-col justify-between">
+          <span className="text-[11px] sm:font-label-sm text-error uppercase font-extrabold flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-error animate-ping"></span> Active SOS
           </span>
-          <span className="font-headline-xl text-error font-extrabold mt-1">{activeCasesCount}</span>
-          <span className="font-label-sm text-error font-bold mt-1">Requires Triage</span>
+          <span className="text-xl sm:font-headline-xl text-error font-extrabold mt-1">{activeCasesCount}</span>
+          <span className="text-[10px] sm:font-label-sm text-error font-bold mt-1">Requires Triage</span>
         </div>
 
-        <div className="bg-surface-container-lowest p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between">
-          <span className="font-label-sm text-on-surface-variant uppercase font-semibold">Missed Check-ins</span>
-          <span className="font-headline-xl text-on-surface font-extrabold mt-1">{stats?.missed_checkins || 5}</span>
-          <span className="font-label-sm text-on-surface-variant font-semibold mt-1">Unresponsive pings</span>
+        <div className="bg-surface-container-lowest p-3 sm:p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between">
+          <span className="text-[11px] sm:font-label-sm text-on-surface-variant uppercase font-semibold">Missed Check-ins</span>
+          <span className="text-xl sm:font-headline-xl text-on-surface font-extrabold mt-1">{stats?.missed_checkins || 5}</span>
+          <span className="text-[10px] sm:font-label-sm text-on-surface-variant font-semibold mt-1">Unresponsive pings</span>
         </div>
 
-        <div className="bg-surface-container-lowest p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between">
-          <span className="font-label-sm text-on-surface-variant uppercase font-semibold">Avg Response</span>
-          <span className="font-headline-xl text-primary font-extrabold mt-1">{stats?.avg_response_time || '8 min'}</span>
-          <span className="font-label-sm text-secondary font-semibold mt-1">Target &lt;15m</span>
+        <div className="bg-surface-container-lowest p-3 sm:p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between">
+          <span className="text-[11px] sm:font-label-sm text-on-surface-variant uppercase font-semibold">Avg Response</span>
+          <span className="text-xl sm:font-headline-xl text-primary font-extrabold mt-1">{stats?.avg_response_time || '8 min'}</span>
+          <span className="text-[10px] sm:font-label-sm text-secondary font-semibold mt-1">Target &lt;15m</span>
         </div>
       </div>
 
-      {/* ACTIVE FILTER CHIPS DISPLAY */}
       <FilterChips />
 
-      {/* ACTIVE SOS & EMERGENCY TRIAGE QUEUE */}
-      <div className="bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg border border-surface-container-highest flex flex-col gap-spacing-md text-left">
+      <div className="bg-surface-container-lowest rounded-xl shadow-sm p-3 sm:p-spacing-lg border border-surface-container-highest flex flex-col gap-spacing-md text-left w-full overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-surface-container-highest pb-spacing-xs gap-2">
           <div className="flex items-center gap-spacing-xs">
             <span className="material-symbols-outlined text-error text-[24px]">fmd_bad</span>
-            <h2 className="font-headline-sm text-on-surface font-bold uppercase tracking-wider">
+            <h2 className="font-headline-sm text-on-surface font-bold uppercase tracking-wider text-sm sm:text-base">
               Priority SOS Emergency Triage Feed
             </h2>
           </div>
 
-          {/* DYNAMIC RESULT COUNT */}
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 bg-surface-container-high text-on-surface font-label-md font-bold rounded-lg border border-surface-container-highest">
+            <span className="px-3 py-1 bg-surface-container-high text-on-surface text-xs font-bold rounded-lg border border-surface-container-highest">
               Showing {filteredCases.length} of {allSosCases.length} cases
             </span>
           </div>
         </div>
 
-        {/* NO RESULTS MATCHING FILTER EMPTY STATE */}
         {filteredCases.length === 0 ? (
           <div className="py-12 px-4 text-center flex flex-col items-center justify-center gap-3 bg-slate-50 rounded-2xl border border-slate-200 my-2">
             <div className="w-16 h-16 rounded-full bg-slate-200/80 flex items-center justify-center text-slate-500 text-3xl">
@@ -598,13 +594,13 @@ export default function DashboardOverview() {
             </p>
             <button
               onClick={clearAllFilters}
-              className="mt-2 px-5 py-2.5 bg-[#2e5746] hover:bg-[#244638] text-white font-extrabold text-xs rounded-xl shadow-md transition-all uppercase tracking-wider"
+              className="px-4 py-2 rounded-xl bg-[#2e5746] text-white font-extrabold text-xs shadow hover:bg-[#244638] transition-all"
             >
-              CLEAR FILTERS
+              CLEAR ALL FILTERS
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-spacing-md">
+          <div className="flex flex-col gap-spacing-md w-full">
             {filteredCases.map((c) => {
               const assignment = c.assignment_details || {};
               const officerName = assignment.officer_name || c.assigned_officer_name || c.assignedOfficer || c.officer_name || (c.status === 'ASSIGNED' || c.status === 'ARRIVED' || c.status === 'ON THE WAY' || c.status === 'ON_THE_WAY' || c.status === 'OFFICER_DISPATCHED' || c.status === 'OFFICER DISPATCHED' ? 'ASI Amit Singh' : null);
@@ -615,17 +611,16 @@ export default function DashboardOverview() {
               return (
                 <div
                   key={c.id}
-                  className={`p-spacing-md rounded-xl border flex flex-col lg:flex-row items-start lg:items-center justify-between gap-spacing-md transition-all ${
+                  className={`p-3 sm:p-spacing-md rounded-xl border flex flex-col lg:flex-row items-start lg:items-center justify-between gap-spacing-md transition-all w-full overflow-hidden ${
                     c.status === 'NEW' || c.status === 'ACTIVE'
                       ? 'bg-error-container/10 border-error shadow-sm'
                       : 'bg-surface-container-low border-surface-container-highest'
                   }`}
                 >
-                  <div className="flex flex-col gap-spacing-2xs flex-1 text-left">
+                  <div className="flex flex-col gap-spacing-2xs flex-1 text-left w-full min-w-0">
                     <div className="flex flex-wrap items-center gap-spacing-xs">
-                      <span className="font-code-md text-on-surface font-extrabold">{c.id}</span>
+                      <span className="font-code-md text-on-surface font-extrabold text-xs sm:text-sm break-all">{c.id}</span>
                       
-                      {/* STATUS BADGE */}
                       <span className={`px-spacing-xs py-spacing-3xs rounded font-label-sm font-bold uppercase ${
                         c.status === 'NEW' || c.status === 'ACTIVE' ? 'bg-error text-on-error animate-pulse' :
                         c.status === 'ACKNOWLEDGED' || c.status === 'ACCEPTED' ? 'bg-secondary-container text-on-secondary-container' :
@@ -637,30 +632,29 @@ export default function DashboardOverview() {
                       </span>
                     </div>
 
-                    <span className="font-headline-sm text-on-surface font-bold mt-1">
+                    <span className="font-headline-sm text-on-surface font-bold mt-1 text-sm sm:text-base break-words">
                       Senior Citizen: {c.citizen_name || c.citizenName} ({c.citizen_age || c.citizenAge || 72} Yrs)
                     </span>
 
-                    {/* POLICE STATION & ASSIGNED OFFICER STRIP */}
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-700 font-semibold my-1">
-                      <span className="flex items-center gap-1 text-emerald-900 font-bold">
-                        <span className="material-symbols-outlined text-[15px] text-[#2e5746]">domain</span>
+                      <span className="flex items-center gap-1 text-emerald-900 font-bold break-words">
+                        <span className="material-symbols-outlined text-[15px] text-[#2e5746] flex-shrink-0">domain</span>
                         {stationName} ({stationCode})
                       </span>
                       {officerName && (
-                        <span className="flex items-center gap-1 text-slate-800 font-extrabold">
-                          <span className="material-symbols-outlined text-[15px] text-primary">local_police</span>
+                        <span className="flex items-center gap-1 text-slate-800 font-extrabold break-words">
+                          <span className="material-symbols-outlined text-[15px] text-primary flex-shrink-0">local_police</span>
                           Officer: {officerRank} {officerName}
                         </span>
                       )}
                     </div>
 
-                    <span className="font-body-sm text-on-surface-variant flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[16px] text-secondary">location_on</span>
-                      {c.location_address || c.address || 'Model Town, Sector 3, Ludhiana'}
+                    <span className="font-body-sm text-on-surface-variant flex items-start gap-1 break-words text-xs">
+                      <span className="material-symbols-outlined text-[16px] text-secondary flex-shrink-0 mt-0.5">location_on</span>
+                      <span>{c.location_address || c.address || 'Model Town, Sector 3, Ludhiana'}</span>
                     </span>
 
-                    <span className="font-code-md text-primary font-bold">
+                    <span className="font-code-md text-primary font-bold text-xs break-words mt-1">
                       Mobile: {c.citizen_mobile || c.phone || '+91 98721-00214'} • Triggered At: {c.created_at || c.createdAt || '2026-09-03 20:50:08'}
                     </span>
                   </div>

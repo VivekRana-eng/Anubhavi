@@ -24,6 +24,10 @@ import TacticalLiveMap from './pages/TacticalLiveMap';
 export default function App() {
   const { user, isAuthenticated, logout } = useAuth();
   const [stats, setStats] = useState({});
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  const toggleMobileSidebar = () => setIsMobileSidebarOpen(prev => !prev);
+  const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
 
   const loadStats = () => {
     fetch('/api/analytics/dashboard-stats')
@@ -68,15 +72,15 @@ export default function App() {
 
   // 3. POLICE COMMAND CONSOLE INTERFACE (SHO / DSP / OFFICER)
   return (
-    <div className="min-h-screen bg-background font-body-md text-on-surface antialiased flex">
+    <div className="min-h-screen bg-background font-body-md text-on-surface antialiased flex w-full overflow-x-hidden">
       {/* SIDEBAR */}
-      <Sidebar stats={stats} />
+      <Sidebar stats={stats} isOpenOnMobile={isMobileSidebarOpen} onCloseMobile={closeMobileSidebar} />
 
       {/* HEADER & MAIN CONTENT AREA */}
-      <div className="pl-72 flex-1 flex flex-col min-h-screen">
-        <Header user={user} onLogout={logout} />
+      <div className="pl-0 lg:pl-72 flex-1 flex flex-col min-h-screen w-full min-w-0">
+        <Header user={user} onLogout={logout} onToggleMobileSidebar={toggleMobileSidebar} />
 
-        <main className="relative pt-20 bg-background min-h-screen w-full px-spacing-lg pb-spacing-2xl">
+        <main className="relative pt-20 bg-background min-h-screen w-full px-3 sm:px-spacing-lg pb-spacing-2xl overflow-x-hidden">
           <Routes>
             <Route path="/" element={<Navigate to="/sho/dashboard" replace />} />
             <Route path="/login" element={<Navigate to="/sho/dashboard" replace />} />

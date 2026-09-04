@@ -40,9 +40,9 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
           setCoords({
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
-            address: `GPS: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)} (Model Town)`
+            address: 'Model Town Phase 2, Ludhiana'
           })
-          setLocationStatus('GPS Coordinates Locked')
+          setLocationStatus('Location Locked')
         },
         () => {
           setLocationStatus('Location unavailable (Using Registered Residence)')
@@ -323,9 +323,6 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
               <p className="flex items-center gap-1.5">
                 <span>🚓</span> Vehicle: <strong>{activeCase.vehicle || 'PCR Van #04'}</strong>
               </p>
-              <p className="flex items-center gap-1.5 text-red-700">
-                <span>⏱️</span> ETA: <strong>{activeCase.eta || '10 minutes'}</strong>
-              </p>
             </div>
 
             <div className="mt-3 border-t border-red-200/80 pt-2 text-[11px] text-slate-600 font-medium">
@@ -517,7 +514,6 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
               <p className="font-extrabold text-slate-900"><strong>Status:</strong> <span className="text-red-600 uppercase font-black">{activeCase?.status || 'DISPATCHING'}</span></p>
               <p><strong>Assigned Officer:</strong> {activeCase?.officer_name || 'HC Raj Kumar'}</p>
               <p><strong>PCR Vehicle:</strong> {activeCase?.vehicle || 'Patrol Unit PCR-04'}</p>
-              <p><strong>Estimated ETA:</strong> {activeCase?.eta || '10 minutes'}</p>
             </div>
 
             <button onClick={goHome} className="mt-5 w-full rounded-xl bg-[#426d5f] py-3 font-extrabold text-white">
@@ -643,7 +639,6 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
             </div>
             <p className="text-xs font-bold text-slate-800 mt-2">Station: {activeCase.police_station || 'Model Town Police Station'}</p>
             <p className="text-xs text-slate-700">Officer: {activeCase.officer_rank} {activeCase.officer_name} ({activeCase.vehicle})</p>
-            <p className="text-xs text-red-700 font-bold mt-1">ETA: {activeCase.eta}</p>
           </div>
         )}
 
@@ -761,12 +756,6 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
               {userNotification.priority && (
                 <p className="font-extrabold text-amber-700">
                   ⚡ Priority: {userNotification.priority}
-                </p>
-              )}
-
-              {userNotification.eta && (
-                <p className="font-black text-red-600 text-sm pt-1">
-                  ⏱️ Estimated ETA: {userNotification.eta}
                 </p>
               )}
 
