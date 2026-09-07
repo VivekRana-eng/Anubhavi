@@ -19,10 +19,22 @@ const DEMO_REQUESTS = [
   },
 ];
 
+const OFFICERS = [
+  { id: 'POL-1025', name: 'ASI Amit Singh', rank: 'Assistant Sub-Inspector', mobile: '+91 98721-44102' },
+  { id: 'POL-1024', name: 'HC Raj Kumar', rank: 'Head Constable', mobile: '+91 98140-99812' },
+  { id: 'POL-1028', name: 'SI Rahul Verma', rank: 'Sub-Inspector', mobile: '+91 98112-33445' },
+  { id: 'POL-1026', name: 'Const. Vikram Sharma', rank: 'Constable', mobile: '+91 98112-99124' },
+  { id: 'POL-1027', name: 'SI Neeraj Kumar', rank: 'Sub-Inspector', mobile: '+91 98112-77123' },
+  { id: 'POL-1029', name: 'HC Manpreet Singh', rank: 'Head Constable', mobile: '+91 98112-55667' },
+  { id: 'POL-1031', name: 'Inspector Sharma', rank: 'Inspector', mobile: '+91 98112-11223' }
+];
+
 export default function AssistanceRequests() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [scheduleForm, setScheduleForm] = useState({ meeting_date: '', meeting_time: '10:00', officer_id: '', officer_name: '', officer_rank: '', police_id: '', officer_mobile: '' });
 
   const loadRequests = () => {
     setLoading(true);
@@ -33,7 +45,14 @@ export default function AssistanceRequests() {
         return res.json();
       })
       .then(data => {
-        setRequests(Array.isArray(data) && data.length > 0 ? data : DEMO_REQUESTS);
+        let localRequest = null;
+        try {
+          localRequest = JSON.parse(localStorage.getItem('anubhavi_local_assistance_request') || 'null');
+        } catch (error) {
+          localRequest = null;
+        }
+        const serverRequests = Array.isArray(data) && data.length > 0 ? data : DEMO_REQUESTS;
+        setRequests(localRequest ? [localRequest, ...serverRequests.filter(item => item.id !== localRequest.id)] : serverRequests);
         setLoading(false);
       })
       .catch(err => {
@@ -55,8 +74,15 @@ export default function AssistanceRequests() {
         console.error('Local assistance request error:', error);
       }
     };
+    const handleLocalRequestEvent = (event) => {
+      if (event.detail) setRequests(prev => [event.detail, ...prev.filter(item => item.id !== event.detail.id)]);
+    };
     window.addEventListener('storage', handleLocalRequest);
-    return () => window.removeEventListener('storage', handleLocalRequest);
+    window.addEventListener('anubhavi_new_assistance_request', handleLocalRequestEvent);
+    return () => {
+      window.removeEventListener('storage', handleLocalRequest);
+      window.removeEventListener('anubhavi_new_assistance_request', handleLocalRequestEvent);
+    };
   }, []);
 
   const handleUpdateStatus = async (id, status) => {
@@ -75,6 +101,71 @@ export default function AssistanceRequests() {
     }
   };
 
+  const openSchedule = (request) => {
+    setSelectedRequest(request);
+    setScheduleForm({
+      meeting_date: request.meeting_date || new Date().toISOString().split('T')[0],
+      meeting_time: request.meeting_time || '10:00',
+      officer_id: request.assigned_officer_id || '',
+      officer_name: request.assigned_officer_name || '',
+      officer_rank: request.assigned_officer_rank || '',
+      police_id: request.assigned_officer_id || '',
+      officer_mobile: request.assigned_officer_mobile || ''
+    });
+  };
+
+  const handleSchedule = async (event) => {
+    event.preventDefault();
+    const officerName = scheduleForm.officer_name.trim();
+    const officerRank = scheduleForm.officer_rank.trim();
+    const policeId = scheduleForm.police_id.trim();
+    if (!officerName || !officerRank || !policeId) {
+      setError('Please fill Officer Name, Rank, and Belt / Police Number.');
+      return;
+    }
+    const updatedRequest = {
+      ...selectedRequest,
+      status: 'ASSIGNED',
+      meeting_date: scheduleForm.meeting_date,
+      meeting_time: scheduleForm.meeting_time,
+      assigned_officer_id: policeId,
+      assigned_officer_name: officerName,
+      assigned_officer_rank: officerRank,
+      assigned_officer_mobile: scheduleForm.officer_mobile
+    };
+
+    try {
+      await fetch(`/api/assistance/${selectedRequest.id}/schedule`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('anubhavi_token')}` },
+        body: JSON.stringify({ ...scheduleForm, officer_id: policeId, officer_name: officerName, officer_rank: officerRank, officer_mobile: scheduleForm.officer_mobile })
+      });
+    } catch (error) {
+      console.warn('Offline assignment saved locally');
+    }
+
+    setRequests(prev => prev.map(item => item.id === updatedRequest.id ? updatedRequest : item));
+    localStorage.setItem('anubhavi_local_assistance_assignment', JSON.stringify(updatedRequest));
+    const assignmentNotification = {
+      event: 'ASSISTANCE_ASSIGNED',
+      request_id: updatedRequest.id,
+      citizen_id: updatedRequest.citizen_id,
+      title: 'Assistance Visit Scheduled',
+      message: `${officerName} has been assigned for your assistance request.`,
+      meeting_date: updatedRequest.meeting_date,
+      meeting_time: updatedRequest.meeting_time,
+      officer_name: officerName,
+      officer_rank: officerRank,
+      police_id: policeId,
+      officer_mobile: scheduleForm.officer_mobile,
+      police_station: 'Model Town Police Station',
+      status: 'ASSIGNED'
+    };
+    localStorage.setItem('anubhavi_local_user_notification', JSON.stringify(assignmentNotification));
+    window.dispatchEvent(new CustomEvent('anubhavi_new_notification', { detail: assignmentNotification }));
+    setSelectedRequest(null);
+  };
+
   return (
     <div className="flex flex-col gap-spacing-lg w-full">
       <div className="bg-surface-container-lowest rounded-xl shadow-sm p-spacing-lg border border-surface-container-highest flex flex-col md:flex-row items-start md:items-center justify-between gap-spacing-md">
@@ -89,7 +180,7 @@ export default function AssistanceRequests() {
             Senior Citizen Assistance Requests
           </h1>
           <p className="font-body-sm text-on-surface-variant">
-            Welfare assistance, medical escort, safety concern, and neighbor check-in requests.
+            User-requested assistance, meeting scheduling, and officer assignment desk.
           </p>
         </div>
       </div>
@@ -108,42 +199,32 @@ export default function AssistanceRequests() {
                   <th className="p-spacing-md">Request Type</th>
                   <th className="p-spacing-md">Location</th>
                   <th className="p-spacing-md">Logged Time</th>
+                  <th className="p-spacing-md">Meeting</th>
+                  <th className="p-spacing-md">Assigned Officer</th>
                   <th className="p-spacing-md">Status</th>
                   <th className="p-spacing-md text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-surface-container-highest">
                 {requests.length === 0 ? (
-                  <tr><td colSpan="7" className="p-spacing-2xl text-center text-on-surface-variant">No assistance requests found.</td></tr>
+                  <tr><td colSpan="9" className="p-spacing-2xl text-center text-on-surface-variant">No assistance requests found.</td></tr>
                 ) : requests.map((r) => (
                   <tr key={r.id} className="hover:bg-surface-container-low/50 transition-colors">
                     <td className="p-spacing-md font-code-md text-primary font-bold">{r.id}</td>
-                    <td className="p-spacing-md font-headline-sm font-bold text-on-surface">{r.citizen_name}</td>
-                    <td className="p-spacing-md font-body-sm font-semibold">{r.request_type}</td>
-                    <td className="p-spacing-md font-body-sm text-on-surface-variant">{r.location}</td>
+                    <td className="p-spacing-md font-headline-sm font-bold text-on-surface">{r.citizen_name || r.citizen || 'Senior Citizen'}</td>
+                    <td className="p-spacing-md font-body-sm font-semibold">{r.request_type || r.type || 'Assistance Request'}</td>
+                    <td className="p-spacing-md font-body-sm text-on-surface-variant">{r.location || 'Model Town Ward'}</td>
                     <td className="p-spacing-md font-code-md text-on-surface-variant">{r.created_at}</td>
+                    <td className="p-spacing-md font-code-md font-semibold">{r.meeting_date ? `${r.meeting_date} ${r.meeting_time || ''}` : 'Not scheduled'}</td>
+                    <td className="p-spacing-md font-body-sm font-semibold">{r.assigned_officer_name || 'Unassigned'}</td>
                     <td className="p-spacing-md">
                       <span className="px-spacing-xs py-spacing-3xs rounded font-label-sm font-bold uppercase bg-surface-container-highest text-on-surface">
                         {r.status}
                       </span>
                     </td>
                     <td className="p-spacing-md text-right">
-                      {r.status === 'NEW' && (
-                        <button
-                          onClick={() => handleUpdateStatus(r.id, 'ACCEPTED')}
-                          className="py-spacing-2xs px-spacing-sm bg-primary text-on-primary font-label-sm font-bold rounded shadow-sm hover:bg-on-surface"
-                        >
-                          ACCEPT REQUEST
-                        </button>
-                      )}
-                      {r.status === 'ACCEPTED' && (
-                        <button
-                          onClick={() => handleUpdateStatus(r.id, 'RESOLVED')}
-                          className="py-spacing-2xs px-spacing-sm bg-secondary-container text-on-secondary-container font-label-sm font-bold rounded"
-                        >
-                          MARK RESOLVED
-                        </button>
-                      )}
+                      {(r.status === 'NEW' || r.status === 'PENDING' || r.status === 'ACCEPTED' || r.status === 'IN_PROGRESS') && <button onClick={() => openSchedule(r)} className="py-spacing-2xs px-spacing-sm bg-primary text-on-primary font-label-sm font-bold rounded shadow-sm hover:bg-on-surface">SET MEETING & OFFICER</button>}
+                      {r.status === 'ASSIGNED' && <button onClick={() => openSchedule(r)} className="py-spacing-2xs px-spacing-sm bg-secondary-container text-on-secondary-container font-label-sm font-bold rounded">EDIT ASSIGNMENT</button>}
                     </td>
                   </tr>
                 ))}
@@ -152,6 +233,27 @@ export default function AssistanceRequests() {
           </div>
         )}
       </div>
+
+      {selectedRequest && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/60 p-spacing-md backdrop-blur-sm">
+          <form onSubmit={handleSchedule} className="flex w-full max-w-lg flex-col gap-spacing-md rounded-xl border border-surface-container-highest bg-surface-container-lowest p-spacing-lg text-left shadow-xl">
+            <div className="flex items-center justify-between border-b border-surface-container-highest pb-spacing-xs">
+              <div><h2 className="font-headline-sm font-bold">Schedule Assistance Visit</h2><p className="text-xs text-on-surface-variant">{selectedRequest.citizen_name || 'Senior Citizen'} • {selectedRequest.request_type || selectedRequest.type || 'Assistance Request'}</p></div>
+              <button type="button" onClick={() => setSelectedRequest(null)}><span className="material-symbols-outlined">close</span></button>
+            </div>
+            <div className="grid grid-cols-2 gap-spacing-sm">
+              <label className="flex flex-col gap-1 text-xs font-bold">Meeting Date<input required type="date" value={scheduleForm.meeting_date} onChange={e => setScheduleForm({...scheduleForm, meeting_date: e.target.value})} className="h-10 rounded border bg-surface-container-low px-2" /></label>
+              <label className="flex flex-col gap-1 text-xs font-bold">Meeting Time<input required type="time" value={scheduleForm.meeting_time} onChange={e => setScheduleForm({...scheduleForm, meeting_time: e.target.value})} className="h-10 rounded border bg-surface-container-low px-2" /></label>
+            </div>
+            <div className="grid grid-cols-1 gap-spacing-sm sm:grid-cols-2">
+              <label className="flex flex-col gap-1 text-xs font-bold">Officer Name<input required value={scheduleForm.officer_name} onChange={e => setScheduleForm({...scheduleForm, officer_name: e.target.value})} placeholder="e.g. ASI Amit Singh" className="h-10 rounded border bg-surface-container-low px-2" /></label>
+              <label className="flex flex-col gap-1 text-xs font-bold">Rank<input required value={scheduleForm.officer_rank} onChange={e => setScheduleForm({...scheduleForm, officer_rank: e.target.value})} placeholder="e.g. Assistant Sub-Inspector" className="h-10 rounded border bg-surface-container-low px-2" /></label>
+              <label className="flex flex-col gap-1 text-xs font-bold">Belt / Police Number<input required value={scheduleForm.police_id} onChange={e => setScheduleForm({...scheduleForm, police_id: e.target.value, officer_id: e.target.value})} placeholder="e.g. POL-1025" className="h-10 rounded border bg-surface-container-low px-2" /></label>
+            </div>
+            <button type="submit" className="rounded bg-primary py-spacing-xs font-label-lg font-bold text-on-primary">SAVE ASSIGNMENT</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

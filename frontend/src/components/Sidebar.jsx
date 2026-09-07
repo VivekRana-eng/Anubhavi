@@ -102,10 +102,10 @@ export default function Sidebar({ stats = {}, isOpenOnMobile = false, onCloseMob
               <span className="font-code-md text-on-surface-variant">{stats.total_citizens || '1,248'}</span>
             </NavLink>
 
-            <NavLink to="/sho/welfare-checks" className={navItemClass} onClick={handleNavClick}>
+            <NavLink to="/sho/assistance" className={navItemClass} onClick={handleNavClick}>
               <div className="flex items-center gap-spacing-xs">
-                <span className="material-symbols-outlined text-[20px]">calendar_month</span>
-                <span className="font-label-lg">Welfare Checks</span>
+                <span className="material-symbols-outlined text-[20px]">volunteer_activism</span>
+                <span className="font-label-lg">Assistance Requests</span>
               </div>
             </NavLink>
 

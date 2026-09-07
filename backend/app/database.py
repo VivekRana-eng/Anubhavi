@@ -152,6 +152,19 @@ def init_db():
     )
     """)
 
+    # Add scheduling and officer details to existing installations without losing data.
+    cursor.execute("PRAGMA table_info(assistance_requests)")
+    assistance_columns = {row[1] for row in cursor.fetchall()}
+    for column, definition in {
+        "meeting_date": "TEXT",
+        "meeting_time": "TEXT",
+        "assigned_officer_name": "TEXT",
+        "assigned_officer_rank": "TEXT",
+        "assigned_officer_mobile": "TEXT"
+    }.items():
+        if column not in assistance_columns:
+            cursor.execute(f"ALTER TABLE assistance_requests ADD COLUMN {column} {definition}")
+
     # Case Timeline Events
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS case_timeline (

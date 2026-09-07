@@ -74,6 +74,19 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
         last_updated: userNotification.assigned_at || userNotification.updated_at || 'Just now'
       }))
     }
+    if (userNotification?.event === 'ASSISTANCE_ASSIGNED' && userNotification.request_id) {
+      setMyRequests(prev => prev.map(request => request.id === userNotification.request_id ? {
+        ...request,
+        status: 'ASSIGNED',
+        meeting_date: userNotification.meeting_date,
+        meeting_time: userNotification.meeting_time,
+        assigned_officer_id: userNotification.police_id,
+        assigned_officer_name: userNotification.officer_name,
+        assigned_officer_rank: userNotification.officer_rank,
+        assigned_officer_mobile: userNotification.officer_mobile,
+        police_station: userNotification.police_station
+      } : request))
+    }
   }, [userNotification])
 
   const goHome = () => { setView('home'); setSosStep('form'); setHelpStep('choose') }
@@ -190,16 +203,22 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
   const handleHelpSubmit = async (e) => {
     e.preventDefault()
     setHelpSubmitting(true)
-    const newReq = {
+    let newReq = {
       id: `AST-2026-${Math.floor(100 + Math.random() * 900)}`,
+      citizen_id: 'CIT-8841',
+      citizen_name: username || 'Rajesh Sharma',
       type: helpType,
+      request_type: helpType,
       problem: problem || 'General Elder Assistance Requested',
+      description: problem || 'General Elder Assistance Requested',
+      location: coords.address || 'Model Town Ward Phase 2',
       meeting_date: meetingDate,
+      meeting_time: '',
       status: 'PENDING',
       created_at: 'Just now'
     }
     try {
-      await fetch('/api/assistance/create', {
+      const response = await fetch('/api/assistance/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -210,6 +229,10 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
           priority: 'MEDIUM'
         })
       })
+      if (response.ok) {
+        const responseData = await response.json()
+        if (responseData.request_id) newReq = { ...newReq, id: responseData.request_id }
+      }
     } catch (e) {
       console.log('Offline submission fallback')
     }
@@ -229,6 +252,8 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
     window.dispatchEvent(new CustomEvent('anubhavi_new_notification', { detail: assistanceNotifData }))
 
     setMyRequests([newReq, ...myRequests])
+    localStorage.setItem('anubhavi_local_assistance_request', JSON.stringify(newReq))
+    window.dispatchEvent(new CustomEvent('anubhavi_new_assistance_request', { detail: newReq }))
     setHelpRequestId(newReq.id)
     setHelpStep('submitted')
     setHelpSubmitting(false)
@@ -638,7 +663,7 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
                   <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[10px]">{r.status}</span>
                 </div>
                 <button onClick={() => setExpandedRequestId(expandedRequestId === r.id ? null : r.id)} className="mt-2 font-extrabold text-[#426d5f] hover:underline">{expandedRequestId === r.id ? 'Hide Details ↑' : 'View Details →'}</button>
-                {expandedRequestId === r.id && <div className="mt-2 border-t border-slate-200 pt-2 text-[11px] text-slate-600"><p>Request ID: <strong>{r.id}</strong></p><p className="mt-1">Meeting Date: <strong>{r.meeting_date || 'To be scheduled'}</strong></p><p className="mt-1">Submitted: <strong>{r.created_at || 'Just now'}</strong></p><div className="mt-3 grid grid-cols-2 gap-2"><button onClick={() => editAssistanceRequest(r)} className="rounded-lg border-2 border-[#426d5f] px-2 py-2 font-extrabold text-[#426d5f]">Edit Request</button><button onClick={() => cancelAssistanceRequest(r)} className="rounded-lg border-2 border-red-200 px-2 py-2 font-extrabold text-red-600">Cancel Request</button></div></div>}
+                {expandedRequestId === r.id && <div className="mt-2 border-t border-slate-200 pt-2 text-[11px] text-slate-600"><p>Request ID: <strong>{r.id}</strong></p><p className="mt-1">Meeting: <strong>{r.meeting_date ? `${r.meeting_date} at ${r.meeting_time || 'Time pending'}` : 'To be scheduled'}</strong></p><p className="mt-1">Assigned Officer: <strong>{r.assigned_officer_name || 'Not assigned yet'}</strong></p>{r.assigned_officer_name && <><p className="mt-1">Rank: <strong>{r.assigned_officer_rank || 'Officer'}</strong></p><p className="mt-1">Belt / Police No.: <strong>{r.assigned_officer_id || 'Not available'}</strong></p><p className="mt-1">Officer Mobile: <strong>{r.assigned_officer_mobile || 'Not available'}</strong></p><p className="mt-1">Station: <strong>{r.police_station || 'Model Town Police Station'}</strong></p></>}<p className="mt-1">Submitted: <strong>{r.created_at || 'Just now'}</strong></p><div className="mt-3 grid grid-cols-2 gap-2"><button onClick={() => editAssistanceRequest(r)} className="rounded-lg border-2 border-[#426d5f] px-2 py-2 font-extrabold text-[#426d5f]">Edit Request</button><button onClick={() => cancelAssistanceRequest(r)} className="rounded-lg border-2 border-red-200 px-2 py-2 font-extrabold text-red-600">Cancel Request</button></div></div>}
               </div>
             ))
           )}

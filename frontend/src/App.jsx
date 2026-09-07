@@ -95,7 +95,7 @@ export default function App() {
             <Route path="/sho/citizens/:citizenId" element={<CitizenProfile />} />
             <Route path="/sho/assistance" element={<AssistanceRequests />} />
             <Route path="/sho/check-ins" element={<MissedCheckIns />} />
-            <Route path="/sho/welfare-checks" element={<WelfareChecks />} />
+            <Route path="/sho/welfare-checks" element={<AssistanceRequests />} />
             <Route path="/sho/active-cases" element={<DashboardOverview />} />
             <Route path="/sho/resolved-cases" element={<DashboardOverview />} />
             <Route path="/sho/tactical-map" element={<TacticalLiveMap />} />

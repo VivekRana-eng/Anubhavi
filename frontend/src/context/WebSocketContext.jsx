@@ -202,7 +202,7 @@ export const WebSocketProvider = ({ children }) => {
               time: 'Just Now',
               unread: true
             });
-          } else if (data.event === 'SOS_ASSIGNED' || data.event === 'OFFICER_REASSIGNED') {
+          } else if (data.event === 'SOS_ASSIGNED' || data.event === 'OFFICER_REASSIGNED' || data.event === 'ASSISTANCE_ASSIGNED') {
             setUserNotification(data);
             addNotificationItem({
               id: `NOT-${Date.now()}`,

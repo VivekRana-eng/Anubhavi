@@ -20,6 +20,14 @@ class UpdateAssistanceStatus(BaseModel):
     status: str
     officer_id: Optional[str] = None
 
+class ScheduleAssistanceRequest(BaseModel):
+    meeting_date: str
+    meeting_time: str
+    officer_id: str
+    officer_name: str
+    officer_rank: str
+    officer_mobile: Optional[str] = None
+
 @router.get("")
 def list_assistance_requests():
     conn = get_db_connection()
@@ -101,3 +109,40 @@ def update_assistance_status(request_id: str, req: UpdateAssistanceStatus, curre
     log_audit(current_user["id"], current_user["name"], current_user["role"], "ASSISTANCE STATUS UPDATED", f"Updated assistance request {request_id} to {req.status}", request_id)
 
     return {"status": "SUCCESS", "message": f"Assistance request updated to {req.status}"}
+
+@router.post("/{request_id}/schedule")
+async def schedule_assistance_request(request_id: str, req: ScheduleAssistanceRequest, current_user: dict = Depends(get_current_user)):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM assistance_requests WHERE id = ?", (request_id,))
+    existing = cursor.fetchone()
+    if not existing:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Assistance Request not found")
+
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    cursor.execute("""
+        UPDATE assistance_requests
+        SET status = 'ASSIGNED', accepted_at = COALESCE(accepted_at, ?), assigned_officer_id = ?,
+            meeting_date = ?, meeting_time = ?, assigned_officer_name = ?,
+            assigned_officer_rank = ?, assigned_officer_mobile = ?
+        WHERE id = ?
+    """, (now_str, req.officer_id, req.meeting_date, req.meeting_time, req.officer_name, req.officer_rank, req.officer_mobile, request_id))
+    conn.commit()
+    conn.close()
+
+    log_audit(current_user["id"], current_user["name"], current_user["role"], "ASSISTANCE VISIT ASSIGNED", f"Assigned {req.officer_name} to assistance request {request_id}", request_id)
+    await manager.broadcast({
+        "event": "ASSISTANCE_ASSIGNED",
+        "request_id": request_id,
+        "title": "Assistance Visit Scheduled",
+        "message": f"{req.officer_name} has been assigned for your assistance request.",
+        "meeting_date": req.meeting_date,
+        "meeting_time": req.meeting_time,
+        "officer_name": req.officer_name,
+        "officer_rank": req.officer_rank,
+        "police_id": req.officer_id,
+        "officer_mobile": req.officer_mobile,
+        "status": "ASSIGNED"
+    })
+    return {"status": "SUCCESS", "message": "Assistance visit scheduled"}
