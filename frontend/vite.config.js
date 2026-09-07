@@ -16,5 +16,17 @@ export default defineConfig({
         ws: true
       }
     }
+  },
+  build: {
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-charts': ['recharts']
+        }
+      }
+    }
   }
 })
+

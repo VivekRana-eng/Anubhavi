@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useCommandStore } from '../context/CommandStoreContext';
 
 const DEMO_REQUESTS = [
   {
@@ -30,6 +31,7 @@ const OFFICERS = [
 ];
 
 export default function AssistanceRequests() {
+  const { addCustomNotification } = useCommandStore();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -47,12 +49,17 @@ export default function AssistanceRequests() {
       .then(data => {
         let localRequest = null;
         try {
-          localRequest = JSON.parse(localStorage.getItem('anubhavi_local_assistance_request') || 'null');
+          const raw = localStorage.getItem('anubhavi_local_assistance_request');
+          localRequest = raw ? JSON.parse(raw) : null;
         } catch (error) {
           localRequest = null;
         }
         const serverRequests = Array.isArray(data) && data.length > 0 ? data : DEMO_REQUESTS;
-        setRequests(localRequest ? [localRequest, ...serverRequests.filter(item => item.id !== localRequest.id)] : serverRequests);
+        if (localRequest && localRequest.id) {
+          setRequests([localRequest, ...serverRequests.filter(item => item && item.id !== localRequest.id)]);
+        } else {
+          setRequests(serverRequests);
+        }
         setLoading(false);
       })
       .catch(err => {
@@ -69,13 +76,17 @@ export default function AssistanceRequests() {
       if (event.key !== 'anubhavi_local_assistance_request' || !event.newValue) return;
       try {
         const request = JSON.parse(event.newValue);
-        setRequests(prev => [request, ...prev.filter(item => item.id !== request.id)]);
+        if (request && request.id) {
+          setRequests(prev => [request, ...prev.filter(item => item && item.id !== request.id)]);
+        }
       } catch (error) {
         console.error('Local assistance request error:', error);
       }
     };
     const handleLocalRequestEvent = (event) => {
-      if (event.detail) setRequests(prev => [event.detail, ...prev.filter(item => item.id !== event.detail.id)]);
+      if (event.detail && event.detail.id) {
+        setRequests(prev => [event.detail, ...prev.filter(item => item && item.id !== event.detail.id)]);
+      }
     };
     window.addEventListener('storage', handleLocalRequest);
     window.addEventListener('anubhavi_new_assistance_request', handleLocalRequestEvent);
@@ -86,6 +97,25 @@ export default function AssistanceRequests() {
   }, []);
 
   const handleUpdateStatus = async (id, status) => {
+    const targetReq = requests.find(r => r.id === id);
+    const citizen = targetReq?.citizen_name || 'Rajesh Sharma';
+    const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+    if (addCustomNotification) {
+      addCustomNotification({
+        id: `NOT-STATUS-${id}-${Date.now()}`,
+        type: 'STATUS_UPDATED',
+        title: 'Assistance Status Updated',
+        message: `SHO marked assistance request ${id} (${citizen}) as "${status}".`,
+        citizen_name: citizen,
+        caseId: id,
+        request_id: id,
+        police_station: 'Model Town Police Station',
+        time: `Just Now • ${timeNow}`,
+        priority: 'MEDIUM'
+      });
+    }
+
     try {
       const res = await fetch(`/api/assistance/${id}/status`, {
         method: 'POST',
@@ -134,6 +164,32 @@ export default function AssistanceRequests() {
       assigned_officer_mobile: scheduleForm.officer_mobile
     };
 
+    const citizen = updatedRequest.citizen_name || 'Rajesh Sharma';
+    const fullOfficerName = `${officerRank ? officerRank + ' ' : ''}${officerName}`;
+    const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+    // Add Notification to SHO Notification Panel
+    if (addCustomNotification) {
+      addCustomNotification({
+        id: `NOT-AST-${updatedRequest.id}-${Date.now()}`,
+        type: 'ASSISTANCE_ASSIGNED',
+        title: 'Assistance Officer Assigned',
+        message: `SHO assigned ${fullOfficerName} to citizen ${citizen} (${updatedRequest.id}) for ${updatedRequest.request_type || 'Welfare Assistance'}.`,
+        citizen_name: citizen,
+        caseId: updatedRequest.id,
+        request_id: updatedRequest.id,
+        officer_name: officerName,
+        officer_rank: officerRank || 'Officer',
+        police_id: policeId,
+        officer_mobile: scheduleForm.officer_mobile,
+        police_station: 'Model Town Police Station',
+        meeting_date: updatedRequest.meeting_date,
+        meeting_time: updatedRequest.meeting_time,
+        time: `Just Now • ${timeNow}`,
+        priority: 'HIGH'
+      });
+    }
+
     try {
       await fetch(`/api/assistance/${selectedRequest.id}/schedule`, {
         method: 'POST',
@@ -150,8 +206,9 @@ export default function AssistanceRequests() {
       event: 'ASSISTANCE_ASSIGNED',
       request_id: updatedRequest.id,
       citizen_id: updatedRequest.citizen_id,
+      citizen_name: citizen,
       title: 'Assistance Visit Scheduled',
-      message: `${officerName} has been assigned for your assistance request.`,
+      message: `${fullOfficerName} has been assigned to citizen ${citizen} for assistance request.`,
       meeting_date: updatedRequest.meeting_date,
       meeting_time: updatedRequest.meeting_time,
       officer_name: officerName,
@@ -208,8 +265,8 @@ export default function AssistanceRequests() {
               <tbody className="divide-y divide-surface-container-highest">
                 {requests.length === 0 ? (
                   <tr><td colSpan="9" className="p-spacing-2xl text-center text-on-surface-variant">No assistance requests found.</td></tr>
-                ) : requests.map((r) => (
-                  <tr key={r.id} className="hover:bg-surface-container-low/50 transition-colors">
+                ) : requests.filter(Boolean).map((r) => (
+                  <tr key={r.id || `req-${Math.random()}`} className="hover:bg-surface-container-low/50 transition-colors">
                     <td className="p-spacing-md font-code-md text-primary font-bold">{r.id}</td>
                     <td className="p-spacing-md font-headline-sm font-bold text-on-surface">{r.citizen_name || r.citizen || 'Senior Citizen'}</td>
                     <td className="p-spacing-md font-body-sm font-semibold">{r.request_type || r.type || 'Assistance Request'}</td>

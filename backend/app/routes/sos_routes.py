@@ -324,6 +324,7 @@ async def assign_officer(case_id: str, req: AssignOfficerRequest, current_user: 
         "event": "SOS_ASSIGNED",
         "case_id": case_id,
         "citizen_id": case_dict["citizen_id"],
+        "citizen_name": case_dict.get("citizen_name", "Senior Citizen"),
         "police_station": police_station,
         "station_code": station_code,
         "jurisdiction": jurisdiction,

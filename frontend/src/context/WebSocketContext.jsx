@@ -84,11 +84,12 @@ export const WebSocketProvider = ({ children }) => {
             id: `NOT-${Date.now()}`,
             type: 'SOS',
             title: '🚨 CRITICAL SOS ALERT',
-            message: `${alert.citizen_name || 'Senior Citizen'} triggered emergency ${alert.emergency_type || 'Panic Alarm'}`,
+            message: `${alert.citizen_name || 'Rajesh Sharma'} triggered emergency ${alert.emergency_type || 'Panic Alarm'}`,
             location: alert.location || alert.location_address || 'Model Town Ward',
             time: 'Just Now',
             unread: true,
-            case_id: alert.case_id
+            case_id: alert.case_id,
+            citizen_name: alert.citizen_name || 'Rajesh Sharma'
           });
           if (audioEnabled) playEmergencyAudio();
         } catch (error) {
@@ -104,10 +105,11 @@ export const WebSocketProvider = ({ children }) => {
             id: `NOT-${Date.now()}`,
             type: notif.type || 'ASSISTANCE',
             title: notif.title || '🤝 NEW ASSISTANCE REQUEST',
-            message: notif.message || `${notif.citizen_name || 'Senior Citizen'} submitted assistance request`,
+            message: notif.message || `${notif.citizen_name || 'Rajesh Sharma'} submitted assistance request`,
             location: notif.location || 'Model Town Ward',
             time: 'Just Now',
-            unread: true
+            unread: true,
+            citizen_name: notif.citizen_name || 'Rajesh Sharma'
           });
         } catch (error) {
           console.error('Local User Notif Error:', error);
@@ -124,11 +126,12 @@ export const WebSocketProvider = ({ children }) => {
           id: `NOT-${Date.now()}`,
           type: 'SOS',
           title: '🚨 CRITICAL SOS ALERT',
-          message: `${alert.citizen_name || 'Senior Citizen'} triggered emergency ${alert.emergency_type || 'Panic Alarm'}`,
+          message: `${alert.citizen_name || 'Rajesh Sharma'} triggered emergency ${alert.emergency_type || 'Panic Alarm'}`,
           location: alert.location || alert.location_address || 'Model Town Ward',
           time: 'Just Now',
           unread: true,
-          case_id: alert.case_id
+          case_id: alert.case_id,
+          citizen_name: alert.citizen_name || 'Rajesh Sharma'
         });
         if (audioEnabled) playEmergencyAudio();
       }
@@ -143,7 +146,8 @@ export const WebSocketProvider = ({ children }) => {
           id: `NOT-${Date.now()}`,
           type: notif.type || (notif.event === 'OFFICER_REASSIGNED' || notif.event === 'SOS_ASSIGNED' ? 'ASSIGNMENT' : 'ASSISTANCE'),
           title: notif.title || (notif.event === 'OFFICER_REASSIGNED' ? '👮 OFFICER REASSIGNED' : '👮 OFFICER ASSIGNED'),
-          message: notif.message || `Officer ${notif.officer_name || 'Police Unit'} assigned to case ${notif.case_id || ''}`,
+          message: notif.message || `Officer ${notif.officer_name || 'Police Unit'} assigned to citizen ${notif.citizen_name || 'Rajesh Sharma'} (${notif.case_id || 'SOS Case'})`,
+          citizen_name: notif.citizen_name || 'Rajesh Sharma',
           officer_name: notif.officer_name,
           officer_rank: notif.officer_rank,
           police_id: notif.police_id,
@@ -183,11 +187,12 @@ export const WebSocketProvider = ({ children }) => {
               id: `NOT-${Date.now()}`,
               type: 'SOS',
               title: '🚨 CRITICAL SOS ALERT',
-              message: `${data.citizen_name || 'Senior Citizen'} triggered emergency ${data.emergency_type || 'Panic Alarm'}`,
+              message: `${data.citizen_name || 'Rajesh Sharma'} triggered emergency ${data.emergency_type || 'Panic Alarm'}`,
               location: data.location || 'Model Town Ward',
               time: 'Just Now',
               unread: true,
-              case_id: data.case_id
+              case_id: data.case_id,
+              citizen_name: data.citizen_name || 'Rajesh Sharma'
             });
             if (audioEnabled) playEmergencyAudio();
             localStorage.setItem('anubhavi_local_sos_alert', JSON.stringify(data));
@@ -197,10 +202,11 @@ export const WebSocketProvider = ({ children }) => {
               id: `NOT-${Date.now()}`,
               type: 'ASSISTANCE',
               title: '🤝 NEW ASSISTANCE REQUEST',
-              message: `${data.citizen_name || 'Senior Citizen'} submitted request: ${data.request_type || 'General Support'}`,
+              message: `${data.citizen_name || 'Rajesh Sharma'} submitted request: ${data.request_type || 'General Support'}`,
               location: data.location || 'Model Town Ward',
               time: 'Just Now',
-              unread: true
+              unread: true,
+              citizen_name: data.citizen_name || 'Rajesh Sharma'
             });
           } else if (data.event === 'SOS_ASSIGNED' || data.event === 'OFFICER_REASSIGNED' || data.event === 'ASSISTANCE_ASSIGNED') {
             setUserNotification(data);
@@ -208,7 +214,8 @@ export const WebSocketProvider = ({ children }) => {
               id: `NOT-${Date.now()}`,
               type: 'ASSIGNMENT',
               title: data.title || '👮 OFFICER ASSIGNED',
-              message: data.message || `Officer ${data.officer_name || 'Police Unit'} assigned to your SOS case`,
+              message: data.message || `Officer ${data.officer_name || 'Police Unit'} assigned to citizen ${data.citizen_name || 'Rajesh Sharma'} (${data.case_id || 'SOS Case'})`,
+              citizen_name: data.citizen_name || 'Rajesh Sharma',
               location: data.location || data.police_station || 'Model Town Ward',
               officer_name: data.officer_name,
               officer_rank: data.officer_rank,

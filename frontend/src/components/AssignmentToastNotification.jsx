@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { formatNotificationTime } from '../utils/timeFormat';
 
 export default function AssignmentToastNotification() {
   const { user } = useAuth();
@@ -117,7 +118,7 @@ export default function AssignmentToastNotification() {
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
             </span>
             <span className="text-[10px] opacity-80 font-bold">
-              {toast.police_station || 'Model Town Police Station'} • Just Now
+              {toast.police_station || 'Model Town Police Station'} • {formatNotificationTime(toast)}
             </span>
           </div>
         </div>
@@ -129,10 +130,22 @@ export default function AssignmentToastNotification() {
 
         {/* REASSIGNMENT HIGHLIGHT STRIP */}
         {isReassignment && (
-          <div className="p-2.5 rounded-xl bg-amber-900/80 border border-amber-600/80 text-[11px] font-extrabold flex items-center justify-between">
-            <span>{toast.previousOfficer || 'Previous Officer'}</span>
-            <span className="material-symbols-outlined text-amber-300 text-[16px]">arrow_forward</span>
-            <span className="text-emerald-300">{toast.newOfficer || toast.officer_name}</span>
+          <div className="p-2.5 rounded-xl bg-amber-900/80 border border-amber-600/80 text-[11px] font-extrabold flex flex-col gap-1">
+            <p className="text-amber-200">👤 <strong>Citizen:</strong> {toast.citizen_name || 'Rajesh Sharma'}</p>
+            <div className="flex items-center justify-between">
+              <span>{toast.previousOfficer || 'Previous Officer'}</span>
+              <span className="material-symbols-outlined text-amber-300 text-[16px]">arrow_forward</span>
+              <span className="text-emerald-300">{toast.newOfficer || toast.officer_name}</span>
+            </div>
+          </div>
+        )}
+
+        {!isReassignment && (
+          <div className="p-2.5 rounded-xl bg-emerald-900/80 border border-emerald-600/80 text-[11px] font-medium flex flex-col gap-1">
+            <p className="text-white font-bold">👤 <strong>Citizen:</strong> {toast.citizen_name || 'Rajesh Sharma'}</p>
+            {toast.officer_name && (
+              <p className="text-emerald-100">👮 <strong>Officer:</strong> {toast.officer_rank || 'Officer'} {toast.officer_name} ({toast.police_id || 'POL-101'})</p>
+            )}
           </div>
         )}
 

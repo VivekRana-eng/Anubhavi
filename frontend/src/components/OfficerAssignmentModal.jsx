@@ -83,6 +83,7 @@ export default function OfficerAssignmentModal({
         const prevFull = `${currentOfficerRank ? currentOfficerRank + ' ' : ''}${currentOfficer}`;
         reassignOfficer({
           caseId: activeCase.id,
+          citizenName: activeCase.citizen_name || 'Rajesh Sharma',
           previousOfficer: prevFull,
           newOfficerName: officerName,
           newOfficerRank: officerRank || 'Officer',
@@ -98,6 +99,7 @@ export default function OfficerAssignmentModal({
         // ASSIGN OFFICER
         assignOfficer({
           caseId: activeCase.id,
+          citizenName: activeCase.citizen_name || 'Rajesh Sharma',
           officerName: officerName,
           officerRank: officerRank || 'Officer',
           policeId: policeId || 'POL-101',

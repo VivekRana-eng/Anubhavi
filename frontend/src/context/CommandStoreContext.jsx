@@ -364,20 +364,36 @@ export const INITIAL_CASES = [
 
 export const INITIAL_NOTIFICATIONS = [
   {
+    id: "NOT-SYS-SOS-50375",
+    type: "SOS",
+    title: "NEW SOS EMERGENCY ALERT",
+    message: "Rajesh Sharma triggered Medical Emergency.",
+    recipientRole: "ALL",
+    stationId: "MTP-PS-01",
+    police_station: "Model Town Police Station",
+    caseId: "ANB-SOS-50375",
+    citizen_name: "Rajesh Sharma",
+    createdAt: new Date().toISOString(),
+    time: `Just Now • ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}`,
+    read: false,
+    priority: "CRITICAL"
+  },
+  {
     id: "NOT-SYS-001",
     type: "OFFICER_ASSIGNED",
     title: "Officer Assigned",
-    message: "DSP assigned ASI Amit Singh to SOS-2026-0001 at Model Town Police Station.",
+    message: "DSP assigned ASI Amit Singh to citizen Rajesh Sharma (SOS-2026-0001) at Model Town Police Station.",
     recipientRole: "SHO",
     stationId: "MTP-PS-01",
     police_station: "Model Town Police Station",
     caseId: "SOS-2026-0001",
+    citizen_name: "Rajesh Sharma",
     officer_name: "ASI Amit Singh",
     officer_rank: "Assistant Sub-Inspector",
     police_id: "POL-1025",
     vehicle: "PCR Bike #12",
-    createdAt: new Date().toISOString(),
-    time: "10 mins ago",
+    createdAt: new Date(Date.now() - 10 * 60000).toISOString(),
+    time: "10 mins ago • 08:14 PM",
     read: false,
     priority: "HIGH"
   },
@@ -385,15 +401,16 @@ export const INITIAL_NOTIFICATIONS = [
     id: "NOT-SYS-002",
     type: "OFFICER_REASSIGNED",
     title: "Officer Reassigned",
-    message: "DSP reassigned SOS-2026-0004 from Const. Vikram Sharma to SI Neeraj Kumar.",
+    message: "DSP reassigned SOS-2026-0004 (Kamla Sharma) from Const. Vikram Sharma to SI Neeraj Kumar.",
     recipientRole: "SHO",
     stationId: "CPS-04",
     police_station: "Central Police Station",
     caseId: "SOS-2026-0004",
+    citizen_name: "Kamla Sharma",
     previousOfficer: "Const. Vikram Sharma",
     newOfficer: "SI Neeraj Kumar",
-    createdAt: new Date().toISOString(),
-    time: "25 mins ago",
+    createdAt: new Date(Date.now() - 25 * 60000).toISOString(),
+    time: "25 mins ago • 07:59 PM",
     read: false,
     priority: "HIGH"
   },
@@ -401,13 +418,14 @@ export const INITIAL_NOTIFICATIONS = [
     id: "NOT-SYS-003",
     type: "STATUS_UPDATED",
     title: "Case Status Updated",
-    message: "SHO Model Town updated SOS-2026-0001 status to 'On Site'.",
-    recipientRole: "DSP",
+    message: "SHO Model Town updated SOS-2026-0001 (Rajesh Sharma) status to 'On Site'.",
+    recipientRole: "ALL",
     stationId: "MTP-PS-01",
     police_station: "Model Town Police Station",
     caseId: "SOS-2026-0001",
-    createdAt: new Date().toISOString(),
-    time: "40 mins ago",
+    citizen_name: "Rajesh Sharma",
+    createdAt: new Date(Date.now() - 40 * 60000).toISOString(),
+    time: "40 mins ago • 07:44 PM",
     read: false,
     priority: "MEDIUM"
   }
@@ -543,16 +561,17 @@ export const CommandStoreProvider = ({ children }) => {
       const alert = event.detail;
       if (!alert?.case_id) return;
       setNotifications(prev => {
-        if (prev.some(notification => notification.caseId === alert.case_id)) return prev;
+        if (prev.some(notification => notification.caseId === alert.case_id || notification.case_id === alert.case_id)) return prev;
         const notification = {
           id: `NOT-SOS-${alert.case_id}`,
           type: 'SOS',
-          title: 'New SOS Emergency Alert',
-          message: `${alert.citizen_name || 'Senior Citizen'} triggered ${alert.emergency_type || 'an SOS alert'}.`,
-          recipientRole: 'DSP',
+          title: 'NEW SOS EMERGENCY ALERT',
+          message: `${alert.citizen_name || 'Rajesh Sharma'} triggered ${alert.emergency_type || 'Medical Emergency'}.`,
+          recipientRole: 'ALL',
           stationId: alert.station_code || 'MTP-PS-01',
           police_station: alert.police_station || 'Model Town Police Station',
           caseId: alert.case_id,
+          citizen_name: alert.citizen_name || 'Rajesh Sharma',
           createdAt: new Date().toISOString(),
           time: 'Just Now',
           read: false,
@@ -579,6 +598,7 @@ export const CommandStoreProvider = ({ children }) => {
   // ----------------------------------------------------------------------
   const assignOfficer = ({
     caseId,
+    citizenName,
     officerName,
     officerRank,
     policeId = 'POL-101',
@@ -592,8 +612,12 @@ export const CommandStoreProvider = ({ children }) => {
     const fullOfficerName = `${officerRank ? officerRank + ' ' : ''}${officerName}`;
 
     // 1. Update Case in Shared Cases
+    let targetCitizenName = citizenName || '';
     const updatedCases = cases.map(c => {
       if (c.id === caseId) {
+        if (!targetCitizenName && c.citizen_name) {
+          targetCitizenName = c.citizen_name;
+        }
         return {
           ...c,
           status: 'ASSIGNED',
@@ -617,12 +641,19 @@ export const CommandStoreProvider = ({ children }) => {
       return c;
     });
 
+    if (!targetCitizenName) {
+      targetCitizenName = 'Rajesh Sharma';
+    }
+
     // 2. Create SHO Notification
     const newNotif = {
       id: `NOT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       type: 'OFFICER_ASSIGNED',
       title: 'Officer Assigned',
-      message: `${assignedByRole} assigned ${fullOfficerName} to ${caseId} at ${stationName}.`,
+      message: targetCitizenName
+        ? `${assignedByRole} assigned ${fullOfficerName} to citizen ${targetCitizenName} (${caseId}) at ${stationName}.`
+        : `${assignedByRole} assigned ${fullOfficerName} to ${caseId} at ${stationName}.`,
+      citizen_name: targetCitizenName,
       recipientRole: 'SHO',
       stationId: stationCode,
       police_station: stationName,
@@ -644,7 +675,10 @@ export const CommandStoreProvider = ({ children }) => {
       id: `LOG-${Date.now()}`,
       timestamp: timeNow,
       dateText: 'Today',
-      message: `${assignedByRole} assigned ${fullOfficerName} to ${caseId} at ${stationName}.`,
+      message: targetCitizenName
+        ? `${assignedByRole} assigned ${fullOfficerName} to citizen ${targetCitizenName} (${caseId}) at ${stationName}.`
+        : `${assignedByRole} assigned ${fullOfficerName} to ${caseId} at ${stationName}.`,
+      citizen_name: targetCitizenName,
       caseId: caseId,
       stationName: stationName,
       type: 'ASSIGNMENT'
@@ -660,6 +694,7 @@ export const CommandStoreProvider = ({ children }) => {
     const assignmentUpdate = {
       event: 'SOS_ASSIGNED',
       case_id: caseId,
+      citizen_name: targetCitizenName,
       title: 'Officer Assigned to Your SOS',
       message: `${fullOfficerName} has been assigned to your SOS case.`,
       police_station: stationName,
@@ -703,6 +738,7 @@ export const CommandStoreProvider = ({ children }) => {
   // ----------------------------------------------------------------------
   const reassignOfficer = ({
     caseId,
+    citizenName,
     previousOfficer = 'Previous Officer',
     newOfficerName,
     newOfficerRank,
@@ -717,8 +753,12 @@ export const CommandStoreProvider = ({ children }) => {
     const fullNewOfficerName = `${newOfficerRank ? newOfficerRank + ' ' : ''}${newOfficerName}`;
 
     // 1. Update Case in Shared Cases
+    let targetCitizenName = citizenName || '';
     const updatedCases = cases.map(c => {
       if (c.id === caseId) {
+        if (!targetCitizenName && c.citizen_name) {
+          targetCitizenName = c.citizen_name;
+        }
         return {
           ...c,
           status: 'ASSIGNED',
@@ -741,12 +781,19 @@ export const CommandStoreProvider = ({ children }) => {
       return c;
     });
 
+    if (!targetCitizenName) {
+      targetCitizenName = 'Rajesh Sharma';
+    }
+
     // 2. Create SHO Reassignment Notification
     const newNotif = {
       id: `NOT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       type: 'OFFICER_REASSIGNED',
       title: 'Officer Reassigned',
-      message: `DSP reassigned ${caseId} from ${previousOfficer} to ${fullNewOfficerName}.`,
+      message: targetCitizenName
+        ? `${assignedByRole} reassigned case ${caseId} (${targetCitizenName}) from ${previousOfficer} to ${fullNewOfficerName}.`
+        : `${assignedByRole} reassigned ${caseId} from ${previousOfficer} to ${fullNewOfficerName}.`,
+      citizen_name: targetCitizenName,
       previousOfficer: previousOfficer,
       newOfficer: fullNewOfficerName,
       recipientRole: 'SHO',
@@ -770,7 +817,10 @@ export const CommandStoreProvider = ({ children }) => {
       id: `LOG-${Date.now()}`,
       timestamp: timeNow,
       dateText: 'Today',
-      message: `${assignedByRole} reassigned ${caseId} from ${previousOfficer} to ${fullNewOfficerName}.`,
+      message: targetCitizenName
+        ? `${assignedByRole} reassigned case ${caseId} (${targetCitizenName}) from ${previousOfficer} to ${fullNewOfficerName}.`
+        : `${assignedByRole} reassigned ${caseId} from ${previousOfficer} to ${fullNewOfficerName}.`,
+      citizen_name: targetCitizenName,
       caseId: caseId,
       stationName: stationName,
       type: 'REASSIGNMENT'
@@ -786,6 +836,7 @@ export const CommandStoreProvider = ({ children }) => {
     const reassignmentUpdate = {
       event: 'SOS_ASSIGNED',
       case_id: caseId,
+      citizen_name: targetCitizenName,
       title: 'Officer Reassigned to Your SOS',
       message: `${fullNewOfficerName} has been assigned to your SOS case.`,
       police_station: stationName,
@@ -817,32 +868,39 @@ export const CommandStoreProvider = ({ children }) => {
     updatedByRole = 'SHO',
     updatedByName = 'Insp. Raj Kumar'
   }) => {
-    const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
     let targetStation = 'Model Town Police Station';
     let targetCode = 'MTP-PS-01';
+    let citizenName = 'Rajesh Sharma';
+
+    const matched = cases.find(c => c.id === caseId);
+    if (matched) {
+      targetStation = matched.police_station || targetStation;
+      targetCode = matched.station_code || targetCode;
+      citizenName = matched.citizen_name || citizenName;
+    }
 
     const updatedCases = cases.map(c => {
       if (c.id === caseId) {
-        targetStation = c.police_station || targetStation;
-        targetCode = c.station_code || targetCode;
         return { ...c, status: newStatus };
       }
       return c;
     });
 
-    // Create DSP Notification & Log
+    // Create Notification & Log
     const newNotif = {
       id: `NOT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       type: 'STATUS_UPDATED',
       title: 'Case Status Updated',
-      message: `${updatedByName} (${updatedByRole}) marked ${caseId} as "${newStatus}".`,
-      recipientRole: 'DSP',
+      message: `${updatedByName} (${updatedByRole}) marked ${caseId} (${citizenName}) as "${newStatus}".`,
+      recipientRole: 'ALL',
       stationId: targetCode,
       police_station: targetStation,
       caseId: caseId,
+      citizen_name: citizenName,
       newStatus: newStatus,
       createdAt: new Date().toISOString(),
-      time: 'Just Now',
+      time: `Just Now • ${timeNow}`,
       read: false,
       priority: 'MEDIUM'
     };
@@ -882,32 +940,73 @@ export const CommandStoreProvider = ({ children }) => {
   // NOTIFICATION UTILITIES
   // ----------------------------------------------------------------------
   const getFilteredNotifications = (userRole, userStationCode = 'MTP-PS-01') => {
+    if (!Array.isArray(notifications)) return [];
     if (userRole === 'DSP') {
       // DSP receives all notifications & status updates across all stations
       return notifications;
     }
-    // SHO receives all assignment, reassignment, SOS alerts and SHO-targeted notifications
+    // SHO receives all assignment, reassignment, SOS emergency alerts, and SHO-targeted notifications
     return notifications.filter(n => {
-      if (n.recipientRole === 'DSP') return false; // Filter out DSP-only logs
-      return true; // Show all assignment, reassignment & emergency alerts in Station Notifications popover!
+      if (!n) return false;
+      if (n.type === 'SOS' || n.type === 'CRITICAL' || n.type === 'EMERGENCY' || n.type === 'OFFICER_ASSIGNED' || n.type === 'OFFICER_REASSIGNED') {
+        return true;
+      }
+      if (n.recipientRole === 'DSP') return false; // Filter out DSP-only status update logs
+      return true; // Show all station emergency alerts & assignments
     });
   };
 
   const getUnreadNotificationCount = (userRole, userStationCode = 'MTP-PS-01') => {
     const list = getFilteredNotifications(userRole, userStationCode);
-    return list.filter(n => !n.read).length;
+    return Array.isArray(list) ? list.filter(n => n && !n.read).length : 0;
   };
 
   const markNotificationRead = (notifId) => {
-    const updatedNotifs = notifications.map(n => n.id === notifId ? { ...n, read: true } : n);
+    if (!Array.isArray(notifications)) return;
+    const updatedNotifs = notifications.map(n => n && n.id === notifId ? { ...n, read: true } : n);
     setNotifications(updatedNotifs);
     saveStateToStorage(null, updatedNotifs, null);
   };
 
-  const clearAllNotifications = () => {
-    const updatedNotifs = notifications.map(n => ({ ...n, read: true }));
+  const clearAllNotifications = (userRole, userStationCode) => {
+    if (!Array.isArray(notifications)) return;
+    const updatedNotifs = notifications.map(n => n ? { ...n, read: true } : n);
     setNotifications(updatedNotifs);
     saveStateToStorage(null, updatedNotifs, null);
+  };
+
+  const addCustomNotification = (notif) => {
+    const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+    const fullOfficerName = notif.officer_rank ? `${notif.officer_rank} ${notif.officer_name}` : notif.officer_name;
+    const citizen = notif.citizen_name || 'Rajesh Sharma';
+    const caseId = notif.caseId || notif.request_id || 'AST-Request';
+
+    const newNotif = {
+      id: notif.id || `NOT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      type: notif.type || 'ASSISTANCE_ASSIGNED',
+      title: notif.title || 'Assistance Officer Assigned',
+      message: notif.message || `SHO assigned ${fullOfficerName || 'Officer'} to citizen ${citizen} (${caseId}) at Model Town Police Station.`,
+      citizen_name: citizen,
+      caseId: caseId,
+      officer_name: notif.officer_name,
+      officer_rank: notif.officer_rank || 'Officer',
+      police_id: notif.police_id,
+      police_station: notif.police_station || 'Model Town Police Station',
+      meeting_date: notif.meeting_date,
+      meeting_time: notif.meeting_time,
+      recipientRole: notif.recipientRole || 'ALL',
+      stationId: notif.stationId || 'MTP-PS-01',
+      createdAt: notif.createdAt || new Date().toISOString(),
+      time: notif.time || `Just Now • ${timeNow}`,
+      read: false,
+      priority: notif.priority || 'HIGH'
+    };
+
+    const updatedNotifs = [newNotif, ...notifications.filter(n => n.id !== newNotif.id)];
+    setNotifications(updatedNotifs);
+    saveStateToStorage(null, updatedNotifs, null);
+    window.dispatchEvent(new CustomEvent('anubhavi_new_toast_notification', { detail: newNotif }));
+    return newNotif;
   };
 
   return (
@@ -919,6 +1018,7 @@ export const CommandStoreProvider = ({ children }) => {
       assignOfficer,
       reassignOfficer,
       updateCaseStatus,
+      addCustomNotification,
       getFilteredNotifications,
       getUnreadNotificationCount,
       markNotificationRead,

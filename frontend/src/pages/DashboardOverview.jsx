@@ -5,6 +5,7 @@ import FilterChips from '../components/FilterChips';
 import { useAuth } from '../context/AuthContext';
 import { useCommandStore } from '../context/CommandStoreContext';
 import { useFilter, applyFiltersAndSearch } from '../context/FilterContext';
+import { formatNotificationTime } from '../utils/timeFormat';
 
 const FALLBACK_STATS = {
   total_citizens: 5,

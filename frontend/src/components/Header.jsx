@@ -6,11 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import {
   useFilter
 } from '../context/FilterContext';
+import { formatNotificationTime } from '../utils/timeFormat';
 
 export default function Header({ onToggleMobileSidebar }) {
   const { user, logout } = useAuth();
   const { audioEnabled, toggleAudio } = useWebSocket();
   const {
+    cases,
     getFilteredNotifications,
     getUnreadNotificationCount,
     markNotificationRead,
@@ -169,55 +171,79 @@ export default function Header({ onToggleMobileSidebar }) {
                     No notifications for your station
                   </div>
                 ) : (
-                  filteredNotifications.map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() => markNotificationRead(item.id)}
-                      className={`p-3 rounded-xl border transition-all text-xs flex flex-col gap-1 cursor-pointer ${
-                        !item.read ? 'bg-amber-50/70 border-amber-200 text-slate-900 shadow-2xs' : 'bg-slate-50 border-slate-200 text-slate-600'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className={`font-extrabold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded ${
-                          item.type === 'OFFICER_ASSIGNED' ? 'bg-blue-100 text-blue-900' :
-                          item.type === 'OFFICER_REASSIGNED' ? 'bg-amber-100 text-amber-900' :
-                          item.type === 'STATUS_UPDATED' ? 'bg-emerald-100 text-emerald-900' :
-                          'bg-red-100 text-red-900'
-                        }`}>
-                          {item.title || item.type}
-                        </span>
-                        <span className="text-[10px] text-slate-400 font-semibold">{item.time}</span>
-                      </div>
-                      
-                      <p className="font-bold text-slate-900 text-[12px] mt-0.5">{item.message}</p>
-                      
-                      {/* REASSIGNMENT PREVIOUS -> NEW HIGHLIGHT */}
-                      {item.type === 'OFFICER_REASSIGNED' && (
-                        <div className="mt-1 p-2 rounded-lg bg-amber-100/70 border border-amber-300/80 text-[11px] font-bold text-amber-950 flex flex-col gap-0.5">
-                          <p>🔁 <strong>Reassigned:</strong> {item.previousOfficer || 'Previous Officer'} → <strong className="text-emerald-900">{item.newOfficer || item.officer_name}</strong></p>
-                          <p>🏬 <strong>Station:</strong> {item.police_station || 'Model Town PS'}</p>
-                        </div>
-                      )}
+                  filteredNotifications.map((item) => {
+                    if (!item) return null;
+                    const matchedCase = cases?.find(c => c && (c.id === item.caseId || c.id === item.case_id));
+                    const citizenName = item.citizen_name || item.citizenName || matchedCase?.citizen_name || 'Rajesh Sharma';
 
-                      {item.officer_name && item.type !== 'OFFICER_REASSIGNED' && (
-                        <div className="mt-1 p-2 rounded-lg bg-white/90 border border-slate-200 text-[11px] font-medium text-slate-700 flex flex-col gap-0.5">
-                          <p>👮 <strong>Officer:</strong> {item.officer_rank} {item.officer_name} ({item.police_id || 'POL-101'})</p>
-                          <p>🏬 <strong>Station:</strong> {item.police_station || 'Model Town PS'}</p>
-                        </div>
-                      )}
+                    // If existing notification message didn't include citizen name, format it clearly
+                    let displayMessage = typeof item.message === 'string' ? item.message : '';
+                    if (displayMessage && !displayMessage.includes(citizenName)) {
+                      const caseIdRef = item.caseId || item.case_id;
+                      if (caseIdRef && displayMessage.includes(caseIdRef)) {
+                        displayMessage = displayMessage.replace(caseIdRef, `${citizenName} (${caseIdRef})`);
+                      }
+                    }
 
-                      <div className="mt-1 pt-1 border-t border-slate-200/60 flex items-center justify-between text-[10px]">
-                        <span className="font-bold text-slate-400">Case ID: {item.caseId || 'SOS-Case'}</span>
-                        {!item.read ? (
-                          <span className="font-extrabold text-amber-700 flex items-center gap-0.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Unread
+                    return (
+                      <div
+                        key={item.id || `notif-${Math.random()}`}
+                        onClick={() => markNotificationRead(item.id)}
+                        className={`p-3 rounded-xl border transition-all text-xs flex flex-col gap-1 cursor-pointer ${
+                          !item.read ? 'bg-amber-50/70 border-amber-200 text-slate-900 shadow-2xs' : 'bg-slate-50 border-slate-200 text-slate-600'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className={`font-extrabold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded ${
+                            item.type === 'OFFICER_ASSIGNED' || item.type === 'ASSISTANCE_ASSIGNED' ? 'bg-blue-100 text-blue-900' :
+                            item.type === 'OFFICER_REASSIGNED' ? 'bg-amber-100 text-amber-900' :
+                            item.type === 'STATUS_UPDATED' ? 'bg-emerald-100 text-emerald-900' :
+                            item.type === 'ASSISTANCE' ? 'bg-purple-100 text-purple-900' :
+                            'bg-red-100 text-red-900'
+                          }`}>
+                            {item.title || item.type}
                           </span>
-                        ) : (
-                          <span className="text-slate-400 font-semibold">Read</span>
+                          <span className="text-[10px] text-slate-400 font-semibold">{formatNotificationTime(item)}</span>
+                        </div>
+                        
+                        <p className="font-bold text-slate-900 text-[12px] mt-0.5">{displayMessage}</p>
+                        
+                        {/* REASSIGNMENT PREVIOUS -> NEW HIGHLIGHT */}
+                        {item.type === 'OFFICER_REASSIGNED' && (
+                          <div className="mt-1 p-2 rounded-lg bg-amber-100/70 border border-amber-300/80 text-[11px] font-bold text-amber-950 flex flex-col gap-0.5">
+                            <p>👤 <strong>Citizen:</strong> {citizenName}</p>
+                            <p>🔁 <strong>Reassigned:</strong> {item.previousOfficer || 'Previous Officer'} → <strong className="text-emerald-900">{item.newOfficer || item.officer_name}</strong></p>
+                            <p>🏬 <strong>Station:</strong> {item.police_station || 'Model Town PS'}</p>
+                          </div>
                         )}
+
+                        {item.officer_name && item.type !== 'OFFICER_REASSIGNED' && (
+                          <div className="mt-1 p-2 rounded-lg bg-white/90 border border-slate-200 text-[11px] font-medium text-slate-700 flex flex-col gap-0.5">
+                            <p className="text-slate-900 font-bold">👤 <strong>Citizen:</strong> {citizenName}</p>
+                            <p>👮 <strong>Officer:</strong> {item.officer_rank} {item.officer_name} ({item.police_id || 'POL-101'})</p>
+                            {item.meeting_date && (
+                              <p>📅 <strong>Meeting:</strong> {item.meeting_date} at {item.meeting_time || '10:00 AM'}</p>
+                            )}
+                            <p>🏬 <strong>Station:</strong> {item.police_station || 'Model Town PS'}</p>
+                          </div>
+                        )}
+
+                        <div className="mt-1 pt-1 border-t border-slate-200/60 flex items-center justify-between text-[10px]">
+                          <span className="font-bold text-slate-400">
+                            {(item.caseId && item.caseId.startsWith('AST-')) || item.request_id ? 'Request ID: ' : 'Case ID: '}
+                            {item.caseId || item.request_id || item.case_id || 'SOS-Case'}
+                          </span>
+                          {!item.read ? (
+                            <span className="font-extrabold text-amber-700 flex items-center gap-0.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Unread
+                            </span>
+                          ) : (
+                            <span className="text-slate-400 font-semibold">Read</span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>
