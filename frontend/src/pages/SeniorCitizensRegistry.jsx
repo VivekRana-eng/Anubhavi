@@ -74,6 +74,7 @@ export default function SeniorCitizensRegistry() {
   const [search, setSearch] = useState('');
   const [riskFilter, setRiskFilter] = useState('');
   const [loading, setLoading] = useState(true);
+  const [registryView, setRegistryView] = useState('grid');
   const navigate = useNavigate();
 
   const loadCitizens = () => {
@@ -139,6 +140,29 @@ export default function SeniorCitizensRegistry() {
           />
         </div>
 
+        <div className="flex items-center rounded-lg border border-surface-container-highest bg-surface-container-low p-1" role="group" aria-label="Registry view">
+          <button
+            type="button"
+            onClick={() => setRegistryView('grid')}
+            className={`flex h-8 w-8 items-center justify-center rounded-md transition ${registryView === 'grid' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-container-high'}`}
+            aria-label="Grid view"
+            aria-pressed={registryView === 'grid'}
+            title="Grid view"
+          >
+            <span className="material-symbols-outlined text-[18px]">grid_view</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setRegistryView('list')}
+            className={`flex h-8 w-8 items-center justify-center rounded-md transition ${registryView === 'list' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-container-high'}`}
+            aria-label="List view"
+            aria-pressed={registryView === 'list'}
+            title="List view"
+          >
+            <span className="material-symbols-outlined text-[18px]">view_list</span>
+          </button>
+        </div>
+
 
       </div>
 
@@ -146,9 +170,9 @@ export default function SeniorCitizensRegistry() {
       {loading ? (
         <div className="py-spacing-3xl text-center font-headline-sm text-on-surface-variant">Loading citizen registry...</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-spacing-md">
+        <div className={registryView === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-spacing-md' : 'flex flex-col gap-spacing-md'}>
           {citizens.map((c) => (
-            <div key={c.id} className="bg-surface-container-lowest p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between gap-spacing-md">
+            <div key={c.id} className={`bg-surface-container-lowest p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex ${registryView === 'list' ? 'flex-col sm:flex-row sm:items-center' : 'flex-col'} justify-between gap-spacing-md`}>
               <div className="flex items-start gap-spacing-md">
                 <img
                   src={c.avatar_url || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80"}

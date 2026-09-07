@@ -426,6 +426,7 @@ export default function DashboardOverview() {
   const [loading, setLoading] = useState(true);
   const [selectedCaseForAssign, setSelectedCaseForAssign] = useState(null);
   const [countdown, setCountdown] = useState('18h 38m 43s');
+  const [feedView, setFeedView] = useState('list');
   const navigate = useNavigate();
   const { lastEvent } = useWebSocket();
   const { searchQuery, filters, clearAllFilters, activeFilterCount } = useFilter();
@@ -591,7 +592,27 @@ export default function DashboardOverview() {
             </h2>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <div className="flex items-center rounded-lg border border-surface-container-highest bg-surface-container-low p-1" role="group" aria-label="Feed view">
+              <button
+                type="button"
+                onClick={() => setFeedView('grid')}
+                className={`flex items-center gap-1 rounded-md px-2 py-1 text-xs font-bold transition ${feedView === 'grid' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-container-high'}`}
+                aria-pressed={feedView === 'grid'}
+                title="Grid view"
+              >
+                <span className="material-symbols-outlined text-[16px]">grid_view</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setFeedView('list')}
+                className={`flex items-center gap-1 rounded-md px-2 py-1 text-xs font-bold transition ${feedView === 'list' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-container-high'}`}
+                aria-pressed={feedView === 'list'}
+                title="List view"
+              >
+                <span className="material-symbols-outlined text-[16px]">view_list</span>
+              </button>
+            </div>
             <span className="px-3 py-1 bg-surface-container-high text-on-surface text-xs font-bold rounded-lg border border-surface-container-highest">
               Showing {filteredCases.length} of {allSosCases.length} cases
             </span>
@@ -615,7 +636,7 @@ export default function DashboardOverview() {
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-spacing-md w-full">
+          <div className={feedView === 'grid' ? 'grid grid-cols-1 xl:grid-cols-2 gap-spacing-md w-full' : 'flex flex-col gap-spacing-md w-full'}>
             {filteredCases.map((c) => {
               const assignment = c.assignment_details || {};
               const officerName = assignment.officer_name || c.assigned_officer_name || c.assignedOfficer || c.officer_name || (c.status === 'ASSIGNED' || c.status === 'ARRIVED' || c.status === 'ON THE WAY' || c.status === 'ON_THE_WAY' || c.status === 'OFFICER_DISPATCHED' || c.status === 'OFFICER DISPATCHED' ? 'ASI Amit Singh' : null);
@@ -626,7 +647,7 @@ export default function DashboardOverview() {
               return (
                 <div
                   key={c.id}
-                  className={`p-3 sm:p-spacing-md rounded-xl border flex flex-col lg:flex-row items-start lg:items-center justify-between gap-spacing-md transition-all w-full overflow-hidden ${
+                  className={`p-3 sm:p-spacing-md rounded-xl border flex flex-col ${feedView === 'list' ? 'lg:flex-row lg:items-center' : ''} items-start justify-between gap-spacing-md transition-all w-full overflow-hidden ${
                     c.status === 'NEW' || c.status === 'ACTIVE'
                       ? 'bg-error-container/10 border-error shadow-sm'
                       : 'bg-surface-container-low border-surface-container-highest'
