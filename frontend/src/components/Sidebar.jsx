@@ -1,7 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function Sidebar({ stats = {}, isOpenOnMobile = false, onCloseMobile }) {
+  const { user } = useAuth();
+  const isDsp = user?.role === 'DSP';
+
   const navItemClass = ({ isActive }) =>
     `flex items-center justify-between px-spacing-sm py-spacing-xs rounded transition-all ${
       isActive
@@ -30,9 +34,15 @@ export default function Sidebar({ stats = {}, isOpenOnMobile = false, onCloseMob
           {/* JURISDICTION HEADER */}
           <div className="p-spacing-md bg-surface-container flex items-center justify-between">
             <div className="flex flex-col">
-              <span className="font-label-sm text-on-surface-variant uppercase tracking-wider">Jurisdiction Ward</span>
-              <span className="font-headline-sm text-on-surface truncate font-bold">Model Town PS</span>
-              <span className="font-label-sm text-secondary">District Central • Zone 1</span>
+              <span className="font-label-sm text-on-surface-variant uppercase tracking-wider font-extrabold">
+                {isDsp ? 'Directorate Oversight' : 'Jurisdiction Ward'}
+              </span>
+              <span className="font-headline-sm text-on-surface truncate font-bold">
+                {isDsp ? 'Central Sub-Division' : 'Model Town PS'}
+              </span>
+              <span className="font-label-sm text-secondary font-bold">
+                {isDsp ? 'All 6 Police Stations' : 'District Central • Zone 1'}
+              </span>
             </div>
             <div className="flex items-center gap-1">
               <span className="material-symbols-outlined text-secondary hover:text-on-surface cursor-pointer" title="Ward Settings">
@@ -49,13 +59,13 @@ export default function Sidebar({ stats = {}, isOpenOnMobile = false, onCloseMob
           <nav className="flex flex-col p-spacing-xs gap-spacing-3xs">
             {/* SECTION 1 */}
             <div className="px-spacing-xs pt-spacing-sm pb-spacing-3xs">
-              <span className="font-label-sm text-on-surface-variant uppercase tracking-wider">Command & Emergency</span>
+              <span className="font-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Command & Emergency</span>
             </div>
 
             <NavLink to="/sho/dashboard" className={navItemClass} onClick={handleNavClick}>
               <div className="flex items-center gap-spacing-xs">
                 <span className="material-symbols-outlined text-[20px]">dashboard</span>
-                <span className="font-label-lg">Dashboard</span>
+                <span className="font-label-lg">{isDsp ? 'DSP Command Center' : 'Dashboard'}</span>
               </div>
             </NavLink>
 
@@ -81,7 +91,7 @@ export default function Sidebar({ stats = {}, isOpenOnMobile = false, onCloseMob
 
             {/* SECTION 2 */}
             <div className="px-spacing-xs pt-spacing-md pb-spacing-3xs">
-              <span className="font-label-sm text-on-surface-variant uppercase tracking-wider">Operations & Response</span>
+              <span className="font-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Operations & Response</span>
             </div>
 
             <NavLink to="/sho/citizens" className={navItemClass} onClick={handleNavClick}>
@@ -101,18 +111,20 @@ export default function Sidebar({ stats = {}, isOpenOnMobile = false, onCloseMob
 
             {/* SECTION 3 */}
             <div className="px-spacing-xs pt-spacing-md pb-spacing-3xs">
-              <span className="font-label-sm text-on-surface-variant uppercase tracking-wider">Intelligence & Oversight</span>
+              <span className="font-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Intelligence & Oversight</span>
             </div>
 
-            <NavLink to="/sho/escalations" className={navItemClass} onClick={handleNavClick}>
-              <div className="flex items-center gap-spacing-xs">
-                <span className="material-symbols-outlined text-[20px] text-error">warning</span>
-                <span className="font-label-lg font-semibold text-error">24h Escalations</span>
-              </div>
-              <span className="flex items-center justify-center px-spacing-xs py-spacing-3xs rounded-full bg-error-container text-on-error-container font-label-sm font-bold">
-                {stats.escalated_cases || 1}
-              </span>
-            </NavLink>
+            {!isDsp && (
+              <NavLink to="/sho/escalations" className={navItemClass} onClick={handleNavClick}>
+                <div className="flex items-center gap-spacing-xs">
+                  <span className="material-symbols-outlined text-[20px] text-error">warning</span>
+                  <span className="font-label-lg text-error font-bold">24h Escalations</span>
+                </div>
+                <span className="flex items-center justify-center px-spacing-xs py-spacing-3xs rounded-full bg-error-container text-on-error-container font-label-sm font-extrabold">
+                  {stats.escalations_count || 1}
+                </span>
+              </NavLink>
+            )}
 
             <NavLink to="/sho/reports" className={navItemClass} onClick={handleNavClick}>
               <div className="flex items-center gap-spacing-xs">

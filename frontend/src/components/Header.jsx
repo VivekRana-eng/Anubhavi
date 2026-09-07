@@ -1,29 +1,21 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useWebSocket } from '../context/WebSocketContext';
+import { useCommandStore } from '../context/CommandStoreContext';
 import { useNavigate } from 'react-router-dom';
 import {
-  useFilter,
-  POLICE_STATIONS_OPTIONS,
-  OFFICERS_OPTIONS,
-  STATUS_OPTIONS,
-  CASE_TYPE_OPTIONS
+  useFilter
 } from '../context/FilterContext';
 
 export default function Header({ onToggleMobileSidebar }) {
   const { user, logout } = useAuth();
+  const { audioEnabled, toggleAudio } = useWebSocket();
   const {
-    audioEnabled,
-    toggleAudio,
-    notificationsCount,
-    notificationsList = [],
-    clearNotifications,
-    dismissNotificationItem,
-    activeAlert,
-    dismissAlert,
-    userNotification,
-    dismissUserNotification
-  } = useWebSocket();
+    getFilteredNotifications,
+    getUnreadNotificationCount,
+    markNotificationRead,
+    clearAllNotifications
+  } = useCommandStore();
   
   const navigate = useNavigate();
   const popoverRef = useRef(null);
@@ -33,11 +25,6 @@ export default function Header({ onToggleMobileSidebar }) {
   const {
     searchQuery,
     setSearchQuery,
-    filters,
-    setFilter,
-    clearAllFilters,
-    activeFilterCount,
-    isFilterPanelOpen,
     setIsFilterPanelOpen
   } = useFilter();
 
@@ -45,6 +32,12 @@ export default function Header({ onToggleMobileSidebar }) {
     logout();
     navigate('/login');
   };
+
+  // Derive notifications list and unread badge count for current logged in user role & station
+  const stationCode = user?.police_station_id || 'MTP-PS-01';
+  const userRole = user?.role || 'SHO';
+  const filteredNotifications = getFilteredNotifications(userRole, stationCode);
+  const unreadCount = getUnreadNotificationCount(userRole, stationCode);
 
   // Close filter or notification popovers when clicking outside
   useEffect(() => {
@@ -84,14 +77,19 @@ export default function Header({ onToggleMobileSidebar }) {
         <div className="flex flex-col">
           <div className="flex items-center gap-spacing-xs">
             <span className="font-headline-sm text-on-surface font-extrabold tracking-tight text-primary">ANUBHAVI</span>
+            {userRole === 'DSP' && (
+              <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                DSP DIRECTORATE
+              </span>
+            )}
           </div>
           <span className="hidden sm:block font-label-sm text-on-surface-variant tracking-wider">
-            "Suraksha. Saath. Samman." • Model Town PS
+            "Suraksha. Saath. Samman." • {userRole === 'DSP' ? 'Sub-Divisional Command' : 'Model Town PS'}
           </span>
         </div>
       </div>
 
-      {/* SEARCH BAR & FILTER SYSTEM */}
+      {/* SEARCH BAR */}
       <div className="flex-1 max-w-xl mx-spacing-md relative" ref={popoverRef}>
         <div className="relative flex items-center w-full">
           <span className="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">
@@ -103,12 +101,12 @@ export default function Header({ onToggleMobileSidebar }) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search Case ID, Senior Name, Mobile, Location, Officer..."
-            className="w-full h-10 pl-10 pr-4 bg-surface-container-low text-on-surface font-body-sm rounded-xl border border-surface-container-highest focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all shadow-inner"
+            className="w-full h-10 pl-10 pr-4 bg-surface-container-low text-on-surface font-body-sm rounded-xl border border-surface-container-highest focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all shadow-inner text-xs sm:text-sm font-semibold"
           />
         </div>
       </div>
 
-      {/* RIGHT ACTION ITEMS: AUDIO, NOTIFICATIONS, SHO PROFILE */}
+      {/* RIGHT ACTION ITEMS: AUDIO, NOTIFICATIONS, USER PROFILE */}
       <div className="flex items-center gap-spacing-md">
 
         {/* AUDIO & NOTIFICATIONS */}
@@ -128,13 +126,13 @@ export default function Header({ onToggleMobileSidebar }) {
           {/* NOTIFICATION BELL BUTTON WITH LIVE BADGE */}
           <button
             onClick={() => setIsNotifPanelOpen(!isNotifPanelOpen)}
-            className="relative w-9 h-9 flex items-center justify-center rounded bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors"
+            className="relative w-9 h-9 flex items-center justify-center rounded bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors cursor-pointer"
             title="Active Notifications"
           >
             <span className="material-symbols-outlined text-[20px]">notifications</span>
-            {notificationsCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-on-error font-label-sm text-[9px] font-bold animate-pulse">
-                {notificationsCount}
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-error text-on-error font-label-sm text-[9px] font-extrabold animate-pulse">
+                {unreadCount}
               </span>
             )}
           </button>
@@ -146,80 +144,71 @@ export default function Header({ onToggleMobileSidebar }) {
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-red-600 text-[20px]">notifications_active</span>
                   <span className="font-extrabold text-sm text-slate-800">
-                    Control Room Alerts ({notificationsCount})
+                    {userRole === 'DSP' ? 'District Activity Notifications' : 'Station Notifications'} ({unreadCount} unread)
                   </span>
                 </div>
-                {notificationsCount > 0 && (
+                {filteredNotifications.length > 0 && (
                   <button
-                    onClick={clearNotifications}
-                    className="text-[11px] font-bold text-[#2e5746] hover:underline"
+                    onClick={() => clearAllNotifications(userRole, stationCode)}
+                    className="text-[11px] font-bold text-[#2e5746] hover:underline cursor-pointer"
                   >
-                    Clear All
+                    Mark All Read
                   </button>
                 )}
               </div>
 
               <div className="flex flex-col gap-2 max-h-80 overflow-y-auto pr-1">
-                {notificationsList.length === 0 ? (
+                {filteredNotifications.length === 0 ? (
                   <div className="py-6 text-center text-xs font-bold text-slate-400">
-                    No active notifications
+                    No notifications for your station
                   </div>
                 ) : (
-                  notificationsList.map((item) => (
+                  filteredNotifications.map((item) => (
                     <div
                       key={item.id}
-                      className={`p-3 rounded-xl border transition-all text-xs flex flex-col gap-1 ${
-                        item.type === 'SOS'
-                          ? 'bg-red-50/80 border-red-200 text-red-900'
-                          : item.type === 'ASSIGNMENT'
-                          ? 'bg-blue-50/80 border-blue-200 text-blue-900'
-                          : item.type === 'ASSISTANCE'
-                          ? 'bg-emerald-50/80 border-emerald-200 text-emerald-900'
-                          : 'bg-amber-50/80 border-amber-200 text-amber-900'
+                      onClick={() => markNotificationRead(item.id)}
+                      className={`p-3 rounded-xl border transition-all text-xs flex flex-col gap-1 cursor-pointer ${
+                        !item.read ? 'bg-amber-50/70 border-amber-200 text-slate-900 shadow-2xs' : 'bg-slate-50 border-slate-200 text-slate-600'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-extrabold uppercase tracking-wider text-[10px]">
-                          {item.title}
+                        <span className={`font-extrabold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded ${
+                          item.type === 'OFFICER_ASSIGNED' ? 'bg-blue-100 text-blue-900' :
+                          item.type === 'OFFICER_REASSIGNED' ? 'bg-amber-100 text-amber-900' :
+                          item.type === 'STATUS_UPDATED' ? 'bg-emerald-100 text-emerald-900' :
+                          'bg-red-100 text-red-900'
+                        }`}>
+                          {item.title || item.type}
                         </span>
                         <span className="text-[10px] text-slate-400 font-semibold">{item.time}</span>
                       </div>
-                      <p className="font-bold text-slate-800 text-[12px]">{item.message}</p>
                       
-                      {item.officer_name && (
-                        <div className="mt-1 p-2 rounded-lg bg-white/80 border border-slate-200 text-[11px] font-medium text-slate-700 flex flex-col gap-0.5">
-                          <p>👮 <strong>Officer:</strong> {item.officer_rank} {item.officer_name} ({item.police_id})</p>
-                          <p>🚓 <strong>Vehicle:</strong> {item.vehicle}</p>
+                      <p className="font-bold text-slate-900 text-[12px] mt-0.5">{item.message}</p>
+                      
+                      {/* REASSIGNMENT PREVIOUS -> NEW HIGHLIGHT */}
+                      {item.type === 'OFFICER_REASSIGNED' && (
+                        <div className="mt-1 p-2 rounded-lg bg-amber-100/70 border border-amber-300/80 text-[11px] font-bold text-amber-950 flex flex-col gap-0.5">
+                          <p>🔁 <strong>Reassigned:</strong> {item.previousOfficer || 'Previous Officer'} → <strong className="text-emerald-900">{item.newOfficer || item.officer_name}</strong></p>
                           <p>🏬 <strong>Station:</strong> {item.police_station || 'Model Town PS'}</p>
                         </div>
                       )}
 
-                      {item.location && !item.officer_name && (
-                        <p className="text-[11px] text-slate-500 font-medium truncate">📍 {item.location}</p>
+                      {item.officer_name && item.type !== 'OFFICER_REASSIGNED' && (
+                        <div className="mt-1 p-2 rounded-lg bg-white/90 border border-slate-200 text-[11px] font-medium text-slate-700 flex flex-col gap-0.5">
+                          <p>👮 <strong>Officer:</strong> {item.officer_rank} {item.officer_name} ({item.police_id || 'POL-101'})</p>
+                          <p>🏬 <strong>Station:</strong> {item.police_station || 'Model Town PS'}</p>
+                        </div>
                       )}
-                      
-                      <div className="mt-1 pt-1 border-t border-slate-200/50 flex items-center justify-between">
-                        <button
-                          onClick={() => {
-                            setIsNotifPanelOpen(false);
-                            if (item.type === 'SOS') {
-                              navigate('/sho/dashboard');
-                            } else if (item.type === 'ASSISTANCE') {
-                              navigate('/sho/dashboard');
-                            } else {
-                              navigate('/sho/check-ins');
-                            }
-                          }}
-                          className="px-2.5 py-1 bg-[#2e5746] hover:bg-[#244638] text-white font-extrabold rounded-md text-[10px] transition-all"
-                        >
-                          TAKE ACTION NOW →
-                        </button>
-                        <button
-                          onClick={() => dismissNotificationItem(item.id)}
-                          className="text-[10px] font-bold text-slate-400 hover:text-slate-700"
-                        >
-                          Dismiss
-                        </button>
+
+                      <div className="mt-1 pt-1 border-t border-slate-200/60 flex items-center justify-between text-[10px]">
+                        <span className="font-bold text-slate-400">Case ID: {item.caseId || 'SOS-Case'}</span>
+                        {!item.read ? (
+                          <span className="font-extrabold text-amber-700 flex items-center gap-0.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Unread
+                          </span>
+                        ) : (
+                          <span className="text-slate-400 font-semibold">Read</span>
+                        )}
                       </div>
                     </div>
                   ))
@@ -231,26 +220,26 @@ export default function Header({ onToggleMobileSidebar }) {
 
         <div className="h-6 w-px bg-surface-container-highest"></div>
 
-        {/* SHO PROFILE SUMMARY */}
+        {/* USER PROFILE SUMMARY */}
         <div className="flex items-center gap-spacing-sm">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
-            <span className="material-symbols-outlined text-[18px]">person</span>
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-black">
+            {userRole === 'DSP' ? 'DSP' : 'SHO'}
           </div>
           <div className="hidden md:flex flex-col text-left">
             <div className="flex items-center gap-spacing-2xs">
-              <span className="font-label-md text-on-surface font-bold">
-                {user?.name || 'Insp. Raj Kumar'}
+              <span className="font-label-md text-on-surface font-extrabold">
+                {user?.name || (userRole === 'DSP' ? 'DSP Harpreet Singh' : 'Insp. Raj Kumar')}
               </span>
               <span className="w-2 h-2 rounded-full bg-secondary" title="Duty Active"></span>
             </div>
             <span className="font-label-sm text-on-surface-variant">
-              {user?.police_id || 'POL-SHO-041'} • Model Town
+              {user?.police_id || (userRole === 'DSP' ? 'POL-DSP-009' : 'POL-SHO-041')} • {userRole === 'DSP' ? 'Sub-Divisional Command' : 'Model Town PS'}
             </span>
           </div>
 
           <button
             onClick={handleLogout}
-            className="p-spacing-2xs rounded text-on-surface-variant hover:text-error transition-colors"
+            className="p-spacing-2xs rounded text-on-surface-variant hover:text-error transition-colors cursor-pointer"
             title="Station Duty Switch / Exit Console"
           >
             <span className="material-symbols-outlined text-[20px]">logout</span>

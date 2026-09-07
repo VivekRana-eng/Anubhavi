@@ -5,17 +5,20 @@ import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { WebSocketProvider } from './context/WebSocketContext';
 import { FilterProvider } from './context/FilterContext';
+import { CommandStoreProvider } from './context/CommandStoreContext';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <WebSocketProvider>
-          <FilterProvider>
-            <App />
-          </FilterProvider>
-        </WebSocketProvider>
+        <CommandStoreProvider>
+          <WebSocketProvider>
+            <FilterProvider>
+              <App />
+            </FilterProvider>
+          </WebSocketProvider>
+        </CommandStoreProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

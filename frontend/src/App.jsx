@@ -4,8 +4,10 @@ import { useAuth } from './context/AuthContext';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import SosAlertModal from './components/SosAlertModal';
+import AssignmentToastNotification from './components/AssignmentToastNotification';
 import SeniorApp from './SeniorApp';
 import Login from './pages/Login';
+import DspLogin from './pages/DspLogin';
 
 // Pages
 import DashboardOverview from './pages/DashboardOverview';
@@ -60,6 +62,8 @@ export default function App() {
     return (
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/dsp/login" element={<DspLogin />} />
+        <Route path="/login/dsp" element={<DspLogin />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );
@@ -104,8 +108,9 @@ export default function App() {
         </main>
       </div>
 
-      {/* REAL-TIME ALERT POPUP MODAL */}
+      {/* REAL-TIME ALERT POPUP MODAL & TOAST NOTIFICATION OVERLAY */}
       <SosAlertModal />
+      <AssignmentToastNotification />
     </div>
   );
 }

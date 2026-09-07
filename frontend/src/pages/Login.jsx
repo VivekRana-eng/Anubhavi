@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
@@ -36,7 +36,7 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-[#f3f2eb] flex items-center justify-center p-4 selection:bg-[#2e5746] selection:text-white font-sans">
       {/* CENTERED LOGIN CARD */}
-      <div className="w-full max-w-[420px] bg-white rounded-[32px] p-8 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-slate-100 flex flex-col items-center">
+      <div className="w-full max-w-[440px] bg-white rounded-[32px] p-8 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-slate-100 flex flex-col items-center">
         
         {/* TOP EMBLEM ICON (RESTORED OLD GREEN ADJUST ICON LOGO) */}
         <div className="w-14 h-14 rounded-2xl bg-[#2e5746] flex items-center justify-center shadow-md shadow-[#2e5746]/20 text-white mb-1">
@@ -106,7 +106,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 w-full h-12 bg-[#2e5746] hover:bg-[#244638] text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-md shadow-[#2e5746]/20 transition-all flex items-center justify-center gap-2"
+            className="mt-2 w-full h-12 bg-[#2e5746] hover:bg-[#244638] text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-md shadow-[#2e5746]/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? (
               <span>AUTHENTICATING...</span>
@@ -118,25 +118,53 @@ export default function Login() {
             )}
           </button>
 
+          {/* DEDICATED DSP LOGIN PORTAL LINK */}
+          <div className="p-3 bg-amber-50/80 border border-amber-200 rounded-xl flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-amber-700 text-[20px]">verified_user</span>
+              <div className="flex flex-col text-left">
+                <span className="text-[11px] font-extrabold text-amber-950">DSP Executive Portal</span>
+                <span className="text-[10px] text-amber-800 font-medium">Sub-Divisional Directorate</span>
+              </div>
+            </div>
+            <Link
+              to="/dsp/login"
+              className="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-extrabold rounded-lg text-[10px] uppercase tracking-wider transition-all flex items-center gap-1 shadow-xs"
+            >
+              <span>DSP Login</span>
+              <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </Link>
+          </div>
+
           {/* QUICK DEMO PRESETS */}
-          <div className="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-2">
+          <div className="mt-2 pt-3 border-t border-slate-100 flex flex-col gap-2">
             <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 text-center">
               QUICK ONE-CLICK DEMO LOGINS
             </span>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-1.5">
               <button
                 type="button"
                 onClick={(e) => handleLogin(e, 'sho@anubhavi.com', 'sho@123')}
-                className="py-2.5 px-3 bg-slate-100 hover:bg-emerald-50 hover:text-[#2e5746] hover:border-emerald-200 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all text-center"
+                className="py-2 px-1.5 bg-slate-100 hover:bg-emerald-50 hover:text-[#2e5746] hover:border-emerald-200 border border-slate-200 text-slate-700 font-bold rounded-xl text-[11px] transition-all text-center truncate cursor-pointer"
+                title="SHO Console Login"
               >
-                👮 SHO Console Login
+                👮 SHO Login
+              </button>
+              <button
+                type="button"
+                onClick={(e) => handleLogin(e, 'dsp@anubhavi.demo', 'DSP@123')}
+                className="py-2 px-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold rounded-xl text-[11px] transition-all text-center truncate cursor-pointer"
+                title="DSP Executive Login"
+              >
+                👮‍♂️ DSP Login
               </button>
               <button
                 type="button"
                 onClick={(e) => handleLogin(e, 'rajesh.sharma@demo.com', 'CIT@123')}
-                className="py-2.5 px-3 bg-slate-100 hover:bg-emerald-50 hover:text-[#2e5746] hover:border-emerald-200 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all text-center"
+                className="py-2 px-1.5 bg-slate-100 hover:bg-emerald-50 hover:text-[#2e5746] hover:border-emerald-200 border border-slate-200 text-slate-700 font-bold rounded-xl text-[11px] transition-all text-center truncate cursor-pointer"
+                title="Senior Citizen Login"
               >
-                👵 Senior Citizen Login
+                👵 Senior Login
               </button>
             </div>
           </div>
@@ -145,3 +173,4 @@ export default function Login() {
     </div>
   );
 }
+
