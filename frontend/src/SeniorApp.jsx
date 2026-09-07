@@ -26,6 +26,7 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
   })
   const [myRequests, setMyRequests] = useState([])
   const [expandedRequestId, setExpandedRequestId] = useState(null)
+  const [showSosDetails, setShowSosDetails] = useState(false)
   const [voiceMessage, setVoiceMessage] = useState('')
 
   const { userNotification, dismissUserNotification } = useWebSocket()
@@ -597,14 +598,26 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
     content = (
       <div className="space-y-4 pt-3 text-left">
         {activeCase && (
-          <div className="rounded-2xl border-2 border-red-500 bg-red-50 p-4 shadow-sm">
+          <button type="button" onClick={() => setShowSosDetails(prev => !prev)} aria-expanded={showSosDetails} className="w-full rounded-2xl border-2 border-red-500 bg-red-50 p-4 text-left shadow-sm transition hover:bg-red-100">
             <div className="flex items-center justify-between">
               <span className="text-xs font-black text-red-700">🚨 EMERGENCY SOS #{activeCase.case_id}</span>
               <span className="rounded bg-red-600 px-2 py-0.5 text-[10px] font-black text-white uppercase">{activeCase.status}</span>
             </div>
             <p className="text-xs font-bold text-slate-800 mt-2">Station: {activeCase.police_station || 'Model Town Police Station'}</p>
-            <p className="text-xs text-slate-700">Officer: {activeCase.officer_rank} {activeCase.officer_name} ({activeCase.vehicle})</p>
-          </div>
+            <p className="text-xs text-slate-700">Officer: {activeCase.officer_rank || 'Control Desk'} {activeCase.officer_name || 'Pending Police Dispatch...'}</p>
+            <p className="mt-2 text-[10px] font-black uppercase tracking-wide text-red-700">{showSosDetails ? 'Hide full details ↑' : 'Tap to view full officer details ↓'}</p>
+            {showSosDetails && (
+              <div className="mt-3 grid grid-cols-1 gap-2 border-t border-red-200 pt-3 text-xs text-slate-800 sm:grid-cols-2">
+                <div className="rounded-lg bg-white/80 p-2"><p className="text-[10px] font-bold uppercase text-slate-500">Officer Name</p><p className="mt-0.5 font-extrabold">{activeCase.officer_name || 'Pending Police Dispatch...'}</p></div>
+                <div className="rounded-lg bg-white/80 p-2"><p className="text-[10px] font-bold uppercase text-slate-500">Rank</p><p className="mt-0.5 font-extrabold">{activeCase.officer_rank || 'Control Desk'}</p></div>
+                <div className="rounded-lg bg-white/80 p-2"><p className="text-[10px] font-bold uppercase text-slate-500">Belt / Police Number</p><p className="mt-0.5 font-extrabold">{activeCase.police_id || 'Not assigned yet'}</p></div>
+                <div className="rounded-lg bg-white/80 p-2"><p className="text-[10px] font-bold uppercase text-slate-500">Officer Mobile</p><p className="mt-0.5 font-extrabold">{activeCase.officer_mobile || 'Not available'}</p></div>
+                <div className="rounded-lg bg-white/80 p-2"><p className="text-[10px] font-bold uppercase text-slate-500">Vehicle</p><p className="mt-0.5 font-extrabold">{activeCase.vehicle || 'Not assigned yet'}</p></div>
+                <div className="rounded-lg bg-white/80 p-2"><p className="text-[10px] font-bold uppercase text-slate-500">ETA / Last Updated</p><p className="mt-0.5 font-extrabold">{activeCase.eta || 'Calculating'} • {activeCase.last_updated || 'Just now'}</p></div>
+                <div className="rounded-lg bg-white/80 p-2 sm:col-span-2"><p className="text-[10px] font-bold uppercase text-slate-500">Dispatch Instructions</p><p className="mt-0.5 font-semibold">{activeCase.instructions || 'Police response team dispatched.'}</p></div>
+              </div>
+            )}
+          </button>
         )}
 
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">

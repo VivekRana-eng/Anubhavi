@@ -657,6 +657,25 @@ export const CommandStoreProvider = ({ children }) => {
     setNotifications(updatedNotifs);
     setActivityLogs(updatedLogs);
     saveStateToStorage(updatedCases, updatedNotifs, updatedLogs);
+    const assignmentUpdate = {
+      event: 'SOS_ASSIGNED',
+      case_id: caseId,
+      title: 'Officer Assigned to Your SOS',
+      message: `${fullOfficerName} has been assigned to your SOS case.`,
+      police_station: stationName,
+      officer_name: officerName,
+      officer_rank: officerRank || 'Officer',
+      police_id: policeId,
+      officer_mobile: POLICE_OFFICERS_ROSTER.find(officer => officer.id === policeId)?.mobile,
+      vehicle,
+      response_type: 'Police Emergency Response',
+      priority: 'HIGH',
+      instructions: remarks || 'Officer dispatched to your location.',
+      assigned_at: timeNow,
+      status: 'ASSIGNED'
+    };
+    localStorage.setItem('anubhavi_local_user_notification', JSON.stringify(assignmentUpdate));
+    window.dispatchEvent(new CustomEvent('anubhavi_new_notification', { detail: assignmentUpdate }));
     window.dispatchEvent(new CustomEvent('anubhavi_new_toast_notification', { detail: newNotif }));
 
     // Optional API Sync
@@ -764,6 +783,25 @@ export const CommandStoreProvider = ({ children }) => {
     setNotifications(updatedNotifs);
     setActivityLogs(updatedLogs);
     saveStateToStorage(updatedCases, updatedNotifs, updatedLogs);
+    const reassignmentUpdate = {
+      event: 'SOS_ASSIGNED',
+      case_id: caseId,
+      title: 'Officer Reassigned to Your SOS',
+      message: `${fullNewOfficerName} has been assigned to your SOS case.`,
+      police_station: stationName,
+      officer_name: newOfficerName,
+      officer_rank: newOfficerRank || 'Officer',
+      police_id: newPoliceId,
+      officer_mobile: POLICE_OFFICERS_ROSTER.find(officer => officer.id === newPoliceId)?.mobile,
+      vehicle: newVehicle,
+      response_type: 'Police Emergency Response',
+      priority: 'HIGH',
+      instructions: remarks || 'Officer dispatched to your location.',
+      assigned_at: timeNow,
+      status: 'ASSIGNED'
+    };
+    localStorage.setItem('anubhavi_local_user_notification', JSON.stringify(reassignmentUpdate));
+    window.dispatchEvent(new CustomEvent('anubhavi_new_notification', { detail: reassignmentUpdate }));
     window.dispatchEvent(new CustomEvent('anubhavi_new_toast_notification', { detail: newNotif }));
 
     return { caseId, previousOfficer, newOfficerName, status: 'ASSIGNED' };
