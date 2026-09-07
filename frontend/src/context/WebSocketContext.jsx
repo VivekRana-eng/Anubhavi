@@ -178,6 +178,7 @@ export const WebSocketProvider = ({ children }) => {
 
           if (data.event === 'NEW_SOS_ALERT') {
             setActiveAlert(data);
+            window.dispatchEvent(new CustomEvent('anubhavi_new_sos_alert', { detail: data }));
             addNotificationItem({
               id: `NOT-${Date.now()}`,
               type: 'SOS',

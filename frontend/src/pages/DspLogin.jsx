@@ -44,7 +44,7 @@ export default function DspLogin() {
         
         {/* EXECUTIVE EMBLEM WITH GOLDEN RANK STAR */}
         <div className="relative mb-2">
-          <div className="w-16 h-16 rounded-2xl bg-[#2e5746] flex items-center justify-center shadow-lg shadow-[#2e5746]/25 text-white">
+          <div className="w-16 h-16 flex items-center justify-center">
             <span className="material-symbols-outlined text-[32px]">
               security
             </span>
@@ -56,7 +56,8 @@ export default function DspLogin() {
 
         {/* BRAND & DSP WELCOME HEADER */}
         <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight mt-2 text-center flex items-center justify-center gap-2">
-          Anubhavi
+          <img src="/delhi_police_emblem.png" alt="Delhi Police emblem" className="h-10 w-10 object-contain" />
+          <span>Anubhavi</span>
           <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">
             DSP PORTAL
           </span>

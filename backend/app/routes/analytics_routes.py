@@ -29,17 +29,24 @@ def get_dashboard_stats():
     cursor.execute("SELECT COUNT(*) FROM sos_cases WHERE status = 'ESCALATED'")
     escalated_cases = cursor.fetchone()[0]
 
+    cursor.execute("""
+        SELECT AVG((julianday(accepted_at) - julianday(created_at)) * 24 * 60)
+        FROM sos_cases
+        WHERE accepted_at IS NOT NULL AND created_at IS NOT NULL
+    """)
+    avg_response_minutes = cursor.fetchone()[0]
+
     conn.close()
 
     return {
-        "total_citizens": total_citizens or 1248,
-        "active_sos": active_sos or 3,
-        "pending_assistance": pending_assistance or 8,
-        "missed_checkins": missed_checkins or 5,
-        "active_cases": active_cases or 17,
-        "resolved_cases": resolved_cases or 126,
-        "escalated_cases": escalated_cases or 1,
-        "avg_response_time": "8 min",
+        "total_citizens": total_citizens,
+        "active_sos": active_sos,
+        "pending_assistance": pending_assistance,
+        "missed_checkins": missed_checkins,
+        "active_cases": active_cases,
+        "resolved_cases": resolved_cases,
+        "escalated_cases": escalated_cases,
+        "avg_response_time": f"{round(avg_response_minutes)} min" if avg_response_minutes is not None else "—",
         "station_name": "Model Town Police Station",
         "sho_name": "Insp. Raj Kumar",
         "badge_id": "POL-SHO-041"

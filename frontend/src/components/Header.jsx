@@ -74,6 +74,11 @@ export default function Header({ onToggleMobileSidebar }) {
           <span>Back</span>
         </button>
 
+        <img
+          src="/delhi_police_emblem.png"
+          alt="Delhi Police emblem"
+          className="h-10 w-10 object-contain"
+        />
         <div className="flex flex-col">
           <div className="flex items-center gap-spacing-xs">
             <span className="font-headline-sm text-on-surface font-extrabold tracking-tight text-primary">ANUBHAVI</span>
@@ -126,12 +131,13 @@ export default function Header({ onToggleMobileSidebar }) {
           {/* NOTIFICATION BELL BUTTON WITH LIVE BADGE */}
           <button
             onClick={() => setIsNotifPanelOpen(!isNotifPanelOpen)}
-            className="relative w-9 h-9 flex items-center justify-center rounded bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors cursor-pointer"
+            className="relative flex h-9 w-9 min-w-9 shrink-0 items-center justify-center overflow-visible rounded bg-surface-container text-on-surface transition-colors hover:bg-surface-container-high cursor-pointer"
+            aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}
             title="Active Notifications"
           >
-            <span className="material-symbols-outlined text-[20px]">notifications</span>
+            <span className="material-symbols-outlined block text-[20px] leading-none">notifications</span>
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-error text-on-error font-label-sm text-[9px] font-extrabold animate-pulse">
+              <span className="absolute -right-1.5 -top-1.5 z-10 flex h-4 min-w-4 items-center justify-center rounded-full bg-error px-1 text-[9px] font-extrabold leading-none text-on-error animate-pulse">
                 {unreadCount}
               </span>
             )}

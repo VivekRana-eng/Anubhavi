@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
@@ -38,11 +38,9 @@ export default function Login() {
       {/* CENTERED LOGIN CARD */}
       <div className="w-full max-w-[440px] bg-white rounded-[32px] p-8 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-slate-100 flex flex-col items-center">
         
-        {/* TOP EMBLEM ICON (RESTORED OLD GREEN ADJUST ICON LOGO) */}
-        <div className="w-14 h-14 rounded-2xl bg-[#2e5746] flex items-center justify-center shadow-md shadow-[#2e5746]/20 text-white mb-1">
-          <span className="material-symbols-outlined text-[28px]">
-            adjust
-          </span>
+        {/* TOP DELHI POLICE EMBLEM */}
+        <div className="w-20 h-20 flex items-center justify-center mb-1">
+          <img src="/delhi_police_emblem.png" alt="Delhi Police emblem" className="h-[4.5rem] w-[4.5rem] object-contain" />
         </div>
 
         {/* BRAND & WELCOME HEADER */}
@@ -117,24 +115,6 @@ export default function Login() {
               </>
             )}
           </button>
-
-          {/* DEDICATED DSP LOGIN PORTAL LINK */}
-          <div className="p-3 bg-amber-50/80 border border-amber-200 rounded-xl flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-amber-700 text-[20px]">verified_user</span>
-              <div className="flex flex-col text-left">
-                <span className="text-[11px] font-extrabold text-amber-950">DSP Executive Portal</span>
-                <span className="text-[10px] text-amber-800 font-medium">Sub-Divisional Directorate</span>
-              </div>
-            </div>
-            <Link
-              to="/dsp/login"
-              className="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-extrabold rounded-lg text-[10px] uppercase tracking-wider transition-all flex items-center gap-1 shadow-xs"
-            >
-              <span>DSP Login</span>
-              <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-            </Link>
-          </div>
 
           {/* QUICK DEMO PRESETS */}
           <div className="mt-2 pt-3 border-t border-slate-100 flex flex-col gap-2">

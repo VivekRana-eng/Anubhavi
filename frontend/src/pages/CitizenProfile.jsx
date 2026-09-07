@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
 const MOCK_CITIZENS = {
   'CIT-8841': {
     id: 'CIT-8841',
@@ -345,7 +348,8 @@ export default function CitizenProfile() {
   const { citizenId } = useParams();
   const [data, setData] = useState(null);
   const [activeTab, setActiveTab] = useState('Overview');
-  const [loading, setLoading] = useState(true);
+  // Render the dossier immediately with fallback data; API data enriches it when available.
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {

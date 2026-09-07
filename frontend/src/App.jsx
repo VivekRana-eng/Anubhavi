@@ -23,6 +23,13 @@ import ReportsView from './pages/ReportsView';
 import StationSettings from './pages/StationSettings';
 import TacticalLiveMap from './pages/TacticalLiveMap';
 
+const FALLBACK_STATS = {
+  total_citizens: 5,
+  active_sos: 3,
+  missed_checkins: 5,
+  avg_response_time: '8 min'
+};
+
 export default function App() {
   const { user, isAuthenticated, logout } = useAuth();
   const [stats, setStats] = useState({});
@@ -40,14 +47,7 @@ export default function App() {
       .then(data => setStats(data))
       .catch(err => {
         // Fallback demo stats
-        setStats({
-          active_sos_alerts: 3,
-          pending_assistance: 8,
-          missed_checkins: 5,
-          total_senior_citizens: 1248,
-          active_cases: 17,
-          resolved_cases: 126
-        });
+        setStats(FALLBACK_STATS);
       });
   };
 

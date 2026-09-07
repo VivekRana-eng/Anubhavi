@@ -539,11 +539,38 @@ export const CommandStoreProvider = ({ children }) => {
       } catch (e) {}
     };
 
+    const handleSosAlert = (event) => {
+      const alert = event.detail;
+      if (!alert?.case_id) return;
+      setNotifications(prev => {
+        if (prev.some(notification => notification.caseId === alert.case_id)) return prev;
+        const notification = {
+          id: `NOT-SOS-${alert.case_id}`,
+          type: 'SOS',
+          title: 'New SOS Emergency Alert',
+          message: `${alert.citizen_name || 'Senior Citizen'} triggered ${alert.emergency_type || 'an SOS alert'}.`,
+          recipientRole: 'DSP',
+          stationId: alert.station_code || 'MTP-PS-01',
+          police_station: alert.police_station || 'Model Town Police Station',
+          caseId: alert.case_id,
+          createdAt: new Date().toISOString(),
+          time: 'Just Now',
+          read: false,
+          priority: 'CRITICAL'
+        };
+        const updated = [notification, ...prev];
+        localStorage.setItem('anubhavi_shared_notifications', JSON.stringify(updated));
+        return updated;
+      });
+    };
+
     window.addEventListener('storage', handleStorage);
     window.addEventListener('anubhavi_store_changed', handleLocalCustomEvent);
+    window.addEventListener('anubhavi_new_sos_alert', handleSosAlert);
     return () => {
       window.removeEventListener('storage', handleStorage);
       window.removeEventListener('anubhavi_store_changed', handleLocalCustomEvent);
+      window.removeEventListener('anubhavi_new_sos_alert', handleSosAlert);
     };
   }, []);
 

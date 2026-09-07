@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OfficerAssignmentModal from '../components/OfficerAssignmentModal';
 import FilterChips from '../components/FilterChips';
 import { useAuth } from '../context/AuthContext';
 import { useCommandStore } from '../context/CommandStoreContext';
 import { useFilter, applyFiltersAndSearch } from '../context/FilterContext';
+
+const FALLBACK_STATS = {
+  total_citizens: 5,
+  active_sos: 3,
+  missed_checkins: 5,
+  avg_response_time: '8 min'
+};
 
 export default function DashboardOverview() {
   const { user } = useAuth();
@@ -20,6 +27,31 @@ export default function DashboardOverview() {
   const [stationFilterMode, setStationFilterMode] = useState(isDsp ? 'all' : 'my_station');
   const [statusUpdateCaseId, setStatusUpdateCaseId] = useState(null);
   const [statusNote, setStatusNote] = useState('');
+  const [stats, setStats] = useState(FALLBACK_STATS);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadStats = () => {
+      fetch('/api/analytics/dashboard-stats')
+        .then(res => {
+          if (!res.ok) throw new Error('Unable to load dashboard stats');
+          return res.json();
+        })
+        .then(data => {
+          if (!cancelled) setStats(data);
+        })
+        .catch(() => {
+          if (!cancelled) setStats(FALLBACK_STATS);
+        });
+    };
+
+    loadStats();
+    const refreshTimer = window.setInterval(loadStats, 30000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(refreshTimer);
+    };
+  }, []);
 
   // Station Filter logic
   const stationFilteredCases = cases.filter(c => {
@@ -89,7 +121,7 @@ export default function DashboardOverview() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-spacing-sm text-left">
         <div className="bg-surface-container-lowest p-3 sm:p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between">
           <span className="text-[11px] sm:font-label-sm text-on-surface-variant uppercase font-semibold">Total Registered Seniors</span>
-          <span className="text-xl sm:font-headline-xl text-primary font-extrabold mt-1">1,248</span>
+          <span className="text-xl sm:font-headline-xl text-primary font-extrabold mt-1">{stats?.total_citizens ?? '—'}</span>
           <span className="text-[10px] sm:font-label-sm text-secondary mt-1 font-bold">
             {isDsp ? 'Sub-Division Total' : 'Model Town Ward'}
           </span>
@@ -99,19 +131,19 @@ export default function DashboardOverview() {
           <span className="text-[11px] sm:font-label-sm text-error uppercase font-extrabold flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-error animate-ping"></span> Active SOS Cases
           </span>
-          <span className="text-xl sm:font-headline-xl text-error font-extrabold mt-1">{activeCasesCount}</span>
+          <span className="text-xl sm:font-headline-xl text-error font-extrabold mt-1">{stats?.active_sos ?? '—'}</span>
           <span className="text-[10px] sm:font-label-sm text-error font-bold mt-1">Requires Triage</span>
         </div>
 
         <div className="bg-surface-container-lowest p-3 sm:p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between">
           <span className="text-[11px] sm:font-label-sm text-on-surface-variant uppercase font-semibold">Missed Check-ins</span>
-          <span className="text-xl sm:font-headline-xl text-on-surface font-extrabold mt-1">5</span>
+          <span className="text-xl sm:font-headline-xl text-on-surface font-extrabold mt-1">{stats?.missed_checkins ?? '—'}</span>
           <span className="text-[10px] sm:font-label-sm text-on-surface-variant font-semibold mt-1">Unresponsive pings</span>
         </div>
 
         <div className="bg-surface-container-lowest p-3 sm:p-spacing-md rounded-xl shadow-sm border border-surface-container-highest flex flex-col justify-between">
           <span className="text-[11px] sm:font-label-sm text-on-surface-variant uppercase font-semibold">Avg Response Time</span>
-          <span className="text-xl sm:font-headline-xl text-primary font-extrabold mt-1">8 min</span>
+          <span className="text-xl sm:font-headline-xl text-primary font-extrabold mt-1">{stats?.avg_response_time ?? '—'}</span>
           <span className="text-[10px] sm:font-label-sm text-secondary font-semibold mt-1">Target &lt;15m</span>
         </div>
       </div>

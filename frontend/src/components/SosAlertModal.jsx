@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWebSocket } from '../context/WebSocketContext';
+import { useAuth } from '../context/AuthContext';
 import OfficerAssignmentModal from './OfficerAssignmentModal';
 
 export default function SosAlertModal() {
   const { activeAlert, userNotification, dismissAlert, dismissUserNotification } = useWebSocket();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [accepting, setAccepting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -32,6 +34,7 @@ export default function SosAlertModal() {
   }
 
   if (!activeAlert) return null;
+  if (user?.role !== 'SHO') return null;
 
   const handleAccept = async () => {
     setAccepting(true);
