@@ -767,7 +767,7 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
         
         {content}
 
-        <nav className="fixed bottom-0 left-1/2 z-10 flex w-full max-w-[390px] -translate-x-1/2 justify-around border-t border-slate-200 bg-white px-1 py-2 shadow-[0_-8px_20px_rgba(20,40,30,0.08)] sm:bottom-8 sm:rounded-b-[26px] sm:border-x-[8px] sm:border-[#263b36]">
+        <nav onClick={(event) => { if (event.target.closest('button[aria-label="Emergency SOS"]')) { setSosStep('confirm'); setView('sos') } }} className="fixed bottom-0 left-1/2 z-10 flex w-full max-w-[390px] -translate-x-1/2 justify-around border-t border-slate-200 bg-white px-1 py-2 shadow-[0_-8px_20px_rgba(20,40,30,0.08)] sm:bottom-8 sm:rounded-b-[26px] sm:border-x-[8px] sm:border-[#263b36]">
           <button onClick={() => { setSosStep('form'); setView('sos') }} className="-mt-8 grid h-16 w-16 place-items-center rounded-full border-4 border-white bg-red-600 text-3xl text-white shadow-lg" aria-label="Emergency SOS">🆘</button>
           {navItems.map(([key, icon, label]) => (
             <button key={key} onClick={() => setView(key)} className={`flex min-w-14 flex-col items-center gap-1 px-1 py-1 text-[10px] font-bold ${view === key ? 'text-[#426d5f]' : 'text-slate-500'}`}>
