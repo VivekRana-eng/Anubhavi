@@ -782,6 +782,13 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
 }
 
 function SeniorHome({ hindi, username, setView, setSosStep }) {
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening'
+  useEffect(() => {
+    const heading = Array.from(document.querySelectorAll('h2')).find(node => node.textContent.includes(username))
+    if (heading && !hindi) heading.textContent = `${greeting}, ${username}! 👋`
+  }, [greeting, hindi, username])
+
   return <div className="space-y-4 pt-4">
     <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#dcebf2] text-2xl">👤</div><div><h2 className="text-lg font-extrabold text-[#142b59]">{hindi ? `सुप्रभात, ${username}! 👋` : `Good Morning, ${username}! 👋`}</h2><p className="mt-1 text-sm text-slate-600">{hindi ? 'हम आपकी सुरक्षा के लिए यहां हैं।' : 'We are here for your safety.'}</p></div></div>
     <div className="grid grid-cols-2 items-stretch gap-3"><button onClick={() => { setSosStep('confirm'); setView('sos') }} className="flex min-h-[144px] flex-col items-start justify-between rounded-2xl bg-red-600 p-4 text-left text-white shadow-sm"><span className="self-center text-4xl">🚨</span><span><strong className="block text-lg">SOS</strong><small className="mt-1 block text-xs leading-4">Get immediate assistance</small></span></button><button onClick={() => setView('help')} className="flex min-h-[144px] flex-col items-start justify-between rounded-2xl bg-amber-300 p-4 text-left text-slate-950 shadow-sm"><span className="self-center text-4xl">🤝</span><span><strong className="block text-lg">Need Help</strong><small className="mt-1 block text-xs leading-4">Request non-emergency help</small></span></button></div>
