@@ -26,7 +26,6 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
   })
   const [myRequests, setMyRequests] = useState([])
   const [expandedRequestId, setExpandedRequestId] = useState(null)
-  const [checkInDone, setCheckInDone] = useState(false)
   const [voiceMessage, setVoiceMessage] = useState('')
 
   const { userNotification, dismissUserNotification } = useWebSocket()
@@ -234,19 +233,6 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
     setHelpSubmitting(false)
   }
 
-  const handleDailyCheckIn = async () => {
-    setCheckInDone(true)
-    try {
-      await fetch('/api/checkin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ citizen_id: 'CIT-8841', status: 'SAFE' })
-      })
-    } catch (e) {
-      console.log('Check-in recorded locally')
-    }
-  }
-
   const editAssistanceRequest = (request) => {
     setHelpType(request.type || request.request_type || '')
     setProblem(request.problem || request.description || '')
@@ -272,7 +258,7 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
   let title = ''
 
   if (view === 'home') {
-    content = <SeniorHome hindi={hindi} username={username} setView={setView} setSosStep={setSosStep} handleDailyCheckIn={handleDailyCheckIn} checkInDone={checkInDone} />
+    content = <SeniorHome hindi={hindi} username={username} setView={setView} setSosStep={setSosStep} />
   }
 
   if (view === 'legacy-home') {
@@ -337,27 +323,6 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
             </button>
           </div>
         )}
-
-        {/* DAILY SAFETY CHECK-IN BUTTON */}
-        <div className="rounded-3xl border border-emerald-200 bg-emerald-50/60 p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="text-left">
-              <p className="text-sm font-extrabold text-emerald-950">{hindi ? 'दैनिक सुरक्षा चेक-इन' : 'Daily Safety Check-In'}</p>
-              <p className="text-xs text-emerald-800">{hindi ? 'आज का चेक-इन पूरा करें' : 'Confirm you are safe today'}</p>
-            </div>
-            <button
-              onClick={handleDailyCheckIn}
-              disabled={checkInDone}
-              className={`rounded-2xl px-5 py-3 text-xs font-black shadow-md transition-all ${
-                checkInDone
-                  ? 'bg-emerald-700 text-white'
-                  : 'bg-[#426d5f] text-white hover:bg-[#34574c] active:scale-95'
-              }`}
-            >
-              {checkInDone ? '✅ SAFE TODAY' : '👍 I AM SAFE'}
-            </button>
-          </div>
-        </div>
 
         {/* LARGE EMERGENCY SOS CALL-TO-ACTION CARD */}
         <section className="rounded-3xl border border-red-200 bg-red-50 p-6 text-center shadow-sm">
@@ -816,13 +781,11 @@ function SeniorApp({ username = 'Rajesh Sharma', onLogout }) {
   );
 }
 
-function SeniorHome({ hindi, username, setView, setSosStep, handleDailyCheckIn, checkInDone }) {
+function SeniorHome({ hindi, username, setView, setSosStep }) {
   return <div className="space-y-4 pt-4">
     <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#dcebf2] text-2xl">👤</div><div><h2 className="text-lg font-extrabold text-[#142b59]">{hindi ? `सुप्रभात, ${username}! 👋` : `Good Morning, ${username}! 👋`}</h2><p className="mt-1 text-sm text-slate-600">{hindi ? 'हम आपकी सुरक्षा के लिए यहां हैं।' : 'We are here for your safety.'}</p></div></div>
-    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5"><div className="flex items-center gap-3"><span className="text-3xl">🟢</span><div><h2 className="text-lg font-extrabold text-emerald-900">{hindi ? 'आप सुरक्षित हैं' : 'YOU ARE SAFE'}</h2><p className="mt-1 text-sm leading-5 text-emerald-800">{hindi ? 'सब ठीक है। अगला चेक-इन: सुबह 10:00 बजे।' : 'Everything is okay. Next check-in: 10:00 AM.'}</p></div></div></div>
     <div className="grid grid-cols-2 items-stretch gap-3"><button onClick={() => { setSosStep('confirm'); setView('sos') }} className="flex min-h-[144px] flex-col items-start justify-between rounded-2xl bg-red-600 p-4 text-left text-white shadow-sm"><span className="self-center text-4xl">🚨</span><span><strong className="block text-lg">SOS</strong><small className="mt-1 block text-xs leading-4">Get immediate assistance</small></span></button><button onClick={() => setView('help')} className="flex min-h-[144px] flex-col items-start justify-between rounded-2xl bg-amber-300 p-4 text-left text-slate-950 shadow-sm"><span className="self-center text-4xl">🤝</span><span><strong className="block text-lg">Need Help</strong><small className="mt-1 block text-xs leading-4">Request non-emergency help</small></span></button></div>
-    <h2 className="pt-2 text-xl font-extrabold">{hindi ? 'त्वरित पहुंच' : 'Quick Access'}</h2><div className="grid grid-cols-2 items-stretch gap-3"><QuickCard icon="👮" title={hindi ? 'मेरा परिवार' : 'My Family'} text={hindi ? 'आपातकालीन संपर्कों को कॉल करें' : 'Call your emergency contacts'} onClick={() => setView('family')} /><QuickCard icon="▤" title={hindi ? 'मेरे अनुरोध' : 'My Requests'} text={hindi ? 'सहायता अनुरोध देखें' : 'Track assistance requests'} onClick={() => setView('requests')} /><QuickCard icon="⚠" title={hindi ? 'सुरक्षा अलर्ट' : 'Safety Alerts'} text={hindi ? 'पुलिस के महत्वपूर्ण संदेश' : 'Important police messages'} onClick={() => setView('alerts')} /><QuickCard icon="🛡️" title={hindi ? 'वेलफेयर चेक' : 'Welfare Checks'} text={hindi ? 'सुरक्षा जांच देखें' : 'View scheduled checks'} onClick={() => setView('home')} /></div>
-    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><div className="flex items-start gap-3"><span className="text-3xl">📅</span><div><h2 className="text-lg font-extrabold">{hindi ? 'अगला सुरक्षा चेक' : 'Next Safety Check'}</h2><p className="mt-1 font-bold text-[#426d5f]">{hindi ? 'कल • सुबह 10:00 बजे' : 'Tomorrow • 10:00 AM'}</p><p className="mt-1 text-sm text-slate-600">{hindi ? 'कृपया पुष्टि करें कि आप सुरक्षित हैं।' : 'Please confirm that you are safe.'}</p></div></div><button onClick={handleDailyCheckIn} disabled={checkInDone} className="mt-4 min-h-14 w-full rounded-xl bg-[#426d5f] text-lg font-extrabold text-white disabled:opacity-70">{checkInDone ? '✅ SAFE TODAY' : "✅ I'M OK"}</button></section>
+    <h2 className="pt-2 text-xl font-extrabold">{hindi ? 'त्वरित पहुंच' : 'Quick Access'}</h2><div className="grid grid-cols-2 items-stretch gap-3"><QuickCard icon="👮" title={hindi ? 'मेरा परिवार' : 'My Family'} text={hindi ? 'आपातकालीन संपर्कों को कॉल करें' : 'Call your emergency contacts'} onClick={() => setView('family')} /><QuickCard icon="▤" title={hindi ? 'मेरे अनुरोध' : 'My Requests'} text={hindi ? 'सहायता अनुरोध देखें' : 'Track assistance requests'} onClick={() => setView('requests')} /><QuickCard icon="⚠" title={hindi ? 'सुरक्षा अलर्ट' : 'Safety Alerts'} text={hindi ? 'पुलिस के महत्वपूर्ण संदेश' : 'Important police messages'} onClick={() => setView('alerts')} /></div>
   </div>
 }
 
