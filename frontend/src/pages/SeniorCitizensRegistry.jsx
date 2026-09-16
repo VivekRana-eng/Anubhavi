@@ -1,73 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const MOCK_CITIZENS = [
-  {
-    id: "CIT-8841",
-    name: "Rajesh Sharma",
-    age: 72,
-    gender: "Male",
-    mobile: "+91 98721-00214",
-    address: "H.No 412, Lane 4, Model Town Phase 2, Ludhiana",
-    medical_conditions: "Severe Cardiac History, Pacemaker Fitted (2023)",
-    risk_level: "HIGH",
-    living_status: "LIVES_ALONE",
-    status: "SOS_ACTIVE",
-    avatar_url: "https://lh3.googleusercontent.com/aida-public/AB6AXuBat7vHn7EPcTZDqJ7rBrJuDdgA-FnLHTqp2a2PWOZ1WqsADGRMSx3KVckgN3anh5JkBJ8ywxMarf-TvyqGQiVvVUKpqr5lyqfLW_5T9RQcv3yzwQ75I0rrptSsmNgrn1x43heM4Yp-OlkO028N2LauSoBYrstyjrEYuuhG6_eUIiCSFYTnIgsdxoVVJiC-sL69UfoICnJfO4J11hBsDzNgrnGvA294LZTRRJAvxHkthKwX0Wrcf2nD"
-  },
-  {
-    id: "CIT-8842",
-    name: "Sunita Devi",
-    age: 68,
-    gender: "Female",
-    mobile: "+91 97812-33412",
-    address: "H.No 88, Block C, Model Town, Ludhiana",
-    medical_conditions: "Hypertension, Arthritis, Blood: A+ Positive",
-    risk_level: "MEDIUM",
-    living_status: "WITH_SPOUSE",
-    status: "SAFE",
-    avatar_url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80"
-  },
-  {
-    id: "CIT-8843",
-    name: "Mohan Lal",
-    age: 75,
-    gender: "Male",
-    mobile: "+91 99145-88210",
-    address: "H.No 125, Sector 3, Model Town, Ludhiana",
-    medical_conditions: "Diabetes Type 2, Reduced Mobility, Blood: B+ Positive",
-    risk_level: "HIGH",
-    living_status: "LIVES_ALONE",
-    status: "MISSED_CHECKIN",
-    avatar_url: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80"
-  },
-  {
-    id: "CIT-8844",
-    name: "Kamla Sharma",
-    age: 70,
-    gender: "Female",
-    mobile: "+91 96461-44912",
-    address: "H.No 64, Phase 1, Model Town, Ludhiana",
-    medical_conditions: "Asthma, Mild Cognitive Impairment, Blood: AB+ Positive",
-    risk_level: "MEDIUM",
-    living_status: "LIVES_ALONE",
-    status: "SAFE",
-    avatar_url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"
-  },
-  {
-    id: "CIT-8845",
-    name: "Harish Kumar",
-    age: 74,
-    gender: "Male",
-    mobile: "+91 98881-22901",
-    address: "H.No 204, Lane 2, Model Town, Ludhiana",
-    medical_conditions: "Hypertension, Post-Stroke Recovery, Blood: O- Negative",
-    risk_level: "HIGH",
-    living_status: "WITH_SPOUSE",
-    status: "SAFE",
-    avatar_url: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80"
-  }
-];
+import { MOCK_RESIDENTS } from '../data/mockResidents';
 
 export default function SeniorCitizensRegistry() {
   const [citizens, setCitizens] = useState([]);
@@ -76,6 +9,25 @@ export default function SeniorCitizensRegistry() {
   const [loading, setLoading] = useState(true);
   const [registryView, setRegistryView] = useState('grid');
   const navigate = useNavigate();
+
+  const filterLocalResidents = () => {
+    let filtered = [...MOCK_RESIDENTS];
+    if (search) {
+      const q = search.toLowerCase().trim();
+      filtered = filtered.filter(c =>
+        (c.name && c.name.toLowerCase().includes(q)) ||
+        (c.mobile && c.mobile.toLowerCase().includes(q)) ||
+        (c.id && c.id.toLowerCase().includes(q)) ||
+        (c.address && c.address.toLowerCase().includes(q)) ||
+        (c.residence && c.residence.toLowerCase().includes(q)) ||
+        (c.aadhaar_masked && c.aadhaar_masked.toLowerCase().includes(q))
+      );
+    }
+    if (riskFilter) {
+      filtered = filtered.filter(c => (c.risk_level || c.riskLevel) === riskFilter);
+    }
+    setCitizens(filtered);
+  };
 
   const loadCitizens = () => {
     setLoading(true);
@@ -86,18 +38,20 @@ export default function SeniorCitizensRegistry() {
     if (params.toString()) url += `?${params.toString()}`;
 
     fetch(url)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('API offline');
+        return res.json();
+      })
       .then(data => {
         if (data && Array.isArray(data) && data.length > 0) {
           setCitizens(data);
         } else {
-          setCitizens(MOCK_CITIZENS);
+          filterLocalResidents();
         }
         setLoading(false);
       })
       .catch(err => {
-        console.error(err);
-        setCitizens(MOCK_CITIZENS);
+        filterLocalResidents();
         setLoading(false);
       });
   };

@@ -64,6 +64,11 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dsp/login" element={<DspLogin />} />
         <Route path="/login/dsp" element={<DspLogin />} />
+        <Route path="/resident/:residentId" element={<CitizenProfile />} />
+        <Route path="/resident/:citizenId" element={<CitizenProfile />} />
+        <Route path="/residents" element={<SeniorCitizensRegistry />} />
+        <Route path="/sho/citizens/:citizenId" element={<CitizenProfile />} />
+        <Route path="/sho/citizens" element={<SeniorCitizensRegistry />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );
@@ -93,6 +98,9 @@ export default function App() {
             <Route path="/sho/cases/:caseId" element={<CaseDetails />} />
             <Route path="/sho/citizens" element={<SeniorCitizensRegistry />} />
             <Route path="/sho/citizens/:citizenId" element={<CitizenProfile />} />
+            <Route path="/resident/:residentId" element={<CitizenProfile />} />
+            <Route path="/resident/:citizenId" element={<CitizenProfile />} />
+            <Route path="/residents" element={<SeniorCitizensRegistry />} />
             <Route path="/sho/assistance" element={<AssistanceRequests />} />
             <Route path="/sho/check-ins" element={<MissedCheckIns />} />
             <Route path="/sho/welfare-checks" element={<AssistanceRequests />} />

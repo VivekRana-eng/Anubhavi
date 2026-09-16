@@ -34,24 +34,20 @@ def get_citizen_360_profile(citizen_id: str):
     cit_row = cursor.fetchone()
 
     if not cit_row:
-        # Fallback mock citizen data if specific ID not found in database
-        citizen = {
-            "id": citizen_id,
-            "name": "Rajesh Sharma",
-            "age": 72,
-            "gender": "Male",
-            "mobile": "+91 98102-33412",
-            "aadhaar_masked": "XXXX-XXXX-4912",
-            "address": "House #402, Sector 3, Model Town, Ludhiana",
-            "landmark": "Near Model Town Community Park",
-            "latitude": 30.9010,
-            "longitude": 75.8573,
-            "risk_level": "HIGH",
-            "status": "SAFE",
-            "living_status": "LIVES_ALONE",
-            "medical_conditions": "Severe Cardiac History, Pacemaker Installed (2023), Hypertension",
-            "avatar_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuBat7vHn7EPcTZDqJ7rBrJuDdgA-FnLHTqp2a2PWOZ1WqsADGRMSx3KVckgN3anh5JkBJ8ywxMarf-TvyqGQiVvVUKpqr5lyqfLW_5T9RQcv3yzwQ75I0rrptSsmNgrn1x43heM4Yp-OlkO028N2LauSoBYrstyjrEYuuhG6_eUIiCSFYTnIgsdxoVVJiC-sL69UfoICnJfO4J11hBsDzNgrnGvA294LZTRRJAvxHkthKwX0Wrcf2nD"
+        # Check RES-001..RES-006 mock definitions
+        mock_map = {
+            "RES-001": { "id": "RES-001", "name": "Mohan Lal", "age": 75, "gender": "Male", "mobile": "+91 99145-88210", "address": "H.No 125, Sector 3, Model Town, Ludhiana", "medical_conditions": "Diabetes Type 2, Reduced Mobility, Blood: B+ Positive", "risk_level": "HIGH", "status": "MISSED_CHECKIN", "living_status": "LIVES_ALONE", "avatar_url": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80" },
+            "RES-002": { "id": "RES-002", "name": "Rajesh Sharma", "age": 72, "gender": "Male", "mobile": "+91 98102-33412", "address": "H.No 412, Lane 4, Model Town Phase 2, Ludhiana", "medical_conditions": "Severe Cardiac History, Pacemaker Fitted (2023), Blood: O+ Positive", "risk_level": "HIGH", "status": "SOS_ACTIVE", "living_status": "LIVES_ALONE", "avatar_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuBat7vHn7EPcTZDqJ7rBrJuDdgA-FnLHTqp2a2PWOZ1WqsADGRMSx3KVckgN3anh5JkBJ8ywxMarf-TvyqGQiVvVUKpqr5lyqfLW_5T9RQcv3yzwQ75I0rrptSsmNgrn1x43heM4Yp-OlkO028N2LauSoBYrstyjrEYuuhG6_eUIiCSFYTnIgsdxoVVJiC-sL69UfoICnJfO4J11hBsDzNgrnGvA294LZTRRJAvxHkthKwX0Wrcf2nD" },
+            "RES-003": { "id": "RES-003", "name": "Sunita Kapoor", "age": 68, "gender": "Female", "mobile": "+91 97812-33412", "address": "H.No 88, Block C, Model Town, Ludhiana", "medical_conditions": "Hypertension, Arthritis, Blood: A+ Positive", "risk_level": "MEDIUM", "status": "SAFE", "living_status": "WITH_SPOUSE", "avatar_url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80" },
+            "RES-004": { "id": "RES-004", "name": "Harpreet Singh", "age": 79, "gender": "Male", "mobile": "+91 98881-22901", "address": "H.No 204, Lane 2, Model Town, Ludhiana", "medical_conditions": "Post-Stroke Recovery, Hypertension, Blood: O- Negative", "risk_level": "HIGH", "status": "SAFE", "living_status": "LIVES_ALONE", "avatar_url": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80" },
+            "RES-005": { "id": "RES-005", "name": "Anita Verma", "age": 70, "gender": "Female", "mobile": "+91 96461-44912", "address": "H.No 64, Phase 1, Model Town, Ludhiana", "medical_conditions": "Asthma, Mild Cognitive Impairment, Blood: AB+ Positive", "risk_level": "MEDIUM", "status": "SAFE", "living_status": "LIVES_ALONE", "avatar_url": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80" },
+            "RES-006": { "id": "RES-006", "name": "Ramesh Kumar", "age": 77, "gender": "Male", "mobile": "+91 98888-33210", "address": "H.No 310, Sector 4, Model Town, Ludhiana", "medical_conditions": "Mobility Limitation, Blood: B- Negative", "risk_level": "MEDIUM", "status": "SAFE", "living_status": "LIVES WITH FAMILY", "avatar_url": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80" }
         }
+        clean_id = citizen_id.upper()
+        if clean_id in mock_map:
+            citizen = mock_map[clean_id]
+        else:
+            raise HTTPException(status_code=404, detail=f"Resident {citizen_id} not found")
     else:
         citizen = dict(cit_row)
 
