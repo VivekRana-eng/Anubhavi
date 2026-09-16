@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import OfficerAssignmentModal from '../components/OfficerAssignmentModal';
+import { getResidentById } from '../data/mockResidents';
 
 const MOCK_CASE_DATABASE = {
   "ANB-SOS-2026-4D9F2": {
@@ -901,17 +902,20 @@ const applyLocalStorageOverrides = (id, result) => {
 const getFallbackCase = (id, stateData = null) => {
   if (stateData) {
     const assignment = stateData.assignment_details || {};
+    const resId = stateData.citizen_id || stateData.citizenId || (stateData.citizen_name ? stateData.citizen_name : `CIT-${(id || '').slice(-4) || '8841'}`);
+    const resident = getResidentById(resId) || getResidentById(stateData.citizen_name) || getResidentById('RES-001');
+
     const result = {
       case: {
         id: stateData.id || id,
-        citizen_id: stateData.citizen_id || `CIT-${(id || '').slice(-4) || '8841'}`,
-        citizen_name: stateData.citizen_name || stateData.citizenName || 'Senior Citizen',
-        citizen_age: stateData.citizen_age || stateData.citizenAge || 75,
-        citizen_mobile: stateData.citizen_mobile || stateData.phone || '+91 98765-43210',
+        citizen_id: resident ? resident.id : (stateData.citizen_id || `CIT-${(id || '').slice(-4) || '8841'}`),
+        citizen_name: stateData.citizen_name || stateData.citizenName || (resident ? resident.name : 'Senior Citizen'),
+        citizen_age: stateData.citizen_age || stateData.citizenAge || (resident ? resident.age : 75),
+        citizen_mobile: stateData.citizen_mobile || stateData.phone || (resident ? resident.mobile : '+91 98765-43210'),
         emergency_type: stateData.emergency_type || 'Emergency SOS Alert',
-        location_address: stateData.location_address || stateData.address || 'Model Town, Sector 3, Ludhiana',
-        latitude: stateData.latitude || 30.9010,
-        longitude: stateData.longitude || 75.8573,
+        location_address: stateData.location_address || stateData.address || (resident ? resident.address : 'Model Town, Sector 3, Ludhiana'),
+        latitude: stateData.latitude || (resident ? resident.latitude : 30.9010),
+        longitude: stateData.longitude || (resident ? resident.longitude : 75.8573),
         created_at: stateData.created_at || '2026-09-03 20:50:08',
         status: stateData.status || 'ACTIVE',
         assignment_details: {
@@ -925,7 +929,17 @@ const getFallbackCase = (id, stateData = null) => {
           vehicle: assignment.vehicle || 'PCR Vehicle'
         }
       },
-      citizen: {
+      citizen: resident ? {
+        id: resident.id,
+        name: resident.name,
+        age: resident.age,
+        gender: resident.gender,
+        mobile: resident.mobile,
+        living_status: resident.living_status || resident.livingStatus,
+        aadhaar_masked: resident.aadhaar_masked,
+        medical_conditions: resident.medical_conditions || resident.medicalConditions,
+        avatar_url: resident.avatar_url
+      } : {
         id: stateData.citizen_id || `CIT-${(id || '').slice(-4) || '8841'}`,
         name: stateData.citizen_name || stateData.citizenName || 'Senior Citizen',
         age: stateData.citizen_age || stateData.citizenAge || 75,
@@ -952,21 +966,34 @@ const getFallbackCase = (id, stateData = null) => {
   if (MOCK_CASE_DATABASE[id]) {
     const base = MOCK_CASE_DATABASE[id];
     const result = JSON.parse(JSON.stringify(base));
+    const resident = getResidentById(result.case.citizen_id) || getResidentById(result.case.citizen_name);
+    if (resident) {
+      result.case.citizen_id = resident.id;
+      result.citizen = {
+        ...result.citizen,
+        id: resident.id,
+        name: resident.name,
+        avatar_url: resident.avatar_url || result.citizen.avatar_url
+      };
+    }
     applyLocalStorageOverrides(id, result);
     return result;
   }
 
+  const rawCitId = `CIT-${(id || '').slice(-4) || '8841'}`;
+  const resident = getResidentById(rawCitId) || getResidentById('RES-001');
+
   const result = {
     case: {
       id: id || "ANB-SOS-2026-4D9F2",
-      citizen_id: `CIT-${(id || '').slice(-4) || '8841'}`,
-      citizen_name: "Senior Citizen",
-      citizen_age: 75,
-      citizen_mobile: "+91 98765-43210",
+      citizen_id: resident ? resident.id : rawCitId,
+      citizen_name: resident ? resident.name : "Senior Citizen",
+      citizen_age: resident ? resident.age : 75,
+      citizen_mobile: resident ? resident.mobile : "+91 98765-43210",
       emergency_type: "Emergency SOS Alert",
-      location_address: "Model Town, Sector 3, Ludhiana",
-      latitude: 30.9010,
-      longitude: 75.8573,
+      location_address: resident ? resident.address : "Model Town, Sector 3, Ludhiana",
+      latitude: resident ? resident.latitude : 30.9010,
+      longitude: resident ? resident.longitude : 75.8573,
       created_at: "2026-09-03 20:50:08",
       status: "ACTIVE",
       assignment_details: {
@@ -976,8 +1003,18 @@ const getFallbackCase = (id, stateData = null) => {
         assigned_by: "Insp. Raj Kumar"
       }
     },
-    citizen: {
-      id: `CIT-${(id || '').slice(-4) || '8841'}`,
+    citizen: resident ? {
+      id: resident.id,
+      name: resident.name,
+      age: resident.age,
+      gender: resident.gender,
+      mobile: resident.mobile,
+      living_status: resident.living_status || resident.livingStatus,
+      aadhaar_masked: resident.aadhaar_masked,
+      medical_conditions: resident.medical_conditions || resident.medicalConditions,
+      avatar_url: resident.avatar_url
+    } : {
+      id: rawCitId,
       name: "Senior Citizen",
       age: 75,
       gender: "Senior Citizen",

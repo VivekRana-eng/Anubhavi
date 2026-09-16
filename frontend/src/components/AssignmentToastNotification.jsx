@@ -150,24 +150,7 @@ export default function AssignmentToastNotification() {
         )}
 
         {/* ACTION BUTTONS */}
-        <div className="mt-1 pt-2 border-t border-white/10 flex items-center justify-between">
-          <button
-            onClick={() => {
-              setToast(null);
-              if (toast.caseId) {
-                navigate(`/sho/cases/${toast.caseId}`);
-              } else {
-                navigate('/sho/dashboard');
-              }
-            }}
-            className={`px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1 shadow-sm ${
-              isReassignment ? 'bg-amber-500 hover:bg-amber-600 text-slate-950' : 'bg-emerald-500 hover:bg-emerald-600 text-slate-950'
-            }`}
-          >
-            <span>VIEW CASE</span>
-            <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-          </button>
-
+        <div className="mt-1 pt-2 border-t border-white/10 flex items-center justify-end">
           <button
             onClick={() => setToast(null)}
             className="text-[11px] font-bold opacity-75 hover:opacity-100 transition-opacity"
